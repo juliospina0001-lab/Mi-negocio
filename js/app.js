@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     vehicles: VEHICLES_DATA || [],
     filteredVehicles: [...(VEHICLES_DATA || [])],
     favorites: loadFavorites(),
+    currentUser: loadAuthUser(),
     activeCategory: "all",
     searchQuery: "",
     sortBy: "featured",
@@ -22,6 +23,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Comparador
     compareModelA: "model-3",
     compareModelB: "model-y",
+    // Compra con papeles
+    papersPackageCost: 5200000,
+    selectedVehicleForPurchase: "model-3",
+    includePapersInPurchase: true,
+    // Modo de Tema (oscuro / claro)
+    theme: loadTheme(),
     // Simulador
     simulator: {
       vehicleId: "model-3",
@@ -40,8 +47,66 @@ document.addEventListener("DOMContentLoaded", () => {
     header: document.getElementById("siteHeader"),
     navToggle: document.getElementById("mobileToggle"),
     mainNavList: document.getElementById("mainNavList"),
+    navLoginLink: document.getElementById("navLoginLink"),
+    themeToggleBtn: document.getElementById("themeToggleBtn"),
     favCountBadge: document.getElementById("favBadgeCount"),
     favTriggerBtn: document.getElementById("favTriggerBtn"),
+
+    // Cuenta & Login
+    accountMenuContainer: document.getElementById("accountMenuContainer"),
+    accountTriggerBtn: document.getElementById("accountTriggerBtn"),
+    accountBtnText: document.getElementById("accountBtnText"),
+    userDropdownMenu: document.getElementById("userDropdownMenu"),
+    dropdownUserName: document.getElementById("dropdownUserName"),
+    dropdownUserEmail: document.getElementById("dropdownUserEmail"),
+    dropdownFavCount: document.getElementById("dropdownFavCount"),
+    dropdownFavsBtn: document.getElementById("dropdownFavsBtn"),
+    logoutBtn: document.getElementById("logoutBtn"),
+
+    // Modal de Login
+    loginModal: document.getElementById("loginModal"),
+    closeLoginModalBtn: document.getElementById("closeLoginModalBtn"),
+    tabLoginBtn: document.getElementById("tabLoginBtn"),
+    tabRegisterBtn: document.getElementById("tabRegisterBtn"),
+    loginTabPanel: document.getElementById("loginTabPanel"),
+    registerTabPanel: document.getElementById("registerTabPanel"),
+    authLoginForm: document.getElementById("authLoginForm"),
+    authRegisterForm: document.getElementById("authRegisterForm"),
+    demoQuickLoginBtn: document.getElementById("demoQuickLoginBtn"),
+    toggleLoginPwdBtn: document.getElementById("toggleLoginPwdBtn"),
+    toggleRegPwdBtn: document.getElementById("toggleRegPwdBtn"),
+    loginPassword: document.getElementById("loginPassword"),
+    regPassword: document.getElementById("regPassword"),
+
+    // Modal de Compra y Papeles
+    purchaseModal: document.getElementById("purchaseModal"),
+    closePurchaseModalBtn: document.getElementById("closePurchaseModalBtn"),
+    purchaseModelSelect: document.getElementById("purchaseModelSelect"),
+    purchaseVehicleImg: document.getElementById("purchaseVehicleImg"),
+    purchaseCarVersion: document.getElementById("purchaseCarVersion"),
+    purchaseBasePrice: document.getElementById("purchaseBasePrice"),
+    includePapersCheck: document.getElementById("includePapersCheck"),
+    papersPackageBox: document.getElementById("papersPackageBox"),
+    summarySubtotalPrice: document.getElementById("summarySubtotalPrice"),
+    summaryPapersCost: document.getElementById("summaryPapersCost"),
+    summaryTotalPrice: document.getElementById("summaryTotalPrice"),
+    purchaseOrderForm: document.getElementById("purchaseOrderForm"),
+    buyerName: document.getElementById("buyerName"),
+    buyerIdDoc: document.getElementById("buyerIdDoc"),
+    buyerPhone: document.getElementById("buyerPhone"),
+    buyerEmail: document.getElementById("buyerEmail"),
+    buyerCity: document.getElementById("buyerCity"),
+    buyerNotes: document.getElementById("buyerNotes"),
+    paymentMethod: document.getElementById("paymentMethod"),
+    sendOrderWhatsAppBtn: document.getElementById("sendOrderWhatsAppBtn"),
+    purchaseStatusAlert: document.getElementById("purchaseStatusAlert"),
+
+    // Widget Flotante de WhatsApp
+    whatsappFloatWidget: document.getElementById("whatsappFloatWidget"),
+    whatsappBubbleBtn: document.getElementById("whatsappBubbleBtn"),
+    whatsappPopover: document.getElementById("whatsappPopover"),
+    closeWaPopoverBtn: document.getElementById("closeWaPopoverBtn"),
+    startWaChatBtn: document.getElementById("startWaChatBtn"),
 
     // Grids
     featuredGrid: document.getElementById("featuredGrid"),
@@ -179,6 +244,59 @@ document.addEventListener("DOMContentLoaded", () => {
     updateFavoritesBadge();
     renderFavoritesDrawer();
     updateFavoriteButtonsUI();
+    if (elements.dropdownFavCount) {
+      elements.dropdownFavCount.textContent = state.favorites.length;
+    }
+  }
+
+  function loadTheme() {
+    if (!isLocalStorageAvailable()) return "dark";
+    return localStorage.getItem("tesla_theme") || "dark";
+  }
+
+  function applyTheme(theme) {
+    state.theme = theme;
+    if (theme === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    if (isLocalStorageAvailable()) {
+      localStorage.setItem("tesla_theme", theme);
+    }
+  }
+
+  function toggleTheme() {
+    const nextTheme = state.theme === "light" ? "dark" : "light";
+    applyTheme(nextTheme);
+    showToast(nextTheme === "light" ? "Modo Claro activado" : "Modo Oscuro activado", "info");
+  }
+
+  function loadAuthUser() {
+    if (!isLocalStorageAvailable()) return null;
+    try {
+      const stored = localStorage.getItem("tesla_auth_user");
+      return stored ? JSON.parse(stored) : null;
+    } catch (e) {
+      console.warn("No se pudo leer usuario de localStorage:", e);
+      return null;
+    }
+  }
+
+  function saveAuthUser(user) {
+    state.currentUser = user;
+    if (isLocalStorageAvailable()) {
+      try {
+        if (user) {
+          localStorage.setItem("tesla_auth_user", JSON.stringify(user));
+        } else {
+          localStorage.removeItem("tesla_auth_user");
+        }
+      } catch (e) {
+        console.warn("No se pudo guardar usuario en localStorage:", e);
+      }
+    }
+    updateAuthUI();
   }
 
   function toggleFavorite(vehicleId) {
@@ -271,8 +389,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <button type="button" class="btn btn-secondary btn-sm js-view-details" data-vehicle-id="${escapeHTML(vehicle.id)}">
               Ficha y Color
             </button>
-            <button type="button" class="btn btn-primary btn-sm js-quote-vehicle" data-vehicle-id="${escapeHTML(vehicle.id)}">
-              Cotizar / Probar
+            <button type="button" class="btn btn-primary btn-sm js-buy-vehicle" data-vehicle-id="${escapeHTML(vehicle.id)}">
+              Comprar / Reservar
             </button>
           </div>
         </div>
@@ -374,11 +492,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Cotizar directamente
-    container.querySelectorAll(".js-quote-vehicle").forEach(btn => {
+    // Comprar / Reservar directamente con papeles
+    container.querySelectorAll(".js-buy-vehicle").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.dataset.vehicleId;
-        scrollToContactAndSelect(id);
+        openPurchaseModal(id);
       });
     });
   }
@@ -496,10 +614,13 @@ document.addEventListener("DOMContentLoaded", () => {
             <button type="button" class="btn btn-secondary" id="modalSimulateBtn" data-vehicle-id="${escapeHTML(vehicle.id)}">
               Simular Cuotas
             </button>
-            <button type="button" class="btn btn-primary" id="modalContactBtn" data-vehicle-id="${escapeHTML(vehicle.id)}">
-              Solicitar Prueba
+            <button type="button" class="btn btn-primary" id="modalPurchaseBtn" data-vehicle-id="${escapeHTML(vehicle.id)}" style="background-color: #10b981; border-color: #10b981;">
+              Comprar con Papeles
             </button>
           </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="modalContactBtn" data-vehicle-id="${escapeHTML(vehicle.id)}" style="width: 100%; margin-top: 8px;">
+            Solicitar Prueba de Manejo
+          </button>
         </div>
       </div>
     `;
@@ -524,6 +645,14 @@ document.addEventListener("DOMContentLoaded", () => {
       simBtn.addEventListener("click", () => {
         closeVehicleModal();
         prefillSimulator(vehicle.id);
+      });
+    }
+
+    const purchaseBtn = document.getElementById("modalPurchaseBtn");
+    if (purchaseBtn) {
+      purchaseBtn.addEventListener("click", () => {
+        closeVehicleModal();
+        openPurchaseModal(vehicle.id);
       });
     }
 
@@ -1038,6 +1167,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Escape") {
         closeVehicleModal();
         closeFavoritesDrawer();
+        closeLoginModal();
+        closePurchaseModal();
       }
     });
 
@@ -1081,12 +1212,585 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================================================
+  // SISTEMA DE AUTENTICACIÓN, LOGIN Y PERFIL DE USUARIO
+  // =========================================================================
+
+  function updateAuthUI() {
+    const user = state.currentUser;
+    const isLogged = !!user;
+
+    if (elements.accountTriggerBtn) {
+      if (isLogged) {
+        elements.accountTriggerBtn.classList.add("is-logged-in");
+        const firstName = user.name.trim().split(" ")[0] || "Usuario";
+        if (elements.accountBtnText) elements.accountBtnText.textContent = firstName;
+        elements.accountTriggerBtn.setAttribute("aria-label", `Menú de cuenta de ${user.name}`);
+        elements.accountTriggerBtn.setAttribute("title", `Conectado como ${user.name}`);
+      } else {
+        elements.accountTriggerBtn.classList.remove("is-logged-in");
+        if (elements.accountBtnText) elements.accountBtnText.textContent = "Iniciar Sesión";
+        elements.accountTriggerBtn.setAttribute("aria-label", "Iniciar Sesión o crear cuenta");
+        elements.accountTriggerBtn.setAttribute("title", "Iniciar Sesión");
+        closeUserDropdown();
+      }
+    }
+
+    if (elements.navLoginLink) {
+      if (isLogged) {
+        const firstName = user.name.trim().split(" ")[0] || "Usuario";
+        elements.navLoginLink.textContent = `Cuenta (${firstName})`;
+      } else {
+        elements.navLoginLink.textContent = "Cuenta";
+      }
+    }
+
+    if (elements.dropdownUserName && user) {
+      elements.dropdownUserName.textContent = user.name;
+    }
+    if (elements.dropdownUserEmail && user) {
+      elements.dropdownUserEmail.textContent = user.email;
+    }
+    if (elements.dropdownFavCount) {
+      elements.dropdownFavCount.textContent = state.favorites.length;
+    }
+  }
+
+  function openLoginModal(defaultTab = "login") {
+    if (!elements.loginModal) return;
+    switchAuthTab(defaultTab);
+    elements.loginModal.classList.add("is-visible");
+    document.body.style.overflow = "hidden";
+    closeUserDropdown();
+  }
+
+  function closeLoginModal() {
+    if (!elements.loginModal) return;
+    elements.loginModal.classList.remove("is-visible");
+    document.body.style.overflow = "";
+
+    // Limpiar errores visuales
+    if (elements.authLoginForm) {
+      elements.authLoginForm.querySelectorAll(".form-control").forEach(inp => inp.classList.remove("is-invalid"));
+    }
+    if (elements.authRegisterForm) {
+      elements.authRegisterForm.querySelectorAll(".form-control").forEach(inp => inp.classList.remove("is-invalid"));
+    }
+  }
+
+  function switchAuthTab(tab) {
+    if (tab === "register") {
+      if (elements.tabRegisterBtn) {
+        elements.tabRegisterBtn.classList.add("active");
+        elements.tabRegisterBtn.setAttribute("aria-selected", "true");
+      }
+      if (elements.tabLoginBtn) {
+        elements.tabLoginBtn.classList.remove("active");
+        elements.tabLoginBtn.setAttribute("aria-selected", "false");
+      }
+      if (elements.registerTabPanel) elements.registerTabPanel.style.display = "block";
+      if (elements.loginTabPanel) elements.loginTabPanel.style.display = "none";
+    } else {
+      if (elements.tabLoginBtn) {
+        elements.tabLoginBtn.classList.add("active");
+        elements.tabLoginBtn.setAttribute("aria-selected", "true");
+      }
+      if (elements.tabRegisterBtn) {
+        elements.tabRegisterBtn.classList.remove("active");
+        elements.tabRegisterBtn.setAttribute("aria-selected", "false");
+      }
+      if (elements.loginTabPanel) elements.loginTabPanel.style.display = "block";
+      if (elements.registerTabPanel) elements.registerTabPanel.style.display = "none";
+    }
+  }
+
+  function toggleUserDropdown() {
+    if (!elements.userDropdownMenu) return;
+    const isVisible = elements.userDropdownMenu.style.display === "block";
+    if (isVisible) {
+      closeUserDropdown();
+    } else {
+      elements.userDropdownMenu.style.display = "block";
+      if (elements.accountTriggerBtn) elements.accountTriggerBtn.setAttribute("aria-expanded", "true");
+    }
+  }
+
+  function closeUserDropdown() {
+    if (elements.userDropdownMenu) {
+      elements.userDropdownMenu.style.display = "none";
+    }
+    if (elements.accountTriggerBtn) {
+      elements.accountTriggerBtn.setAttribute("aria-expanded", "false");
+    }
+  }
+
+  function togglePasswordVisibility(input, btn) {
+    if (!input || !btn) return;
+    const isPass = input.type === "password";
+    input.type = isPass ? "text" : "password";
+    const eyeOpen = btn.querySelector(".eye-open");
+    const eyeClosed = btn.querySelector(".eye-closed");
+    if (eyeOpen && eyeClosed) {
+      eyeOpen.style.display = isPass ? "none" : "block";
+      eyeClosed.style.display = isPass ? "block" : "none";
+    }
+  }
+
+  function initAuth() {
+    // Actualizar estado inicial
+    updateAuthUI();
+
+    // Trigger de botón Cuenta en header
+    if (elements.accountTriggerBtn) {
+      elements.accountTriggerBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (state.currentUser) {
+          toggleUserDropdown();
+        } else {
+          openLoginModal("login");
+        }
+      });
+    }
+
+    // Enlace en menú de navegación
+    if (elements.navLoginLink) {
+      elements.navLoginLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (state.currentUser) {
+          toggleUserDropdown();
+        } else {
+          openLoginModal("login");
+        }
+      });
+    }
+
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener("click", (e) => {
+      if (elements.accountMenuContainer && !elements.accountMenuContainer.contains(e.target)) {
+        closeUserDropdown();
+      }
+    });
+
+    // Botones dentro del dropdown
+    if (elements.dropdownFavsBtn) {
+      elements.dropdownFavsBtn.addEventListener("click", () => {
+        closeUserDropdown();
+        openFavoritesDrawer();
+      });
+    }
+
+    if (elements.logoutBtn) {
+      elements.logoutBtn.addEventListener("click", () => {
+        closeUserDropdown();
+        saveAuthUser(null);
+        showToast("Has cerrado tu sesión exitosamente.", "info");
+      });
+    }
+
+    // Modal de Login: Cerrar
+    if (elements.closeLoginModalBtn) {
+      elements.closeLoginModalBtn.addEventListener("click", closeLoginModal);
+    }
+    if (elements.loginModal) {
+      elements.loginModal.addEventListener("click", (e) => {
+        if (e.target === elements.loginModal) {
+          closeLoginModal();
+        }
+      });
+    }
+
+    // Selector de pestañas
+    if (elements.tabLoginBtn) {
+      elements.tabLoginBtn.addEventListener("click", () => switchAuthTab("login"));
+    }
+    if (elements.tabRegisterBtn) {
+      elements.tabRegisterBtn.addEventListener("click", () => switchAuthTab("register"));
+    }
+
+    // Visibilidad de contraseñas
+    if (elements.toggleLoginPwdBtn && elements.loginPassword) {
+      elements.toggleLoginPwdBtn.addEventListener("click", () => {
+        togglePasswordVisibility(elements.loginPassword, elements.toggleLoginPwdBtn);
+      });
+    }
+    if (elements.toggleRegPwdBtn && elements.regPassword) {
+      elements.toggleRegPwdBtn.addEventListener("click", () => {
+        togglePasswordVisibility(elements.regPassword, elements.toggleRegPwdBtn);
+      });
+    }
+
+    // Acceso Rápido Demostrativo
+    if (elements.demoQuickLoginBtn) {
+      elements.demoQuickLoginBtn.addEventListener("click", () => {
+        const demoUser = {
+          name: "Julian Ospina",
+          email: "julian.ospina@tesla-vip.co",
+          preferredModel: "model-3",
+          role: "Cliente VIP"
+        };
+        saveAuthUser(demoUser);
+        closeLoginModal();
+        showToast(`¡Bienvenido de nuevo, ${demoUser.name}! (Acceso Demo Activo)`, "success");
+      });
+    }
+
+    // Envío del Formulario de Inicio de Sesión
+    if (elements.authLoginForm) {
+      elements.authLoginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById("loginEmail");
+        const passInput = elements.loginPassword;
+        let valid = true;
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailInput.value.trim())) {
+          emailInput.classList.add("is-invalid");
+          valid = false;
+        } else {
+          emailInput.classList.remove("is-invalid");
+        }
+
+        if (!passInput.value || passInput.value.length < 6) {
+          passInput.classList.add("is-invalid");
+          valid = false;
+        } else {
+          passInput.classList.remove("is-invalid");
+        }
+
+        if (!valid) return;
+
+        const userNameFromEmail = emailInput.value.split("@")[0].replace(/[._-]/g, " ");
+        const formattedName = userNameFromEmail.charAt(0).toUpperCase() + userNameFromEmail.slice(1);
+
+        const authenticatedUser = {
+          name: formattedName || "Cliente Tesla",
+          email: emailInput.value.trim(),
+          preferredModel: "model-3",
+          role: "Cliente Registrado"
+        };
+
+        saveAuthUser(authenticatedUser);
+        closeLoginModal();
+        elements.authLoginForm.reset();
+        showToast(`¡Bienvenido de nuevo, ${authenticatedUser.name}!`, "success");
+      });
+    }
+
+    // Envío del Formulario de Registro
+    if (elements.authRegisterForm) {
+      elements.authRegisterForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById("regName");
+        const emailInput = document.getElementById("regEmail");
+        const passInput = elements.regPassword;
+        const modelSelect = document.getElementById("regPreferredModel");
+        let valid = true;
+
+        if (!nameInput.value.trim() || nameInput.value.trim().length < 3) {
+          nameInput.classList.add("is-invalid");
+          valid = false;
+        } else {
+          nameInput.classList.remove("is-invalid");
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailInput.value.trim())) {
+          emailInput.classList.add("is-invalid");
+          valid = false;
+        } else {
+          emailInput.classList.remove("is-invalid");
+        }
+
+        if (!passInput.value || passInput.value.length < 6) {
+          passInput.classList.add("is-invalid");
+          valid = false;
+        } else {
+          passInput.classList.remove("is-invalid");
+        }
+
+        if (!valid) return;
+
+        const newUser = {
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          preferredModel: modelSelect ? modelSelect.value : "model-3",
+          role: "Nuevo Propietario"
+        };
+
+        saveAuthUser(newUser);
+        closeLoginModal();
+        elements.authRegisterForm.reset();
+        showToast(`¡Cuenta creada con éxito! Bienvenido, ${newUser.name}.`, "success");
+      });
+    }
+  }
+
+  // =========================================================================
+  // VENTANA DE COMPRA Y RESERVA CON PAPELES AL DÍA
+  // =========================================================================
+
+  function openPurchaseModal(vehicleId) {
+    if (!elements.purchaseModal) return;
+    const vId = vehicleId || state.selectedVehicleForPurchase || state.vehicles[0].id;
+    state.selectedVehicleForPurchase = vId;
+
+    if (elements.purchaseModelSelect) {
+      elements.purchaseModelSelect.value = vId;
+    }
+
+    // Auto-completar datos si el usuario inició sesión
+    if (state.currentUser) {
+      if (elements.buyerName && !elements.buyerName.value) elements.buyerName.value = state.currentUser.name;
+      if (elements.buyerEmail && !elements.buyerEmail.value) elements.buyerEmail.value = state.currentUser.email;
+    }
+
+    updatePurchaseModalView();
+    elements.purchaseModal.classList.add("is-visible");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePurchaseModal() {
+    if (!elements.purchaseModal) return;
+    elements.purchaseModal.classList.remove("is-visible");
+    document.body.style.overflow = "";
+    if (elements.purchaseStatusAlert) {
+      elements.purchaseStatusAlert.style.display = "none";
+    }
+  }
+
+  function updatePurchaseModalView() {
+    const vehicle = state.vehicles.find(v => v.id === state.selectedVehicleForPurchase) || state.vehicles[0];
+    if (!vehicle) return;
+
+    if (elements.purchaseVehicleImg) {
+      elements.purchaseVehicleImg.src = vehicle.image;
+      elements.purchaseVehicleImg.alt = vehicle.name;
+    }
+    if (elements.purchaseCarVersion) {
+      elements.purchaseCarVersion.textContent = `${vehicle.name} — ${vehicle.version}`;
+    }
+    if (elements.purchaseBasePrice) {
+      elements.purchaseBasePrice.textContent = formatCurrencyCOP(vehicle.price);
+    }
+    if (elements.summarySubtotalPrice) {
+      elements.summarySubtotalPrice.textContent = formatCurrencyCOP(vehicle.price);
+    }
+
+    const includePapers = state.includePapersInPurchase;
+    const papersCost = includePapers ? state.papersPackageCost : 0;
+    const totalAmount = vehicle.price + papersCost;
+
+    if (elements.includePapersCheck) {
+      elements.includePapersCheck.checked = includePapers;
+    }
+    if (elements.papersPackageBox) {
+      if (includePapers) {
+        elements.papersPackageBox.classList.remove("is-inactive");
+      } else {
+        elements.papersPackageBox.classList.add("is-inactive");
+      }
+    }
+    if (elements.summaryPapersCost) {
+      elements.summaryPapersCost.textContent = includePapers ? `+ ${formatCurrencyCOP(papersCost)}` : "$0 COP (Sin papeles)";
+      elements.summaryPapersCost.style.color = includePapers ? "#10b981" : "var(--color-silver)";
+    }
+    if (elements.summaryTotalPrice) {
+      elements.summaryTotalPrice.textContent = formatCurrencyCOP(totalAmount);
+    }
+  }
+
+  function initPurchaseModal() {
+    // Llenar selector de vehículos
+    if (elements.purchaseModelSelect) {
+      elements.purchaseModelSelect.innerHTML = state.vehicles.map(v => `
+        <option value="${escapeHTML(v.id)}" ${v.id === state.selectedVehicleForPurchase ? 'selected' : ''}>
+          ${escapeHTML(v.name)} — ${formatCurrencyCOP(v.price)}
+        </option>
+      `).join("");
+
+      elements.purchaseModelSelect.addEventListener("change", (e) => {
+        state.selectedVehicleForPurchase = e.target.value;
+        updatePurchaseModalView();
+      });
+    }
+
+    // Toggle de paquete con papeles
+    if (elements.includePapersCheck) {
+      elements.includePapersCheck.addEventListener("change", (e) => {
+        state.includePapersInPurchase = e.target.checked;
+        updatePurchaseModalView();
+      });
+    }
+
+    // Cerrar modal
+    if (elements.closePurchaseModalBtn) {
+      elements.closePurchaseModalBtn.addEventListener("click", closePurchaseModal);
+    }
+    if (elements.purchaseModal) {
+      elements.purchaseModal.addEventListener("click", (e) => {
+        if (e.target === elements.purchaseModal) {
+          closePurchaseModal();
+        }
+      });
+    }
+
+    // Formulario de confirmación de compra
+    if (elements.purchaseOrderForm) {
+      elements.purchaseOrderForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let valid = true;
+        const nameInp = elements.buyerName;
+        const docInp = elements.buyerIdDoc;
+        const phoneInp = elements.buyerPhone;
+        const emailInp = elements.buyerEmail;
+
+        if (!nameInp.value.trim() || nameInp.value.trim().length < 3) {
+          nameInp.classList.add("is-invalid");
+          valid = false;
+        } else {
+          nameInp.classList.remove("is-invalid");
+        }
+
+        if (!docInp.value.trim() || docInp.value.trim().length < 5) {
+          docInp.classList.add("is-invalid");
+          valid = false;
+        } else {
+          docInp.classList.remove("is-invalid");
+        }
+
+        const phoneDigits = phoneInp.value.replace(/\D/g, "");
+        if (phoneDigits.length < 7) {
+          phoneInp.classList.add("is-invalid");
+          valid = false;
+        } else {
+          phoneInp.classList.remove("is-invalid");
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailInp.value.trim())) {
+          emailInp.classList.add("is-invalid");
+          valid = false;
+        } else {
+          emailInp.classList.remove("is-invalid");
+        }
+
+        if (!valid) return;
+
+        const vehicle = state.vehicles.find(v => v.id === state.selectedVehicleForPurchase) || state.vehicles[0];
+        const includePapers = state.includePapersInPurchase;
+        const papersCost = includePapers ? state.papersPackageCost : 0;
+        const totalAmount = vehicle.price + papersCost;
+        const orderNum = "TSL-ORD-" + Math.floor(100000 + Math.random() * 900000);
+
+        if (elements.purchaseStatusAlert) {
+          elements.purchaseStatusAlert.style.display = "block";
+          elements.purchaseStatusAlert.innerHTML = `
+            <div style="background-color: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-radius: var(--radius-md); padding: var(--space-20);">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <h4 style="color: #10b981; font-size: 1.125rem;">¡Orden de Compra Generada!</h4>
+              </div>
+              <p style="font-size: 0.875rem; color: var(--color-silver-light); margin-bottom: 6px;">
+                Radicado comercial: <strong style="color: var(--color-white);">${orderNum}</strong> para <strong>${escapeHTML(nameInp.value)}</strong>.
+              </p>
+              <div style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 10px;">
+                Vehículo: <strong>${escapeHTML(vehicle.name)}</strong> (${formatCurrencyCOP(vehicle.price)})<br>
+                Paquete de Papeles Legales: <strong style="color: ${includePapers ? '#10b981' : 'var(--color-silver)'};">${includePapers ? 'Incluido (+$5.200.000 COP)' : 'No incluido (Precio base neto)'}</strong><br>
+                Liquidación Total: <strong style="color: var(--color-white); font-size: 1rem;">${formatCurrencyCOP(totalAmount)}</strong>
+              </div>
+              <p style="font-size: 0.75rem; color: var(--color-silver); border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 8px;">
+                <em>Aviso:</em> Reserva demostrativa registrada en la plataforma frontend. Puedes confirmar los detalles de entrega directamente con un asesor por WhatsApp.
+              </p>
+            </div>
+          `;
+          elements.purchaseStatusAlert.scrollIntoView({ behavior: "smooth" });
+        }
+
+        showToast(`Orden ${orderNum} registrada con éxito`, "success");
+      });
+    }
+
+    // Botón de Enviar Orden a WhatsApp
+    if (elements.sendOrderWhatsAppBtn) {
+      elements.sendOrderWhatsAppBtn.addEventListener("click", () => {
+        const vehicle = state.vehicles.find(v => v.id === state.selectedVehicleForPurchase) || state.vehicles[0];
+        const includePapers = state.includePapersInPurchase;
+        const papersCost = includePapers ? state.papersPackageCost : 0;
+        const totalAmount = vehicle.price + papersCost;
+        const buyerName = elements.buyerName && elements.buyerName.value ? elements.buyerName.value.trim() : (state.currentUser ? state.currentUser.name : "Cliente Interesado");
+        const buyerCity = elements.buyerCity ? elements.buyerCity.value : "Colombia";
+
+        const text = `Hola, deseo cotizar y comprar el siguiente vehículo:%0A%0A` +
+          `🚗 *Modelo:* Tesla ${vehicle.name} (${vehicle.version})%0A` +
+          `💰 *Precio Base:* ${formatCurrencyCOP(vehicle.price)}%0A` +
+          `📋 *Incluye Papeles al Día (Matrícula, SOAT, Impuesto):* ${includePapers ? 'SÍ (+ $5.200.000 COP)' : 'NO (Sin papeles)'}%0A` +
+          `💵 *VALOR TOTAL:* ${formatCurrencyCOP(totalAmount)}%0A` +
+          `👤 *Titular:* ${buyerName}%0A` +
+          `📍 *Ciudad de Entrega:* ${buyerCity}%0A%0A` +
+          `Quedo atento a las instrucciones para formalizar la reserva.`;
+
+        window.open(`https://wa.me/573105550199?text=${text}`, "_blank", "noopener,noreferrer");
+      });
+    }
+  }
+
+  // =========================================================================
+  // WIDGET FLOTANTE Y CHAT DE WHATSAPP
+  // =========================================================================
+
+  function initWhatsAppWidget() {
+    if (elements.whatsappBubbleBtn) {
+      elements.whatsappBubbleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (!elements.whatsappPopover) return;
+        const isVisible = elements.whatsappPopover.style.display === "block";
+        elements.whatsappPopover.style.display = isVisible ? "none" : "block";
+      });
+    }
+
+    if (elements.closeWaPopoverBtn && elements.whatsappPopover) {
+      elements.closeWaPopoverBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        elements.whatsappPopover.style.display = "none";
+      });
+    }
+
+    // Cerrar popover al hacer clic fuera
+    document.addEventListener("click", (e) => {
+      if (elements.whatsappFloatWidget && !elements.whatsappFloatWidget.contains(e.target)) {
+        if (elements.whatsappPopover) elements.whatsappPopover.style.display = "none";
+      }
+    });
+
+    // Chips de opciones rápidas dentro de WhatsApp
+    if (elements.whatsappPopover) {
+      elements.whatsappPopover.querySelectorAll(".wa-chip-btn").forEach(chip => {
+        chip.addEventListener("click", () => {
+          const msg = encodeURIComponent(chip.dataset.msg || "Hola, deseo información sobre los vehículos Tesla");
+          window.open(`https://wa.me/573105550199?text=${msg}`, "_blank", "noopener,noreferrer");
+          elements.whatsappPopover.style.display = "none";
+        });
+      });
+    }
+  }
+
+  // =========================================================================
   // INICIALIZACIÓN COMPLETA
   // =========================================================================
 
   function init() {
+    applyTheme(state.theme);
+    if (elements.themeToggleBtn) {
+      elements.themeToggleBtn.addEventListener("click", toggleTheme);
+    }
     updateFavoritesBadge();
     initNavigation();
+    initAuth();
+    initPurchaseModal();
+    initWhatsAppWidget();
     renderFeaturedVehicles();
     initCatalogEvents();
     renderCatalog();

@@ -37,17 +37,98 @@
           <li><a href="#financiacion" class="nav-link">Financiación</a></li>
           <li><a href="#comparador" class="nav-link">Comparador</a></li>
           <li><a href="#contacto" class="nav-link">Contacto</a></li>
+          <li><a href="#login" class="nav-link nav-link-login" id="navLoginLink">Cuenta</a></li>
         </ul>
       </nav>
 
       <!-- Acciones de Encabezado -->
       <div class="header-actions">
+        <!-- Menú de Usuario / Login -->
+        <div class="account-menu-container" id="accountMenuContainer">
+          <button type="button" class="btn-account-trigger" id="accountTriggerBtn" aria-label="Iniciar Sesión o ver perfil" aria-expanded="false">
+            <span class="user-avatar-icon" id="userAvatarIcon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            <span class="account-btn-text" id="accountBtnText">Iniciar Sesión</span>
+          </button>
+
+          <!-- Dropdown de Usuario Autenticado -->
+          <div class="user-dropdown-menu" id="userDropdownMenu" style="display: none;">
+            <div class="dropdown-user-header">
+              <div class="dropdown-user-name" id="dropdownUserName">Usuario</div>
+              <div class="dropdown-user-email" id="dropdownUserEmail">correo@ejemplo.com</div>
+              <span class="dropdown-user-badge">Cliente Premium</span>
+            </div>
+            <ul class="dropdown-list">
+              <li>
+                <a href="#catalogo" class="dropdown-item" id="dropdownGarageBtn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                  </svg>
+                  Catálogo y Reservas
+                </a>
+              </li>
+              <li>
+                <button type="button" class="dropdown-item" id="dropdownFavsBtn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                  Vehículos Guardados (<span id="dropdownFavCount">0</span>)
+                </button>
+              </li>
+              <li>
+                <a href="#contacto" class="dropdown-item" id="dropdownTestDriveBtn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  Agendar Prueba de Manejo
+                </a>
+              </li>
+              <li class="dropdown-divider"></li>
+              <li>
+                <button type="button" class="dropdown-item dropdown-logout-btn" id="logoutBtn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  Cerrar Sesión
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <!-- Botón de Favoritos con contador -->
         <button type="button" class="favorites-trigger" id="favTriggerBtn" aria-label="Ver vehículos favoritos guardados">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
           <span class="badge-count" id="favBadgeCount" style="display: none;">0</span>
+        </button>
+
+        <!-- Selector de Tema Claro / Oscuro en la esquina -->
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+          <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
         </button>
 
         <a href="#catalogo" class="btn btn-primary btn-sm">Explorar Vehículos</a>
@@ -694,6 +775,402 @@
       </div>
     </div>
   </div>
+
+  <!-- =========================================================================
+       MODAL DE INICIO DE SESIÓN Y REGISTRO
+       ========================================================================= -->
+  <div class="modal-backdrop" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="modalLoginTitle">
+    <div class="modal-dialog modal-dialog-auth">
+      <button type="button" class="modal-close-btn" id="closeLoginModalBtn" aria-label="Cerrar ventana de autenticación">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="auth-modal-content">
+        <div class="auth-header text-center">
+          <svg class="brand-icon-t" width="32" height="32" viewBox="0 0 342 35" fill="currentColor" style="margin: 0 auto 12px; color: var(--color-accent-red);">
+            <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+          </svg>
+          <h2 class="auth-title" id="modalLoginTitle">Portal de Clientes Tesla</h2>
+          <p class="auth-subtitle">Gestiona tus vehículos guardados, solicitudes y pruebas de manejo.</p>
+        </div>
+
+        <!-- Selector de pestañas -->
+        <div class="auth-tabs" role="tablist">
+          <button type="button" class="auth-tab active" id="tabLoginBtn" role="tab" aria-selected="true" aria-controls="loginTabPanel">Iniciar Sesión</button>
+          <button type="button" class="auth-tab" id="tabRegisterBtn" role="tab" aria-selected="false" aria-controls="registerTabPanel">Crear Cuenta</button>
+        </div>
+
+        <!-- Pestaña 1: Iniciar Sesión -->
+        <div class="auth-panel" id="loginTabPanel" role="tabpanel">
+          <form id="authLoginForm" novalidate>
+            <div class="form-group">
+              <label for="loginEmail" class="form-label">Correo Electrónico</label>
+              <input type="email" id="loginEmail" class="form-control" placeholder="nombre@ejemplo.com" required autocomplete="email">
+              <div class="field-error-msg">Por favor introduce un correo electrónico válido.</div>
+            </div>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+                <label for="loginPassword" class="form-label" style="margin-bottom: 0;">Contraseña</label>
+                <a href="#contacto" class="forgot-pwd-link" id="forgotPwdBtn">¿Olvidaste tu contraseña?</a>
+              </div>
+              <div class="password-input-wrap">
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                <button type="button" class="toggle-password-btn" id="toggleLoginPwdBtn" aria-label="Mostrar contraseña">
+                  <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+              <div class="field-error-msg">Por favor introduce tu contraseña (mínimo 6 caracteres).</div>
+            </div>
+
+            <div class="checkbox-group" style="margin-bottom: var(--space-20);">
+              <input type="checkbox" id="rememberMeCheck" checked>
+              <label for="rememberMeCheck" class="checkbox-label">Recordar mi sesión en este dispositivo</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 13px;">
+              Iniciar Sesión
+            </button>
+
+            <!-- Acceso Rápido Demostrativo -->
+            <div class="demo-auth-divider">
+              <span>O ACCESO INMEDIATO</span>
+            </div>
+
+            <button type="button" class="btn btn-secondary demo-quick-btn" id="demoQuickLoginBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <polyline points="17 11 19 13 23 9"></polyline>
+              </svg>
+              Ingresar como Cliente Demostrativo
+            </button>
+          </form>
+        </div>
+
+        <!-- Pestaña 2: Crear Cuenta -->
+        <div class="auth-panel" id="registerTabPanel" role="tabpanel" style="display: none;">
+          <form id="authRegisterForm" novalidate>
+            <div class="form-group">
+              <label for="regName" class="form-label">Nombre Completo</label>
+              <input type="text" id="regName" class="form-control" placeholder="Ej: Julian Ospina" required autocomplete="name">
+              <div class="field-error-msg">Ingresa tu nombre completo.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="regEmail" class="form-label">Correo Electrónico</label>
+              <input type="email" id="regEmail" class="form-control" placeholder="nombre@ejemplo.com" required autocomplete="email">
+              <div class="field-error-msg">Ingresa un correo electrónico válido.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="regPassword" class="form-label">Contraseña</label>
+              <div class="password-input-wrap">
+                <input type="password" id="regPassword" class="form-control" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+                <button type="button" class="toggle-password-btn" id="toggleRegPwdBtn" aria-label="Mostrar contraseña">
+                  <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+              <div class="field-error-msg">La contraseña debe tener al menos 6 caracteres.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="regPreferredModel" class="form-label">Modelo Preferido</label>
+              <select id="regPreferredModel" class="select-custom">
+                <option value="model-3">Model 3 (Sedán)</option>
+                <option value="model-y">Model Y (SUV)</option>
+                <option value="model-s">Model S Plaid (Hiperdeportivo)</option>
+                <option value="model-x">Model X (Falcon Wings)</option>
+                <option value="cybertruck">Cybertruck (Exoesqueleto)</option>
+              </select>
+            </div>
+
+            <div class="checkbox-group" style="margin-bottom: var(--space-20);">
+              <input type="checkbox" id="regTermsCheck" required checked>
+              <label for="regTermsCheck" class="checkbox-label">
+                Acepto los términos de servicio demostrativos y la política de privacidad.
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 13px;">
+              Crear Cuenta y Continuar
+            </button>
+          </form>
+        </div>
+
+        <div class="auth-footer-notice">
+          <em>Aviso de alcance:</em> La autenticación simula un entorno de cliente frontend para personalizar tu experiencia, guardar tu selección y sincronizar solicitudes.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       VENTANA DE VENTA Y RESERVA CON OPCIÓN DE PAPELES AL DÍA
+       ========================================================================= -->
+  <div class="modal-backdrop" id="purchaseModal" role="dialog" aria-modal="true" aria-labelledby="modalPurchaseTitle">
+    <div class="modal-dialog modal-dialog-purchase">
+      <button type="button" class="modal-close-btn" id="closePurchaseModalBtn" aria-label="Cerrar ventana de compra">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="purchase-modal-content">
+        <div class="purchase-header">
+          <span class="section-tag">Transacción Comercial</span>
+          <h2 class="purchase-title" id="modalPurchaseTitle">Adquisición y Reserva de Vehículo</h2>
+          <p class="purchase-subtitle">Personaliza tu orden de compra y selecciona si deseas recibir tu vehículo listo para rodar con papeles al día.</p>
+        </div>
+
+        <div class="purchase-body-grid">
+          <!-- Columna Izquierda: Vehículo Seleccionado y Opciones de Papeles -->
+          <div class="purchase-vehicle-col">
+            <div class="purchase-selected-card">
+              <div class="purchase-img-wrap">
+                <img id="purchaseVehicleImg" src="assets/images/model-3.jpg" alt="Tesla Seleccionado">
+              </div>
+              <div class="purchase-car-meta">
+                <div class="form-group" style="margin-bottom: 8px;">
+                  <label for="purchaseModelSelect" class="form-label" style="font-size: 0.75rem;">Cambiar Vehículo:</label>
+                  <select id="purchaseModelSelect" class="select-custom" style="padding: 8px 12px; font-size: 0.875rem;">
+                    <!-- Opciones inyectadas dinámicamente -->
+                  </select>
+                </div>
+                <div id="purchaseCarVersion" style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 6px;">Long Range Dual Motor AWD</div>
+                <div style="font-size: 0.75rem; color: var(--color-silver);">Precio Base del Automóvil:</div>
+                <div id="purchaseBasePrice" style="font-size: 1.25rem; font-weight: 700; color: var(--color-white);">$198.000.000 COP</div>
+              </div>
+            </div>
+
+            <!-- Caja Destacada: Opción con Papeles al Día -->
+            <div class="papers-package-box" id="papersPackageBox">
+              <div class="papers-box-header">
+                <label class="papers-toggle-label" for="includePapersCheck">
+                  <input type="checkbox" id="includePapersCheck" class="papers-toggle-input" checked>
+                  <span class="papers-toggle-custom"></span>
+                  <div class="papers-header-text">
+                    <span class="papers-box-title">Incluir Paquete con Papeles al Día</span>
+                    <span class="papers-box-badge">+ $5.200.000 COP</span>
+                  </div>
+                </label>
+              </div>
+
+              <p class="papers-box-desc">
+                Recibe tu Tesla totalmente legalizado y matriculado a tu nombre, sin filas en secretarías de tránsito ni trámites notariales.
+              </p>
+
+              <!-- Desglose de lo que incluye el paquete de papeles -->
+              <div class="papers-breakdown-list">
+                <div class="papers-item">
+                  <div class="papers-item-left">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Matrícula inicial oficial y juego de placas RUNT</span>
+                  </div>
+                  <span class="papers-item-price">$1.850.000 COP</span>
+                </div>
+
+                <div class="papers-item">
+                  <div class="papers-item-left">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>SOAT vigente por 12 meses (Seguro Obligatorio)</span>
+                  </div>
+                  <span class="papers-item-price">$1.150.000 COP</span>
+                </div>
+
+                <div class="papers-item">
+                  <div class="papers-item-left">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Impuesto Vehicular 2026 (Beneficio tarifa 1% VE)</span>
+                  </div>
+                  <span class="papers-item-price">$1.400.000 COP</span>
+                </div>
+
+                <div class="papers-item">
+                  <div class="papers-item-left">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Traspaso, peritaje legal y alistamiento en showroom</span>
+                  </div>
+                  <span class="papers-item-price">$800.000 COP</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Resumen Financiero Dinámico -->
+            <div class="purchase-pricing-summary">
+              <div class="summary-line">
+                <span class="summary-label">Subtotal Vehículo:</span>
+                <span class="summary-val" id="summarySubtotalPrice">$198.000.000 COP</span>
+              </div>
+              <div class="summary-line">
+                <span class="summary-label">Paquete de Papeles Legales:</span>
+                <span class="summary-val" id="summaryPapersCost" style="color: #10b981;">+ $5.200.000 COP</span>
+              </div>
+              <div class="summary-line total-line">
+                <span class="summary-total-label">TOTAL LIQUIDADO:</span>
+                <span class="summary-total-val" id="summaryTotalPrice">$203.200.000 COP</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Derecha: Formulario del Comprador -->
+          <div class="purchase-form-col">
+            <form id="purchaseOrderForm" novalidate>
+              <div class="form-group">
+                <label for="buyerName" class="form-label">Nombre del Titular <span class="req">*</span></label>
+                <input type="text" id="buyerName" class="form-control" placeholder="Nombre completo" required>
+                <div class="field-error-msg">Ingresa el nombre del titular.</div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="buyerIdDoc" class="form-label">Cédula / Documento <span class="req">*</span></label>
+                  <input type="text" id="buyerIdDoc" class="form-control" placeholder="C.C. / NIT" required>
+                  <div class="field-error-msg">Ingresa documento de identidad.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="buyerPhone" class="form-label">Teléfono Móvil (WhatsApp) <span class="req">*</span></label>
+                  <input type="tel" id="buyerPhone" class="form-control" placeholder="Ej: 310 123 4567" required>
+                  <div class="field-error-msg">Ingresa un número telefónico válido.</div>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="buyerEmail" class="form-label">Correo Electrónico <span class="req">*</span></label>
+                  <input type="email" id="buyerEmail" class="form-control" placeholder="nombre@correo.com" required>
+                  <div class="field-error-msg">Ingresa un correo electrónico válido.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="buyerCity" class="form-label">Ciudad de Matrícula</label>
+                  <select id="buyerCity" class="select-custom">
+                    <option value="Bogotá D.C.">Bogotá D.C.</option>
+                    <option value="Medellín">Medellín (Antioquia)</option>
+                    <option value="Cali">Cali (Valle)</option>
+                    <option value="Barranquilla">Barranquilla (Atlántico)</option>
+                    <option value="Bucaramanga">Bucaramanga</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="paymentMethod" class="form-label">Modalidad de Pago Deseada</label>
+                <select id="paymentMethod" class="select-custom">
+                  <option value="reserva-10">Reserva de Cupo con 10% de Anticipo</option>
+                  <option value="contado">Pago de Contado / Transferencia Bancaria</option>
+                  <option value="financiado">Plan de Financiación Bancaria Aprobado</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="buyerNotes" class="form-label">Comentarios o Indicaciones Especiales</label>
+                <textarea id="buyerNotes" class="form-control" rows="2" placeholder="Ej: Deseo entrega a domicilio, o requerimiento especial de placas..."></textarea>
+              </div>
+
+              <div class="purchase-actions-grid">
+                <button type="submit" class="btn btn-primary" id="confirmPurchaseBtn" style="padding: 14px;">
+                  Confirmar Solicitud de Compra
+                </button>
+                <button type="button" class="btn btn-secondary btn-whatsapp-order" id="sendOrderWhatsAppBtn" style="padding: 14px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+                  </svg>
+                  Enviar Pedido por WhatsApp
+                </button>
+              </div>
+
+              <div id="purchaseStatusAlert" style="display: none; margin-top: 16px;"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       BOTÓN FLOTANTE INTERACTIVO DE WHATSAPP
+       ========================================================================= -->
+  <aside class="whatsapp-float-widget" id="whatsappFloatWidget" aria-label="Contacto por WhatsApp">
+    <!-- Popover rápido de WhatsApp -->
+    <div class="whatsapp-chat-popover" id="whatsappPopover" style="display: none;">
+      <div class="wa-popover-header">
+        <div class="wa-avatar-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffffff">
+            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="wa-agent-name">Asesor Comercial Tesla</div>
+          <div class="wa-agent-status"><span class="wa-status-dot"></span> En línea ahora</div>
+        </div>
+        <button type="button" class="wa-close-popover" id="closeWaPopoverBtn" aria-label="Cerrar chat flotante">✕</button>
+      </div>
+
+      <div class="wa-popover-body">
+        <p class="wa-welcome-bubble">
+          ¡Hola! 👋 Bienvenido a Tesla Premium Showroom. ¿En qué vehículo estás interesado o deseas cotizar con papeles al día?
+        </p>
+        <div class="wa-quick-options">
+          <button type="button" class="wa-chip-btn" data-msg="Hola, deseo cotizar el Model 3 con papeles al día">
+            🚗 Cotizar Model 3 con papeles
+          </button>
+          <button type="button" class="wa-chip-btn" data-msg="Hola, quiero información sobre disponibilidad y entrega de Model Y">
+            ⚡ Disponibilidad Model Y
+          </button>
+          <button type="button" class="wa-chip-btn" data-msg="Hola, quiero agendar una prueba de manejo">
+            📅 Agendar Prueba de Manejo
+          </button>
+        </div>
+      </div>
+
+      <div class="wa-popover-footer">
+        <a href="https://wa.me/573105550199?text=Hola%2C%20deseo%20asesor%C3%ADa%20personalizada%20sobre%20los%20veh%C3%ADculos%20Tesla" target="_blank" rel="noopener noreferrer" class="btn btn-wa-direct" id="startWaChatBtn">
+          Iniciar Chat en WhatsApp
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Botón Flotante Circular -->
+    <button type="button" class="btn-whatsapp-bubble" id="whatsappBubbleBtn" aria-label="Chatear por WhatsApp">
+      <span class="wa-pulse-ring"></span>
+      <span class="wa-online-indicator"></span>
+      <svg class="wa-icon-svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm5.79 14.07c-.24.68-1.4 1.25-1.93 1.33-.51.08-1.18.11-1.91-.12-.44-.14-1.01-.33-1.74-.65-3.08-1.33-5.09-4.44-5.24-4.65-.15-.2-1.25-1.66-1.25-3.17 0-1.51.79-2.25 1.07-2.55.28-.3.62-.37.83-.37.21 0 .41.01.59.02.19.01.44-.07.69.53.25.6.86 2.1.94 2.25.07.16.12.35.02.55-.1.21-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.32-.13.63.17.31.78 1.28 1.67 2.07 1.15 1.02 2.11 1.34 2.42 1.49.3.15.48.13.66-.08.18-.21.77-.9 0.98-1.21.2-.31.41-.26.69-.15.28.1.1.77.89 2.08 1.05.3.15.51.23.59.36.08.13.08.75-.16 1.43z"/>
+      </svg>
+      <span class="wa-tooltip">Asesor en WhatsApp</span>
+    </button>
+  </aside>
 
   <!-- =========================================================================
        CONTENEDOR DE NOTIFICACIONES TOAST
