@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tesla Premium - Showroom y catálogo interactivo de vehículos eléctricos de lujo en Colombia. Explora Model 3, Model Y, Model S, Model X y Cybertruck con simulador de financiación y configurador visual.">
+  <meta name="theme-color" content="#101010">
+  <title>Tesla Premium | Showroom y Catálogo de Vehículos Eléctricos</title>
+
+  <!-- Enlace a la hoja de estilos principal -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Enlace accesible de salto al contenido -->
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- =========================================================================
+       ENCABEZADO Y NAVEGACIÓN PRINCIPAL (F-01)
+       ========================================================================= -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-container">
+      <a href="#inicio" class="brand-logo" aria-label="Tesla Premium Inicio">
+        <svg class="brand-icon-t" width="22" height="22" viewBox="0 0 342 35" fill="currentColor">
+          <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+        </svg>
+        <span>SHOWROOM</span>
+      </a>
+
+      <!-- Menú de Navegación -->
+      <nav aria-label="Navegación principal">
+        <ul class="main-nav-list" id="mainNavList">
+          <li><a href="#inicio" class="nav-link">Inicio</a></li>
+          <li><a href="#modelos" class="nav-link">Modelos</a></li>
+          <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+          <li><a href="#experiencia" class="nav-link">Experiencia</a></li>
+          <li><a href="#financiacion" class="nav-link">Financiación</a></li>
+          <li><a href="#comparador" class="nav-link">Comparador</a></li>
+          <li><a href="#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <!-- Acciones de Encabezado -->
+      <div class="header-actions">
+        <!-- Botón de Favoritos con contador -->
+        <button type="button" class="favorites-trigger" id="favTriggerBtn" aria-label="Ver vehículos favoritos guardados">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="badge-count" id="favBadgeCount" style="display: none;">0</span>
+        </button>
+
+        <a href="#catalogo" class="btn btn-primary btn-sm">Explorar Vehículos</a>
+
+        <!-- Botón menú móvil -->
+        <button type="button" class="mobile-toggle" id="mobileToggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       CONTENIDO PRINCIPAL
+       ========================================================================= -->
+  <main id="main-content">
+
+    <!-- 01. HERO CINEMATOGRÁFICO -->
+    <section class="hero-section" id="inicio" aria-labelledby="heroTitle">
+      <div class="hero-bg-container">
+        <img src="assets/images/hero.jpg" alt="Exhibición Tesla en Showroom Moderno" class="hero-bg-img">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="container hero-content">
+        <div class="hero-tag">
+          <span class="hero-tag-dot"></span>
+          Showroom Demostrativo Premium
+        </div>
+        <h1 class="hero-title" id="heroTitle">
+          El futuro del <span>rendimiento</span> eléctrico
+        </h1>
+        <p class="hero-subtitle">
+          Ingeniería de vanguardia, autonomía sin precedentes y aceleración pura. Explora el inventario de la marca automotriz que transformó la movilidad global.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#catalogo" class="btn btn-primary">Explorar Modelos</a>
+          <a href="#contacto" class="btn btn-secondary">Solicitar Prueba de Manejo</a>
+        </div>
+
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <div class="metric-value">2.1<span>s</span></div>
+            <div class="metric-label">0-100 km/h (Model S Plaid)</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">629<span>km</span></div>
+            <div class="metric-label">Autonomía máxima WLTP</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">0<span>g/km</span></div>
+            <div class="metric-label">Emisiones directas de CO₂</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02. MODELOS DESTACADOS (F-02) -->
+    <section class="section-featured" id="modelos" aria-labelledby="featuredHeading">
+      <div class="container">
+        <div class="text-center">
+          <span class="section-tag">Gama Seleccionada</span>
+          <h2 class="section-title" id="featuredHeading">Modelos Destacados</h2>
+          <p class="section-subtitle center-block">
+            Vehículos icónicos listos para demostración. Elige entre sedanes de alto rendimiento, SUVs familiares de lujo o la robustez geométrica de Cybertruck.
+          </p>
+        </div>
+
+        <div class="featured-grid" id="featuredGrid">
+          <!-- Renderizado dinámico desde js/data.js vía app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 03. CATÁLOGO COMPLETO, FILTROS Y BÚSQUEDA (F-02, F-03, F-04) -->
+    <section class="section-catalog" id="catalogo" aria-labelledby="catalogHeading">
+      <div class="container">
+        <div class="text-center">
+          <span class="section-tag">Inventario Comercial</span>
+          <h2 class="section-title" id="catalogHeading">Catálogo de Vehículos</h2>
+          <p class="section-subtitle center-block">
+            Filtra por categoría, busca por nombre o especificación técnica, y personaliza tu configuración orientativa.
+          </p>
+        </div>
+
+        <!-- Barra de Controles y Filtros -->
+        <div class="catalog-controls">
+          <div class="controls-main-row">
+            <!-- Búsqueda reactiva -->
+            <div class="search-box">
+              <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="catalogSearchInput" class="search-input" placeholder="Buscar por modelo, versión o característica..." aria-label="Buscar vehículo">
+            </div>
+
+            <!-- Ordenación -->
+            <div>
+              <select id="catalogSortSelect" class="select-custom" aria-label="Ordenar vehículos">
+                <option value="featured">Ordenar: Destacados primero</option>
+                <option value="price-asc">Precio: Menor a Mayor</option>
+                <option value="price-desc">Precio: Mayor a Menor</option>
+                <option value="range-desc">Autonomía: Mayor primero</option>
+                <option value="accel-asc">Aceleración: Más rápido (0-100)</option>
+              </select>
+            </div>
+
+            <!-- Contador de resultados -->
+            <div class="catalog-status" style="text-align: right;">
+              Mostrando <span id="catalogResultsCount">0</span> modelos
+            </div>
+          </div>
+
+          <!-- Filtro por categoría en Pills -->
+          <div class="controls-filter-row">
+            <div class="category-pills" id="categoryPillsContainer">
+              <button type="button" class="pill-btn active" data-category="all">Todos los Vehículos</button>
+              <button type="button" class="pill-btn" data-category="Sedán">Sedanes</button>
+              <button type="button" class="pill-btn" data-category="SUV">SUVs</button>
+              <button type="button" class="pill-btn" data-category="Pickup">Pickups</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rejilla del Catálogo -->
+        <div class="catalog-grid" id="catalogGrid">
+          <!-- Renderizado dinámico desde app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 04. TECNOLOGÍA Y EXPERIENCIA TESLA -->
+    <section class="section-experience" id="experiencia" aria-labelledby="experienceHeading">
+      <div class="container">
+        <div class="text-center">
+          <span class="section-tag">Innovación y Vanguardia</span>
+          <h2 class="section-title" id="experienceHeading">La Experiencia Eléctrica</h2>
+          <p class="section-subtitle center-block">
+            Más que un automóvil: una plataforma digital integrada que redefine la seguridad, el entretenimiento y la eficiencia en ruta.
+          </p>
+        </div>
+
+        <!-- Banner Editorial Destacado -->
+        <div class="experience-hero-card">
+          <img src="assets/images/interior-tech.jpg" alt="Interior minimalista con pantalla táctil cinematográfica" class="experience-hero-bg">
+          <div class="experience-hero-overlay"></div>
+          <div class="experience-hero-text">
+            <span class="section-tag">Cabina Cinematográfica</span>
+            <h3 style="font-size: 2rem; margin-bottom: 12px;">Minimalismo Arquitectónico y Conectividad Total</h3>
+            <p style="color: var(--color-silver-light); font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">
+              Eliminamos los botones innecesarios para brindarte un entorno limpio. Controla la climatización invisible, navegación por satélite con tráfico en tiempo real y entretenimiento con sonido inmersivo desde una pantalla central de alta definición.
+            </p>
+            <a href="#contacto" class="btn btn-primary btn-sm">Agendar Sesión en Cabina</a>
+          </div>
+        </div>
+
+        <!-- Cuatro Pilares Tecnológicos -->
+        <div class="experience-grid">
+          <div class="experience-card">
+            <div class="experience-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="6" width="18" height="12" rx="2"></rect>
+                <line x1="23" y1="11" x2="23" y2="13"></line>
+                <line x1="6" y1="10" x2="6" y2="14"></line>
+                <line x1="10" y1="10" x2="10" y2="14"></line>
+              </svg>
+            </div>
+            <h4 class="experience-card-title">Autonomía y Carga Rápida</h4>
+            <div class="experience-card-sub">Sin límites en autopista</div>
+            <p class="experience-card-desc">
+              Hasta 629 km con una sola carga. Acceso a estaciones de carga rápida que recuperan hasta 300 km en solo 15 minutos mientras disfrutas un café.
+            </p>
+          </div>
+
+          <div class="experience-card">
+            <div class="experience-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <h4 class="experience-card-title">Seguridad de 5 Estrellas</h4>
+            <div class="experience-card-sub">Máxima calificación global</div>
+            <p class="experience-card-desc">
+              Centro de gravedad bajo por el paquete de baterías en el chasis, reduciendo drásticamente el riesgo de vuelco e impactos laterales.
+            </p>
+          </div>
+
+          <div class="experience-card">
+            <div class="experience-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </div>
+            <h4 class="experience-card-title">Piloto Automático y Visión</h4>
+            <div class="experience-card-sub">Redes neuronales en tiempo real</div>
+            <p class="experience-card-desc">
+              Ocho cámaras envolventes procesadas por hardware de IA que leen señales viales, peatones y cambios de carril con precisión milimétrica.
+            </p>
+          </div>
+
+          <div class="experience-card">
+            <div class="experience-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <h4 class="experience-card-title">Actualizaciones Inalámbricas</h4>
+            <div class="experience-card-sub">Tu vehículo mejora con el tiempo</div>
+            <p class="experience-card-desc">
+              Mediante conexión Wi-Fi o red celular, el software de tu vehículo recibe mejoras continuas de frenado, aceleración, mapas y entretenimiento.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05. SIMULADOR DE FINANCIACIÓN (F-10, SECCIÓN 7) -->
+    <section class="section-simulator" id="financiacion" aria-labelledby="simHeading">
+      <div class="container">
+        <div class="text-center">
+          <span class="section-tag">Calculadora Financiera</span>
+          <h2 class="section-title" id="simHeading">Simulador de Financiación</h2>
+          <p class="section-subtitle center-block">
+            Estima tu cuota fija mensual ingresando el valor del vehículo, tu cuota inicial y el plazo deseado. Cálculo realizado con la fórmula estándar de amortización francesa.
+          </p>
+        </div>
+
+        <div class="simulator-layout">
+          <!-- Panel de Parámetros -->
+          <div class="simulator-panel">
+            <div class="sim-field">
+              <label for="simVehicleSelect" class="sim-label">Modelo a Financiar</label>
+              <select id="simVehicleSelect" class="select-custom" style="margin-top: 8px;">
+                <!-- Rellenado dinámico desde app.js -->
+              </select>
+            </div>
+
+            <div class="sim-field">
+              <label for="simPriceInput" class="sim-label">Precio del Vehículo (COP)</label>
+              <input type="number" id="simPriceInput" class="form-control" style="margin-top: 8px;" step="1000000" min="50000000">
+            </div>
+
+            <!-- Cuota Inicial -->
+            <div class="sim-field">
+              <div class="sim-label-row">
+                <span class="sim-label">Cuota Inicial</span>
+                <span class="sim-val-badge">
+                  <span id="simDownPercentLabel">20%</span> — <span id="simDownAmountLabel">$39.600.000 COP</span>
+                </span>
+              </div>
+              <input type="range" id="simDownPercentRange" class="range-input" min="10" max="80" step="5" value="20" aria-label="Porcentaje de cuota inicial">
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-silver);">
+                <span>10% (Mínimo sugerido)</span>
+                <span>80%</span>
+              </div>
+            </div>
+
+            <!-- Plazo en Meses -->
+            <div class="sim-field">
+              <div class="sim-label-row">
+                <span class="sim-label">Plazo de Financiación</span>
+              </div>
+              <div class="term-selector" id="simTermsContainer">
+                <button type="button" class="term-btn" data-term="12">12 m</button>
+                <button type="button" class="term-btn" data-term="24">24 m</button>
+                <button type="button" class="term-btn" data-term="36">36 m</button>
+                <button type="button" class="term-btn active" data-term="48">48 m</button>
+                <button type="button" class="term-btn" data-term="60">60 m</button>
+                <button type="button" class="term-btn" data-term="72">72 m</button>
+              </div>
+            </div>
+
+            <!-- Tasa de Interés Configurable -->
+            <div class="sim-field">
+              <div class="sim-label-row">
+                <span class="sim-label">Tasa de Interés Anual (E.A.)</span>
+                <span class="sim-val-badge" id="simInterestLabel">14.5% EA (1.13% m.v.)</span>
+              </div>
+              <input type="range" id="simInterestRange" class="range-input" min="0" max="28" step="0.5" value="14.5" aria-label="Tasa de interés anual">
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-silver);">
+                <span>0.0% (Promocional sin intereses)</span>
+                <span>28.0% (Crédito estándar)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta de Resultados -->
+          <div class="simulator-result-card">
+            <div class="result-main-box">
+              <div class="result-caption">Cuota Mensual Estimada</div>
+              <div class="result-amount" id="simMonthlyPayment">$0 COP</div>
+              <div class="result-freq">por mes (cuota fija calculada)</div>
+            </div>
+
+            <div class="result-breakdown">
+              <div class="breakdown-row">
+                <span class="breakdown-label">Capital a Financiar:</span>
+                <span class="breakdown-value" id="simFinancedAmount">$0 COP</span>
+              </div>
+              <div class="breakdown-row">
+                <span class="breakdown-label">Total Intereses Estimados:</span>
+                <span class="breakdown-value" id="simTotalInterest">$0 COP</span>
+              </div>
+              <div class="breakdown-row">
+                <span class="breakdown-label">Costo Total del Plan (Capital + Int):</span>
+                <span class="breakdown-value" id="simTotalCredit">$0 COP</span>
+              </div>
+            </div>
+
+            <div class="sim-disclaimer">
+              <strong>Nota técnica de alcance:</strong> Esta simulación tiene fines estrictamente informativos y orientativos. No constituye una aprobación crediticia ni una oferta financiera vinculante por parte de ninguna entidad bancaria.
+            </div>
+
+            <button type="button" class="btn btn-primary" id="simApplyBtn" style="width: 100%;">
+              Solicitar Cotización con este Plan
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06. COMPARADOR DE VEHÍCULOS (F-11 / P2) -->
+    <section class="section-compare" id="comparador" aria-labelledby="compareHeading">
+      <div class="container">
+        <div class="text-center">
+          <span class="section-tag">Análisis Lado a Lado</span>
+          <h2 class="section-title" id="compareHeading">Comparador de Modelos</h2>
+          <p class="section-subtitle center-block">
+            Contrasta especificaciones, velocidad, autonomía y capacidad entre dos vehículos para encontrar el modelo perfecto para tus necesidades.
+          </p>
+        </div>
+
+        <!-- Selectores de modelos a comparar -->
+        <div class="compare-selectors-bar">
+          <div>
+            <label for="compareSelectA" class="form-label">Modelo A:</label>
+            <select id="compareSelectA" class="select-custom" aria-label="Seleccionar Modelo A para comparar">
+              <!-- Rellenado dinámico desde app.js -->
+            </select>
+          </div>
+          <div>
+            <label for="compareSelectB" class="form-label">Modelo B:</label>
+            <select id="compareSelectB" class="select-custom" aria-label="Seleccionar Modelo B para comparar">
+              <!-- Rellenado dinámico desde app.js -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabla de Comparación Responsive -->
+        <div class="compare-table-container">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Especificación</th>
+                <th>Modelo A</th>
+                <th>Modelo B</th>
+              </tr>
+            </thead>
+            <tbody id="compareTableBody">
+              <!-- Filas generadas desde app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07. FORMULARIO DE CONVERSIÓN Y CONTACTO (F-06) -->
+    <section class="section-contact" id="contacto" aria-labelledby="contactHeading">
+      <div class="container">
+        <div class="text-center">
+          <span class="section-tag">Atención Comercial</span>
+          <h2 class="section-title" id="contactHeading">Agenda tu Experiencia de Manejo</h2>
+          <p class="section-subtitle center-block">
+            Siente la aceleración instantánea y el confort acústico de un vehículo Tesla. Diligencia tus datos para que un asesor comercial se comunique contigo.
+          </p>
+        </div>
+
+        <div class="contact-layout">
+          <!-- Información y Canales -->
+          <div class="contact-info-panel">
+            <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Showroom Demostrativo</h3>
+            <p style="color: var(--color-silver); font-size: 0.9375rem; line-height: 1.6;">
+              Visítanos para conocer de cerca nuestra flota en exhibición, probar la interfaz táctil y resolver todas tus dudas sobre autonomía y recarga en Colombia.
+            </p>
+
+            <div class="contact-channel-list">
+              <div class="channel-item">
+                <div class="channel-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+                <div>
+                  <div class="channel-label">Sede Principal</div>
+                  <div class="channel-val">Calle 85 # 11-53, Zona Rosa, Bogotá D.C.</div>
+                </div>
+              </div>
+
+              <div class="channel-item">
+                <div class="channel-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="channel-label">Línea Directa</div>
+                  <div class="channel-val">+57 (601) 800-TESLA / (310) 555-0199</div>
+                </div>
+              </div>
+
+              <div class="channel-item">
+                <div class="channel-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <div class="channel-label">Horario de Atención</div>
+                  <div class="channel-val">Lunes a Sábado: 8:00 AM - 7:00 PM</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta del Formulario Comercial -->
+          <div class="contact-form-card">
+            <form id="commercialContactForm" novalidate>
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="clientName" class="form-label">Nombre Completo <span class="req">*</span></label>
+                  <input type="text" id="clientName" class="form-control" placeholder="Ej: Julian Ospina" required>
+                  <div class="field-error-msg">Por favor ingresa tu nombre completo (mínimo 3 caracteres).</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="clientPhone" class="form-label">Teléfono Móvil <span class="req">*</span></label>
+                  <input type="tel" id="clientPhone" class="form-control" placeholder="Ej: 310 123 4567" required>
+                  <div class="field-error-msg">Ingresa un número telefónico válido (mínimo 7 dígitos).</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="clientEmail" class="form-label">Correo Electrónico <span class="req">*</span></label>
+                <input type="email" id="clientEmail" class="form-control" placeholder="ejemplo@correo.com" required>
+                <div class="field-error-msg">Por favor introduce una dirección de correo válida.</div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="formModelSelect" class="form-label">Modelo de Interés <span class="req">*</span></label>
+                  <select id="formModelSelect" class="form-control" required>
+                    <!-- Opciones inyectadas dinámicamente -->
+                  </select>
+                  <div class="field-error-msg">Selecciona un modelo del catálogo.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="requestTypeSelect" class="form-label">Tipo de Solicitud</label>
+                  <select id="requestTypeSelect" class="form-control">
+                    <option value="test-drive">Solicitud de Prueba de Manejo</option>
+                    <option value="quote">Cotización Comercial de Compra</option>
+                    <option value="financing">Asesoría de Financiación</option>
+                    <option value="corporate">Flota Corporativa / Empresas</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="clientCity" class="form-label">Ciudad o Sede de Preferencia</label>
+                <select id="clientCity" class="form-control">
+                  <option value="bogota">Bogotá D.C. — Showroom Zona Rosa</option>
+                  <option value="medellin">Medellín — Centro Comercial El Poblado</option>
+                  <option value="cali">Cali — Showroom Ciudad Jardín</option>
+                  <option value="barranquilla">Barranquilla — Zona Norte</option>
+                  <option value="otra">Otra ciudad (Atención Virtual)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="clientComments" class="form-label">Comentarios o Preguntas Específicas</label>
+                <textarea id="clientComments" class="form-control" rows="3" placeholder="Indícanos si tienes preguntas sobre recarga doméstica, tiempos de entrega o disponibilidad..."></textarea>
+              </div>
+
+              <div class="checkbox-group">
+                <input type="checkbox" id="termsCheck" required checked>
+                <label for="termsCheck" class="checkbox-label">
+                  Autorizo de manera previa y voluntaria el tratamiento de mis datos de contacto con fines de asesoría comercial según la política de privacidad de la plataforma demostrativa.
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">
+                Enviar Solicitud Comercial
+              </button>
+            </form>
+
+            <!-- Alerta accesible para el resultado del formulario -->
+            <div id="formStatusAlert" aria-live="polite" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08. PREGUNTAS FRECUENTES (FAQS) -->
+    <section class="section-faqs" id="faqs" aria-labelledby="faqsHeading">
+      <div class="container">
+        <div class="text-center">
+          <span class="section-tag">Dudas y Consultas</span>
+          <h2 class="section-title" id="faqsHeading">Preguntas Frecuentes</h2>
+          <p class="section-subtitle center-block">
+            Respuestas a las inquietudes más comunes sobre autonomía, recarga y mantenimiento de vehículos eléctricos en Colombia.
+          </p>
+        </div>
+
+        <div class="faq-list" id="faqListContainer">
+          <!-- Acordeón inyectado dinámicamente desde js/data.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       PIE DE PÁGINA (FOOTER)
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="brand-logo">
+            <svg class="brand-icon-t" width="22" height="22" viewBox="0 0 342 35" fill="currentColor">
+              <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+            </svg>
+            <span>SHOWROOM</span>
+          </div>
+          <p class="footer-brand-desc">
+            Plataforma web demostrativa inspirada en la innovación y excelencia del diseño automotriz eléctrico de lujo.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Modelos</h4>
+          <ul class="footer-links">
+            <li><a href="#catalogo" class="footer-link">Model 3</a></li>
+            <li><a href="#catalogo" class="footer-link">Model Y</a></li>
+            <li><a href="#catalogo" class="footer-link">Model S Plaid</a></li>
+            <li><a href="#catalogo" class="footer-link">Model X</a></li>
+            <li><a href="#catalogo" class="footer-link">Cybertruck</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Herramientas</h4>
+          <ul class="footer-links">
+            <li><a href="#financiacion" class="footer-link">Simulador de Cuotas</a></li>
+            <li><a href="#comparador" class="footer-link">Comparador de Modelos</a></li>
+            <li><a href="#contacto" class="footer-link">Solicitar Prueba</a></li>
+            <li><a href="#faqs" class="footer-link">Preguntas Frecuentes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Contacto</h4>
+          <ul class="footer-links">
+            <li><span class="footer-link">Bogotá: Calle 85 # 11-53</span></li>
+            <li><span class="footer-link">Medellín: El Poblado</span></li>
+            <li><span class="footer-link">Tel: +57 (601) 800-TESLA</span></li>
+            <li><span class="footer-link">Lun - Sáb: 8am a 7pm</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="legal-notice">
+          <strong>Aviso Legal y Descargo de Responsabilidad:</strong> Este proyecto frontend es una plataforma técnica demostrativa desarrollada con HTML5, CSS3 y JavaScript nativo. Las marcas, logotipos y nombres comerciales de Tesla pertenecen a sus respectivos titulares. No existe vinculación comercial, afiliación oficial ni representación directa con Tesla, Inc. Los precios expresados en pesos colombianos (COP), especificaciones y disponibilidad tienen carácter ilustrativo.
+        </p>
+        <button type="button" class="back-to-top-btn" id="backToTopBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+          Volver arriba
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       MODAL DE DETALLE Y CONFIGURADOR DE VEHÍCULO (F-05, F-09)
+       ========================================================================= -->
+  <div class="modal-backdrop" id="vehicleDetailModal" role="dialog" aria-modal="true" aria-labelledby="modalVehicleTitle">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" id="closeModalBtn" aria-label="Cerrar ventana de detalle">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="modal-body" id="vehicleModalBody">
+        <!-- Contenido generado dinámicamente en app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       DRAWER LATERAL DE FAVORITOS (F-08)
+       ========================================================================= -->
+  <div class="drawer-overlay" id="favoritesDrawer" role="dialog" aria-modal="true" aria-label="Tus vehículos favoritos">
+    <div class="drawer-panel">
+      <div class="drawer-header">
+        <h3 class="drawer-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-red)" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          Vehículos Guardados
+        </h3>
+        <button type="button" class="btn-icon" id="closeFavDrawerBtn" aria-label="Cerrar favoritos">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-content" id="favDrawerList">
+        <!-- Lista de favoritos inyectada por app.js -->
+      </div>
+
+      <div class="drawer-footer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-16);">
+          <span style="font-size: 0.8125rem; color: var(--color-silver);">Valor Demostrativo Total:</span>
+          <span style="font-size: 1.125rem; font-weight: 700; color: var(--color-white);" id="favDrawerTotal">$0 COP</span>
+        </div>
+        <a href="#contacto" class="btn btn-primary" style="width: 100%;" onclick="document.getElementById('favoritesDrawer').classList.remove('is-open');">
+          Cotizar Selección Guardada
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       CONTENEDOR DE NOTIFICACIONES TOAST
+       ========================================================================= -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts JavaScript (Vanilla) -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

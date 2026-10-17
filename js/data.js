@@ -1,0 +1,237 @@
+/**
+ * Catálogo de datos - Tesla Premium Showroom
+ * Datos estructurados según especificación técnica frontend
+ * Nota: Precios y especificaciones son demostrativos y referenciales para Colombia (COP).
+ */
+
+const VEHICLES_DATA = [
+  {
+    id: "model-3",
+    name: "Model 3",
+    version: "Long Range Dual Motor AWD",
+    category: "Sedán",
+    badge: "Eficiencia y Agilidad",
+    tagline: "El sedán eléctrico redefinido para el máximo dinamismo y confort silencioso.",
+    description: "Diseñado para ofrecer la máxima eficiencia aerodinámica, una aceleración electrizante y un habitáculo refinado con vidrio acústico de 360 grados y pantalla de 15.4 pulgadas.",
+    price: 198000000,
+    currency: "COP",
+    rangeKm: 629,
+    accelerationSeconds: 4.4,
+    topSpeedKm: 201,
+    drive: "Tracción integral Dual Motor (AWD)",
+    powerHp: 498,
+    cargoVolume: "682 L",
+    chargingTime: "Hasta 282 km en 15 min",
+    image: "assets/images/model-3.jpg",
+    featured: true,
+    availability: "Entrega estimada: 30 a 45 días",
+    colors: [
+      { id: "pearl-white", name: "Blanco Perla Multicapa", hex: "#E8E9EB", filter: "none" },
+      { id: "solid-black", name: "Negro Sólido", hex: "#111112", filter: "brightness(0.7) contrast(1.2)" },
+      { id: "midnight-silver", name: "Gris Sigilo Metalizado", hex: "#4B4E53", filter: "hue-rotate(200deg) saturate(0.2) contrast(1.1)" },
+      { id: "ultra-red", name: "Rojo Ultra Multicapa", hex: "#A81017", filter: "sepia(0.5) hue-rotate(320deg) saturate(2)" },
+      { id: "deep-blue", name: "Azul Profundo Metalizado", hex: "#122A4E", filter: "sepia(0.6) hue-rotate(180deg) saturate(2)" }
+    ],
+    wheels: ["Ruedas Photon de 18\"", "Ruedas Nova de 19\""],
+    interior: ["Negro Premium con detalles de aluminio", "Blanco Premium con madera ecológica"],
+    highlights: [
+      "Autonomía WLTP líder en su categoría de hasta 629 km",
+      "Vidrios acústicos dobles para una cabina ultra silenciosa",
+      "Iluminación ambiental envolvente personalizable",
+      "Pantalla trasera de 8\" para pasajeros de la segunda fila",
+      "Suspensión optimizada para confort en carreteras exigentes"
+    ]
+  },
+  {
+    id: "model-y",
+    name: "Model Y",
+    version: "Performance All-Wheel Drive",
+    category: "SUV",
+    badge: "El Más Vendido del Mundo",
+    tagline: "La combinación perfecta entre versatilidad familiar, espacio y potencia superdeportiva.",
+    description: "Espacio para cinco ocupantes con capacidad de carga masiva, posición de manejo elevada y centro de gravedad ultrabajo para una seguridad activa de 5 estrellas en todas las pruebas.",
+    price: 235000000,
+    currency: "COP",
+    rangeKm: 533,
+    accelerationSeconds: 3.7,
+    topSpeedKm: 250,
+    drive: "Tracción integral Dual Motor (AWD)",
+    powerHp: 534,
+    cargoVolume: "2.158 L (asientos abatidos)",
+    chargingTime: "Hasta 261 km en 15 min",
+    image: "assets/images/model-y.jpg",
+    featured: true,
+    availability: "Disponibilidad inmediata para entrega",
+    colors: [
+      { id: "midnight-silver", name: "Gris Sigilo Metalizado", hex: "#4B4E53", filter: "none" },
+      { id: "pearl-white", name: "Blanco Perla Multicapa", hex: "#E8E9EB", filter: "brightness(1.2) contrast(0.9)" },
+      { id: "solid-black", name: "Negro Sólido", hex: "#111112", filter: "brightness(0.65) contrast(1.2)" },
+      { id: "ultra-red", name: "Rojo Cereza Profundo", hex: "#8A121A", filter: "sepia(0.5) hue-rotate(320deg) saturate(1.8)" },
+      { id: "deep-blue", name: "Azul Océano Metalizado", hex: "#122A4E", filter: "sepia(0.6) hue-rotate(185deg) saturate(2)" }
+    ],
+    wheels: ["Ruedas Uberturbine de 21\"", "Ruedas Gemini oscuras de 19\""],
+    interior: ["Negro Ébano Integral", "Blanco Glaciar Escandinavo"],
+    highlights: [
+      "Aceleración de superdeportivo: 0-100 km/h en tan solo 3.7 segundos",
+      "Portón trasero eléctrico con boca de carga a ras de piso",
+      "Frenos de alto rendimiento y alerón de fibra de carbono",
+      "Modo Campamento con climatización continua y vista panorámica",
+      "Compatibilidad total con portabicicletas y accesorios de aventura"
+    ]
+  },
+  {
+    id: "model-s",
+    name: "Model S",
+    version: "Plaid Tri-Motor",
+    category: "Sedán",
+    badge: "Hiperdeportivo de Lujo",
+    tagline: "1.020 caballos de fuerza. El automóvil de producción con mayor aceleración de la historia.",
+    description: "La cumbre del rendimiento automotriz. Tres motores independientes con rotores con funda de carbono que mantienen el par motor máximo sin desfallecer hasta los 322 km/h.",
+    price: 430000000,
+    currency: "COP",
+    rangeKm: 600,
+    accelerationSeconds: 2.1,
+    topSpeedKm: 322,
+    drive: "Tracción total Tri-Motor con vectorización de par",
+    powerHp: 1020,
+    cargoVolume: "793 L",
+    chargingTime: "Hasta 300 km en 15 min",
+    image: "assets/images/model-s.jpg",
+    featured: true,
+    availability: "Unidades limitadas bajo pedido exclusivo",
+    colors: [
+      { id: "solid-black", name: "Negro Obsidiana Plaid", hex: "#111112", filter: "none" },
+      { id: "pearl-white", name: "Blanco Perla Cerámico", hex: "#E8E9EB", filter: "brightness(1.3) contrast(0.9)" },
+      { id: "midnight-silver", name: "Plata Mercurio Metálico", hex: "#696E75", filter: "brightness(1.1) contrast(1.1)" },
+      { id: "ultra-red", name: "Ultra Rojo Corsa", hex: "#B30F17", filter: "sepia(0.55) hue-rotate(320deg) saturate(2.2)" },
+      { id: "deep-blue", name: "Azul Cobalto Nocturno", hex: "#0E2442", filter: "sepia(0.7) hue-rotate(190deg) saturate(2.2)" }
+    ],
+    wheels: ["Ruedas Arachnid de 21\"", "Ruedas Tempest de 19\""],
+    interior: ["Yoke deportivo o volante clásico con cuero vegano", "Acabados en fibra de carbono real"],
+    highlights: [
+      "De 0 a 100 km/h en 2.1 segundos (cuarto de milla en 9.23 s)",
+      "Pantalla cinematográfica inclinable de 17\" con 10 teraflops de potencia gráfica",
+      "Sistema de audio de 22 altavoces con cancelación activa de ruido vial",
+      "Suspensión neumática adaptativa predictiva con geolocalización",
+      "Climatización de tres zonas invisible y ventilación de asientos delanteros"
+    ]
+  },
+  {
+    id: "model-x",
+    name: "Model X",
+    version: "Plaid Falcon Wings",
+    category: "SUV",
+    badge: "SUV de Alta Gama",
+    tagline: "El SUV más potente del planeta con puertas traseras de ala de halcón inteligentes.",
+    description: "Ingeniería aeronáutica aplicada al automóvil familiar de ultra lujo. Puertas Falcon Wing con sensores ultrasónicos capaces de abrirse en los espacios de estacionamiento más reducidos.",
+    price: 475000000,
+    currency: "COP",
+    rangeKm: 543,
+    accelerationSeconds: 2.6,
+    topSpeedKm: 262,
+    drive: "Tracción total Tri-Motor (AWD)",
+    powerHp: 1020,
+    cargoVolume: "2.614 L",
+    chargingTime: "Hasta 270 km en 15 min",
+    image: "assets/images/model-x.jpg",
+    featured: false,
+    availability: "Bajo pedido especial - Entrega personalizada",
+    colors: [
+      { id: "pearl-white", name: "Blanco Perla Escultural", hex: "#E8E9EB", filter: "none" },
+      { id: "solid-black", name: "Negro Ébano Diamante", hex: "#111112", filter: "brightness(0.65) contrast(1.2)" },
+      { id: "midnight-silver", name: "Gris Titanio Mate", hex: "#555A61", filter: "hue-rotate(200deg) saturate(0.3)" },
+      { id: "ultra-red", name: "Rojo Rubí Metalizado", hex: "#9E0E15", filter: "sepia(0.5) hue-rotate(320deg) saturate(2)" },
+      { id: "deep-blue", name: "Azul Zafiro Estelar", hex: "#10233D", filter: "sepia(0.65) hue-rotate(185deg) saturate(2)" }
+    ],
+    wheels: ["Ruedas Turbine de 22\"", "Ruedas Cyberstream de 20\""],
+    interior: ["Configuración de 6 plazas individuales con capitanes", "Cuero vegano crema y ébano"],
+    highlights: [
+      "Puertas Falcon Wing con doble bisagra y radar de detección de obstáculos",
+      "Parabrisas panorámico integral con el cristal continuo más grande del mundo",
+      "Capacidad de remolque de hasta 2.250 kg homologada",
+      "Filtro de aire de grado médico HEPA con modo de defensa contra armas biológicas",
+      "Aceleración de 0 a 100 km/h en 2.6 segundos para 6 pasajeros"
+    ]
+  },
+  {
+    id: "cybertruck",
+    name: "Cybertruck",
+    version: "Cyberbeast Tri-Motor",
+    category: "Pickup",
+    badge: "Exoesqueleto de Acero",
+    tagline: "Construido para cualquier planeta. Exoesqueleto de acero inoxidable ultraduro laminado en frío.",
+    description: "Diseño futurista indestructible. Vidrio blindado Armor Glass, dirección electrónica por cable (Steer-by-Wire) en las cuatro ruedas y tomas de corriente bidireccionales integradas.",
+    price: 495000000,
+    currency: "COP",
+    rangeKm: 515,
+    accelerationSeconds: 2.7,
+    topSpeedKm: 209,
+    drive: "Tracción Cyberbeast Tri-Motor con bloqueo de diferencial",
+    powerHp: 845,
+    cargoVolume: "3.423 L (caja y compartimientos)",
+    chargingTime: "Hasta 206 km en 15 min",
+    image: "assets/images/cybertruck.jpg",
+    featured: true,
+    availability: "Reserva exclusiva para importación directa",
+    colors: [
+      { id: "raw-steel", name: "Acero Inoxidable Pulido Natural", hex: "#C0C3C8", filter: "none" },
+      { id: "matte-black", name: "Envoltura Negro Satinado Mate", hex: "#1A1A1B", filter: "brightness(0.6) contrast(1.3)" },
+      { id: "satin-stealth", name: "Gris Fantasma Blindado", hex: "#3A3D42", filter: "brightness(0.8) contrast(1.1)" }
+    ],
+    wheels: ["Ruedas Cyber de 20\" con cubiertas todoterreno"],
+    interior: ["Habitáculo táctico minimalista con pantalla táctil de 18.5\""],
+    highlights: [
+      "Exoesqueleto de acero inoxidable Serie 30X ultra resistente a abolladuras",
+      "Dirección electrónica en las cuatro ruedas con radio de giro menor al de un sedán",
+      "Toma de corriente a bordo PowerShare (120V y 240V) de hasta 11.5 kW",
+      "Cubierta motorizada de caja resistente al peso de una persona",
+      "Suspensión neumática activa con hasta 43 cm de despeje al suelo"
+    ]
+  }
+];
+
+const EXPERIENCE_PILLARS = [
+  {
+    icon: "battery",
+    title: "Autonomía y Carga",
+    subtitle: "Libertad total en ruta",
+    description: "Viaja con tranquilidad gracias a autonomías reales de hasta 629 km y compatibilidad con la red de recarga rápida que añade hasta 300 km en solo 15 minutos."
+  },
+  {
+    icon: "shield",
+    title: "Seguridad de 5 Estrellas",
+    subtitle: "Protección integral",
+    description: "Estructura de absorción de impactos reforzada, centro de gravedad ultrabajo por la posición de la batería y sistema de seguridad activa con evasión de obstáculos."
+  },
+  {
+    icon: "cpu",
+    title: "Piloto Automático y Visión",
+    subtitle: "Inteligencia artificial",
+    description: "Cámaras ópticas de 360 grados y procesadores de red neuronal capaces de detectar peatones, vehículos y ciclistas a cientos de metros en cualquier condición climática."
+  },
+  {
+    icon: "zap",
+    title: "Cero Emisiones, Máximo Par",
+    subtitle: "Respuesta instantánea",
+    description: "Par motor inmediato desde cero revoluciones. Sin cambios de marcha ni demoras, ofreciendo aceleraciones incomparables con el menor costo de mantenimiento por kilómetro."
+  }
+];
+
+const FAQS_DATA = [
+  {
+    q: "¿Cómo se recarga un vehículo eléctrico en Colombia?",
+    a: "Puedes recargarlo cómodamente en casa conectándolo a una toma de corriente convencional o instalando un Wall Connector de 220V que recarga la batería durante la noche. Además, Colombia cuenta con una red creciente de cargadores rápidos públicos en las principales ciudades y corredores viales."
+  },
+  {
+    q: "¿Qué mantenimiento requiere un vehículo eléctrico?",
+    a: "A diferencia de los vehículos de combustión, un vehículo eléctrico no requiere cambios de aceite, bujías, filtros de combustible ni correas de distribución. El mantenimiento se centra en rotación de neumáticos, líquido de frenos y filtros de cabina, reduciendo los costos de servicio hasta en un 70%."
+  },
+  {
+    q: "¿Los precios publicados en esta plataforma son finales?",
+    a: "Los precios visualizados en esta plataforma web son demostrativos y referenciales para el mercado colombiano en pesos (COP). Los valores finales pueden variar según la configuración seleccionada, aranceles de importación vigentes, tasa de cambio y costos de matrícula."
+  },
+  {
+    q: "¿Cómo funciona el simulador de financiación?",
+    a: "El simulador utiliza la fórmula financiera estándar de amortización fija mensual para calcular una cuota orientativa con base en el precio seleccionado, tu cuota inicial y el plazo deseado. Dicho cálculo tiene carácter netamente informativo y no constituye una aprobación formal de crédito."
+  }
+];
