@@ -219,20 +219,40 @@ const EXPERIENCE_PILLARS = [
 
 const FAQS_DATA = [
   {
+    q: "¿Cuánto cuesta un carro Tesla en Colombia en pesos (COP)?",
+    a: "Los precios referenciales demostrativos para Colombia inician desde $198.000.000 COP para el Model 3 Long Range AWD, $235.000.000 COP para el Model Y Performance AWD, $430.000.000 COP para el Model S Plaid Tri-Motor, $475.000.000 COP para el Model X Plaid y $495.000.000 COP para Cybertruck Cyberbeast."
+  },
+  {
+    q: "¿Cuál es la autonomía de los vehículos Tesla en Colombia?",
+    a: "La autonomía WLTP según el modelo es: Model 3 hasta 629 km, Model Y hasta 533 km, Model S Plaid hasta 600 km, Model X hasta 543 km y Cybertruck hasta 515 km con una sola carga completa."
+  },
+  {
     q: "¿Cómo se recarga un vehículo eléctrico en Colombia?",
-    a: "Puedes recargarlo cómodamente en casa conectándolo a una toma de corriente convencional o instalando un Wall Connector de 220V que recarga la batería durante la noche. Además, Colombia cuenta con una red creciente de cargadores rápidos públicos en las principales ciudades y corredores viales."
+    a: "Puedes recargarlo cómodamente en casa conectándolo a una toma de corriente convencional o instalando un Wall Connector de 220V que recarga la batería durante la noche (6 a 8 horas). Además, Colombia cuenta con una red creciente de cargadores rápidos públicos en las principales ciudades y corredores viales que recuperan hasta 300 km en 15 minutos."
+  },
+  {
+    q: "¿Los vehículos Tesla tienen pico y placa o pagan impuestos en Colombia?",
+    a: "En Colombia, según la Ley 1964 de 2019 de Movilidad Eléctrica, los vehículos 100% eléctricos están totalmente exentos de la restricción vehicular de Pico y Placa en Bogotá, Medellín, Cali y principales ciudades, además de contar con tarifas tributarias reducidas y aranceles preferenciales de importación."
+  },
+  {
+    q: "¿Cómo funciona la compra con el paquete de papeles legales al día?",
+    a: "La cotización formal permite incluir un paquete legal integral que comprende matrícula inicial ante el RUNT, SOAT vigente, impuesto departamental del año y trámite de placas metálicas para entrega inmediata listo para rodar."
   },
   {
     q: "¿Qué mantenimiento requiere un vehículo eléctrico?",
-    a: "A diferencia de los vehículos de combustión, un vehículo eléctrico no requiere cambios de aceite, bujías, filtros de combustible ni correas de distribución. El mantenimiento se centra en rotación de neumáticos, líquido de frenos y filtros de cabina, reduciendo los costos de servicio hasta en un 70%."
+    a: "A diferencia de los vehículos de combustión, un vehículo eléctrico no requiere cambios de aceite, bujías, filtros de combustible ni correas de distribución. El mantenimiento preventivo se centra en rotación de neumáticos, líquido de frenos y reemplazo de filtros de cabina HEPA, reduciendo los costos de servicio hasta en un 70%."
   },
   {
-    q: "¿Los precios publicados en esta plataforma son finales?",
-    a: "Los precios visualizados en esta plataforma web son demostrativos y referenciales para el mercado colombiano en pesos (COP). Los valores finales pueden variar según la configuración seleccionada, aranceles de importación vigentes, tasa de cambio y costos de matrícula."
-  },
-  {
-    q: "¿Cómo funciona el simulador de financiación?",
+    q: "¿Cómo funciona el simulador de financiación y cuotas mensuales?",
     a: "El simulador utiliza la fórmula financiera estándar de amortización fija mensual para calcular una cuota orientativa con base en el precio seleccionado, tu cuota inicial y el plazo deseado. Dicho cálculo tiene carácter netamente informativo y no constituye una aprobación formal de crédito."
+  },
+  {
+    q: "¿Qué beneficios tributarios y legales tienen los autos eléctricos en Colombia?",
+    a: "De acuerdo con la Ley 1964 de 2019 de Movilidad Eléctrica, los vehículos 100% eléctricos en Colombia gozan de un IVA reducido del 5% (frente al 19% estándar), impuesto vehicular anual con tope máximo del 1% del valor comercial, descuento del 10% en la tarifa del SOAT, exención arancelaria del 0% de importación (Decreto 1116) y exención permanente total de la restricción de Pico y Placa sin costo adicional."
+  },
+  {
+    q: "¿Dónde están ubicados los puntos de carga rápida Tesla y estaciones públicas en Colombia?",
+    a: "Colombia cuenta con una red de más de 200 puntos de recarga públicos y electrolineras activas en Bogotá (Zona Rosa, Usaquén, Chía), Medellín (El Poblado, Llanogrande), Cali y los principales corredores viales nacionales. Asimismo, cada vehículo incluye adaptador de carga Tipo 1 (J1772) y compatibilidad con cargadores Wall Connector residenciales de 220V para carga nocturna."
   }
 ];
 

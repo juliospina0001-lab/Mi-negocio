@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://teslacolombia-showroom.com/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es-CO" href="https://teslacolombia-showroom.com/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://teslacolombia-showroom.com/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://teslacolombia-showroom.com/"/>
+    <image:image>
+      <image:loc>https://teslacolombia-showroom.com/assets/images/hero.jpg</image:loc>
+      <image:title>Tesla Premium Showroom Colombia</image:title>
+      <image:caption>Exhibición y catálogo de vehículos eléctricos Tesla en Colombia</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://teslacolombia-showroom.com/assets/images/model-3.jpg</image:loc>
+      <image:title>Tesla Model 3 Long Range Dual Motor AWD</image:title>
+      <image:caption>Sedán eléctrico con 629 km de autonomía WLTP en Colombia</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://teslacolombia-showroom.com/assets/images/model-y.jpg</image:loc>
+      <image:title>Tesla Model Y Performance AWD</image:title>
+      <image:caption>SUV eléctrico deportivo con 533 km de autonomía en Colombia</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://teslacolombia-showroom.com/assets/images/model-s.jpg</image:loc>
+      <image:title>Tesla Model S Plaid Tri-Motor</image:title>
+      <image:caption>Hiperdeportivo de 1020 HP y 0-100 km/h en 2.1 segundos</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://teslacolombia-showroom.com/assets/images/model-x.jpg</image:loc>
+      <image:title>Tesla Model X Plaid Falcon Wings</image:title>
+      <image:caption>SUV de ultra lujo con puertas de ala de halcón inteligentes</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://teslacolombia-showroom.com/assets/images/cybertruck.jpg</image:loc>
+      <image:title>Tesla Cybertruck Cyberbeast</image:title>
+      <image:caption>Pickup con exoesqueleto de acero inoxidable serie 30X</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://teslacolombia-showroom.com/#modelos</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://teslacolombia-showroom.com/#tesla-360</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://teslacolombia-showroom.com/#catalogo</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://teslacolombia-showroom.com/#financiacion</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://teslacolombia-showroom.com/#comparador</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://teslacolombia-showroom.com/#faqs</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://teslacolombia-showroom.com/#contacto</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+</urlset>

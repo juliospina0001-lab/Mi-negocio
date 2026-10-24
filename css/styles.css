@@ -24,11 +24,21 @@
   /* Escala de espaciado basada en múltiplos de 8px */
   --space-8: 8px;
   --space-16: 16px;
+  --space-20: 20px;
   --space-24: 24px;
+  --space-28: 28px;
   --space-32: 32px;
   --space-48: 48px;
   --space-64: 64px;
   --space-96: 96px;
+
+  /* Tipografía Fluida (clamp) — Especificación UX Responsive */
+  --font-hero:  clamp(2rem, 5.5vw + 1rem, 4.25rem);        /* 32px → 68px */
+  --font-h1:    clamp(1.75rem, 3.5vw + 0.5rem, 3rem);       /* 28px → 48px */
+  --font-h2:    clamp(1.35rem, 2.5vw + 0.5rem, 2.25rem);    /* 22px → 36px */
+  --font-h3:    clamp(1.15rem, 1.8vw + 0.4rem, 1.65rem);    /* 18px → 26px */
+  --font-body:  clamp(0.9375rem, 0.4vw + 0.85rem, 1.0625rem); /* 15px → 17px */
+  --font-small: clamp(0.8125rem, 0.25vw + 0.75rem, 0.875rem); /* 13px → 14px */
 
   /* Tipografía y bordes */
   --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -46,6 +56,9 @@
   /* Dimensiones del layout */
   --header-height: 72px;
   --container-max-width: 1280px;
+
+  /* Off-canvas Drawer */
+  --drawer-width: min(85vw, 360px);
 }
 
 /* ==========================================================================
@@ -257,14 +270,14 @@ button {
   top: 15px;
 }
 
-/* Contenedor universal */
+/* Contenedor universal — Padding dinámico por breakpoint */
 .container {
   width: 100%;
   max-width: var(--container-max-width);
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--space-24);
-  padding-right: var(--space-24);
+  padding-left: clamp(16px, 4vw, 32px);
+  padding-right: clamp(16px, 4vw, 32px);
 }
 
 /* ==========================================================================
@@ -549,7 +562,7 @@ h4 {
 
 .hero-section {
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   padding-top: var(--header-height);
@@ -571,7 +584,7 @@ h4 {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center 35%;
   filter: brightness(0.65) contrast(1.1);
   transform: scale(1.02);
   transition: transform 10s ease;
@@ -2036,40 +2049,104 @@ h4 {
 
 @media (max-width: 768px) {
   :root {
-    --header-height: 64px;
+    --header-height: 60px;
   }
 
   .mobile-toggle {
-    display: block;
+    display: flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: rgba(255,255,255,0.04);
   }
 
+  /* === OFF-CANVAS SIDE DRAWER === */
   .main-nav-list {
     position: fixed;
-    top: var(--header-height);
-    left: 0;
-    width: 100%;
-    background-color: var(--color-obsidian);
-    border-bottom: 1px solid var(--color-border);
+    top: 0;
+    right: 0;
+    width: var(--drawer-width);
+    height: 100dvh;
+    background-color: var(--color-carbon-dark);
+    border-left: 1px solid var(--color-border);
     flex-direction: column;
-    padding: var(--space-24);
-    gap: var(--space-20);
-    transform: translateY(-150%);
-    opacity: 0;
-    transition: all var(--transition-smooth);
-    z-index: 999;
+    padding: calc(var(--header-height) + 24px) 20px max(24px, env(safe-area-inset-bottom));
+    gap: 4px;
+    transform: translateX(100%);
+    opacity: 1;
+    transition: transform var(--transition-smooth);
+    z-index: 1050;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.7);
   }
 
   .main-nav-list.is-open {
-    transform: translateY(0);
+    transform: translateX(0);
+  }
+
+  /* Nav items en el drawer */
+  .main-nav-list > li > .nav-link,
+  .main-nav-list > li > button.nav-link {
+    display: flex;
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 500;
+    min-height: 48px;
+    align-items: center;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .main-nav-list > li > .nav-link:hover {
+    background: rgba(255,255,255,0.07);
+    color: var(--color-white);
+  }
+
+  .main-nav-list > li > .nav-link.active {
+    background: rgba(232,33,39,0.12);
+    color: var(--color-white);
+  }
+
+  .main-nav-list > li > .nav-link::after {
+    display: none;
+  }
+
+  /* Overlay oscuro detrás del drawer */
+  .nav-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1040;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-smooth);
+  }
+
+  .nav-drawer-overlay.is-visible {
     opacity: 1;
+    pointer-events: all;
   }
 
   .header-actions .btn-primary {
     display: none;
   }
 
+  /* === HERO RESPONSIVE === */
+  .hero-section {
+    min-height: auto;
+    padding-top: calc(var(--header-height) + 40px);
+    padding-bottom: 60px;
+  }
+
   .hero-metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--space-16);
   }
 
@@ -2094,6 +2171,7 @@ h4 {
     gap: var(--space-32);
   }
 
+  /* === BOTTOM SHEET PATTERN para Modales === */
   .modal-backdrop {
     align-items: flex-end;
     padding: 0;
@@ -2106,19 +2184,25 @@ h4 {
     max-height: 92dvh;
     border-radius: 20px 20px 0 0;
     border-bottom: none;
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-    animation: slideUpBottomModal 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    animation: slideUpBottomModal 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Barra de arrastre (Drag Handle) */
+  .modal-dialog::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 99px;
+    margin: 12px auto 0;
+    flex-shrink: 0;
   }
 
   @keyframes slideUpBottomModal {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);   opacity: 1; }
   }
 
   .modal-body {
@@ -2128,65 +2212,211 @@ h4 {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Prevención de zoom forzado en iOS Safari */
+  /* === PREVENCIÓN ZOOM EN iOS Safari === */
   input,
   select,
   textarea,
   .form-control,
   .search-input {
     font-size: 16px !important;
+    min-height: 50px;
   }
 
-  /* Comparador de Vehículos Responsivo */
-  .compare-table-wrap {
+  select.select-custom {
+    font-size: 16px !important;
+  }
+
+  /* === COMPARADOR DE VEHÍCULOS RESPONSIVO === */
+  .compare-table-wrap,
+  .compare-table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     border-radius: var(--radius-md);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .compare-table-wrap::-webkit-scrollbar,
+  .compare-table-container::-webkit-scrollbar {
+    display: none;
   }
 
   .compare-table {
-    min-width: 560px;
+    min-width: 520px;
+  }
+
+  .compare-table th:first-child,
+  .compare-table td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: var(--color-surface-card);
+    z-index: 2;
+  }
+
+  /* === GARAJE 360 RESPONSIVE === */
+  .garage-view-panel,
+  #garageExteriorPanel,
+  #garageWheelsPanel,
+  #garageInteriorPanel {
+    aspect-ratio: 16 / 9;
+    max-height: 48vh;
+  }
+
+  .garage-preset-angles {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+
+  .garage-preset-angles::-webkit-scrollbar {
+    display: none;
+  }
+
+  .preset-angles-group {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .preset-angles-group > * {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  /* Selector de módulos del catálogo: scroll horizontal */
+  .filter-pills-bar,
+  .category-pills {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  .filter-pills-bar::-webkit-scrollbar,
+  .category-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-pill,
+  .pill-btn {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    min-height: 44px;
+    white-space: nowrap;
   }
 }
 
-/* Modo Ultra Compacto para Móviles Pequeños (iPhone SE, Galaxy A, etc.) */
-@media (max-width: 540px) {
+/* === MODO ULTRA COMPACTO (xs: 320–479px) — iPhone SE, Galaxy A, plegables === */
+@media (max-width: 479px) {
+  /* Ocultar texto del botón de cuenta — solo icono circular */
   .account-btn-text {
     display: none;
   }
 
   .btn-account-trigger {
-    padding: 8px;
-    width: 38px;
-    height: 38px;
+    padding: 0;
+    width: 40px;
+    height: 40px;
     justify-content: center;
     border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .account-status-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    margin-left: 0;
   }
 
   .header-actions {
-    gap: 8px;
+    gap: 6px;
   }
 
+  /* Touch targets mínimos 44px */
   .theme-toggle-btn,
   .favorites-trigger,
   .mobile-toggle {
-    width: 38px;
-    height: 38px;
+    min-width: 40px;
+    min-height: 40px;
+    width: 40px;
+    height: 40px;
   }
 
+  /* Hero CTAs en columna */
   .hero-actions {
     flex-direction: column;
     width: 100%;
+    gap: 12px;
   }
 
   .hero-actions .btn {
     width: 100%;
     text-align: center;
+    justify-content: center;
+    padding: 14px;
   }
 
+  /* Métricas del hero en 3 compactas */
+  .hero-metrics {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .metric-value {
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
+  }
+
+  /* Catálogo: 1 columna en ultra-compacto */
+  .catalog-grid,
   .vehicles-grid {
     grid-template-columns: 1fr;
     gap: var(--space-20);
+  }
+
+  /* Tarjetas de vehículo en móvil: imagen 16/10 */
+  .card-image-wrap img,
+  .vehicle-card-image img {
+    aspect-ratio: 16 / 10;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  /* Sección secciones con menos padding */
+  .section-featured,
+  .catalog-section,
+  .experience-section,
+  .simulator-section,
+  .contact-section {
+    padding-top: var(--space-64);
+    padding-bottom: var(--space-64);
+  }
+}
+
+/* === SM Breakpoint (480–599px): Móviles modernos === */
+@media (max-width: 599px) and (min-width: 480px) {
+  .catalog-grid,
+  .vehicles-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-24);
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
@@ -4424,6 +4654,31 @@ body.light-theme .g-metric-val {
 }
 
 @media (max-width: 768px) {
+  .garage-model-pills,
+  .garage-view-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    max-width: 100%;
+  }
+
+  .garage-model-pills::-webkit-scrollbar,
+  .garage-view-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .garage-pill-btn,
+  .garage-tab-btn {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    min-height: 44px;
+    white-space: nowrap;
+  }
+
   .garage-controls-bar {
     flex-direction: column;
     align-items: stretch;
@@ -4434,8 +4689,26 @@ body.light-theme .g-metric-val {
   }
 
   .preset-angles-group {
-    flex-wrap: wrap;
-    justify-content: center;
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    max-width: 100%;
+  }
+
+  .preset-angles-group::-webkit-scrollbar {
+    display: none;
+  }
+
+  .btn-preset-angle {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    min-height: 40px;
+    white-space: nowrap;
   }
 
   .garage-bottom-bar {
@@ -4465,5 +4738,426 @@ body.light-theme .g-metric-val {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE SYSTEM UPGRADE — ESPECIFICACIÓN UX 2.0
+   Implementa: tipografía fluida, off-canvas, safe-area, touch 48px,
+   tablets MD/LG, utilidades de visibilidad, WhatsApp widget adaptativo
+   ========================================================================== */
+
+/* --- Tipografía Fluida Aplicada a Jerarquía Real --- */
+.hero-title {
+  font-size: var(--font-hero);
+}
+
+.section-title {
+  font-size: var(--font-h2);
+}
+
+h1 { font-size: var(--font-h1); }
+h2 { font-size: var(--font-h2); }
+h3 { font-size: var(--font-h3); }
+
+body {
+  font-size: var(--font-body);
+}
+
+/* --- Áreas de Toque Mínimas WCAG 2.5.5 (48×48px) --- */
+.touch-target-48 {
+  min-width: 48px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pseudo-elemento agrandador invisible para iconos pequeños */
+.btn-icon::before,
+.card-fav-btn::before,
+.mobile-toggle::before,
+.favorites-trigger::before,
+.theme-toggle-btn::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+}
+
+/* --- Clases Utilitarias Responsivas --- */
+.hide-on-mobile  { display: block; }
+.only-mobile     { display: none; }
+.hide-on-tablet  { display: block; }
+.only-tablet     { display: none; }
+
+@media (max-width: 768px) {
+  .hide-on-mobile { display: none !important; }
+  .only-mobile    { display: block !important; }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .hide-on-tablet { display: none !important; }
+  .only-tablet    { display: block !important; }
+}
+
+/* --- Breakpoint MD (600px – 899px): Tablets y phablets --- */
+@media (min-width: 600px) and (max-width: 899px) {
+  :root {
+    --header-height: 64px;
+  }
+
+  .catalog-grid,
+  .vehicles-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-24);
+  }
+
+  .hero-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .footer-top {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-section {
+    min-height: auto;
+    padding-top: calc(var(--header-height) + 48px);
+    padding-bottom: 80px;
+  }
+}
+
+/* --- Breakpoint LG (900px – 1279px): Tablets apaisados y laptops --- */
+@media (min-width: 900px) and (max-width: 1279px) {
+  .catalog-grid,
+  .vehicles-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-24);
+  }
+
+  .main-nav-list {
+    gap: clamp(10px, 1.2vw, 18px);
+  }
+
+  .nav-link {
+    font-size: 0.8125rem;
+  }
+}
+
+/* --- Breakpoint 2XL (1600px+): Monitores ultrapanorámicos y 4K --- */
+@media (min-width: 1600px) {
+  :root {
+    --container-max-width: 1440px;
+  }
+
+  .catalog-grid,
+  .vehicles-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* --- Safe Area Insets (iPhone notch, Android punch-hole) --- */
+.site-footer {
+  padding-bottom: max(var(--space-32), env(safe-area-inset-bottom));
+  padding-left: max(var(--space-24), env(safe-area-inset-left));
+  padding-right: max(var(--space-24), env(safe-area-inset-right));
+}
+
+/* WhatsApp widget adaptado a safe-area */
+.whatsapp-float,
+.whatsapp-btn,
+[class*="whatsapp"] {
+  bottom: max(20px, env(safe-area-inset-bottom));
+  right: max(16px, env(safe-area-inset-right));
+}
+
+/* --- Off-Canvas Drawer: Botones de conversión al pie --- */
+.drawer-footer-actions {
+  margin-top: auto;
+  padding-top: var(--space-20);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drawer-cta-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: #25D366;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  min-height: 48px;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.drawer-cta-whatsapp:hover {
+  background: #1ebe5a;
+  transform: translateY(-1px);
+}
+
+.drawer-cta-testdrive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(232,33,39,0.12);
+  border: 1px solid rgba(232,33,39,0.3);
+  color: #ff6b6b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  min-height: 48px;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.drawer-cta-testdrive:hover {
+  background: rgba(232,33,39,0.2);
+  border-color: var(--color-accent-red);
+  color: var(--color-white);
+}
+
+/* --- Micro-Interacciones en Botones (Feedback Visual Táctil) --- */
+.btn:active,
+.btn-primary:active,
+.btn-secondary:active {
+  transform: scale(0.97) !important;
+  transition: transform 0.08s ease !important;
+}
+
+.card-fav-btn:active,
+.btn-icon:active {
+  transform: scale(0.92) !important;
+  transition: transform 0.08s ease !important;
+}
+
+/* Animación latido para botón de favorito al guardarse */
+@keyframes heartBeat {
+  0%   { transform: scale(1); }
+  14%  { transform: scale(1.3); }
+  28%  { transform: scale(1); }
+  42%  { transform: scale(1.2); }
+  70%  { transform: scale(1); }
+}
+
+.card-fav-btn.heart-beat {
+  animation: heartBeat 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- Slider thumb agrandado para uso táctil en Garaje 360 --- */
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-white);
+  border: 2px solid var(--color-accent-red);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  cursor: grab;
+  transition: transform var(--transition-fast);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.15);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-white);
+  border: 2px solid var(--color-accent-red);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  cursor: grab;
+}
+
+/* --- Formularios Táctiles de Alta Usabilidad --- */
+.form-control,
+.search-input,
+select.select-custom,
+textarea {
+  min-height: 50px;
+  border-radius: var(--radius-md);
+}
+
+/* Color swatches de colores de vehículo */
+.color-swatch {
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  position: relative;
+}
+
+.color-swatch.active,
+.color-swatch:focus-visible {
+  border-color: var(--color-white);
+  outline: 2px solid var(--color-accent-red);
+  outline-offset: 2px;
+  transform: scale(1.1);
+}
+
+/* --- Scroll snap para pills horizontales en catálogo --- */
+.spec-pills-grid {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.spec-pills-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.pill-btn {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* --- Indicador visual de gesto en Garaje 360° --- */
+.swipe-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.85);
+  font-size: 0.75rem;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  pointer-events: none;
+  animation: fadeInOut 3s ease forwards;
+  z-index: 10;
+}
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* --- Drawer de navegación con pie de conversión (mobile) --- */
+@media (max-width: 768px) {
+  /* El drawer necesita espacio para los botones de conversión al fondo */
+  .main-nav-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Separador antes de los CTAs del drawer */
+  .mobile-only-nav-item {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border);
+    display: block;
+  }
+
+  /* Botón de cuenta en el drawer con área táctil completa */
+  .mobile-account-nav-btn {
+    width: 100%;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 13px 14px;
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    min-height: 48px;
+    transition: background var(--transition-fast);
+  }
+
+  .mobile-account-nav-btn:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* Microinteracción al abrir el drawer: animar items de la lista */
+  .main-nav-list.is-open > li {
+    animation: drawerItemSlideIn var(--transition-smooth) both;
+  }
+
+  .main-nav-list.is-open > li:nth-child(1) { animation-delay: 0.04s; }
+  .main-nav-list.is-open > li:nth-child(2) { animation-delay: 0.07s; }
+  .main-nav-list.is-open > li:nth-child(3) { animation-delay: 0.10s; }
+  .main-nav-list.is-open > li:nth-child(4) { animation-delay: 0.13s; }
+  .main-nav-list.is-open > li:nth-child(5) { animation-delay: 0.16s; }
+  .main-nav-list.is-open > li:nth-child(6) { animation-delay: 0.19s; }
+  .main-nav-list.is-open > li:nth-child(7) { animation-delay: 0.22s; }
+  .main-nav-list.is-open > li:nth-child(8) { animation-delay: 0.25s; }
+  .main-nav-list.is-open > li:nth-child(9) { animation-delay: 0.28s; }
+}
+
+@keyframes drawerItemSlideIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* --- Tablet Portrait (MD: 600-899px): modales aún centrados --- */
+@media (min-width: 600px) and (max-width: 899px) {
+  .modal-backdrop {
+    align-items: center;
+    padding: var(--space-20);
+  }
+
+  .modal-dialog {
+    margin: auto;
+    width: 90%;
+    max-width: 640px;
+    max-height: 90dvh;
+    border-radius: var(--radius-lg);
+    padding-bottom: var(--space-24);
+    animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .modal-dialog::before {
+    display: none;
+  }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* --- Drawer de favoritos: safe area en móvil --- */
+@media (max-width: 768px) {
+  .drawer-panel {
+    padding-bottom: max(var(--space-24), env(safe-area-inset-bottom));
+    padding-left: max(var(--space-20), env(safe-area-inset-left));
+    padding-right: max(var(--space-20), env(safe-area-inset-right));
   }
 }

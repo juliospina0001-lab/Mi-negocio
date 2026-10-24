@@ -1,0 +1,18 @@
+{
+  "name": "Tesla Premium Showroom Colombia",
+  "short_name": "Tesla Showroom",
+  "description": "Showroom y catálogo interactivo de vehículos eléctricos de lujo en Colombia.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#101010",
+  "theme_color": "#101010",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/hero.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

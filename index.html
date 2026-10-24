@@ -1,66 +1,497 @@
 <!DOCTYPE html>
-<html lang="es-CO">
+<html lang="es-CO" prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb#">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tesla Premium | Showroom y Catálogo de Vehículos Eléctricos en Colombia</title>
-  <meta name="description" content="Tesla Premium Showroom Colombia - Catálogo interactivo de vehículos eléctricos de lujo. Explora Model 3, Model Y, Model S, Model X y Cybertruck con Garaje 360°, simulador de cuotas de financiación y cotización comercial directa.">
-  <meta name="keywords" content="Tesla Colombia, autos electricos, Model 3, Model Y, Model S Plaid, Model X, Cybertruck, showroom automotriz, simulador de credito automotriz">
-  <meta name="author" content="Tesla Premium Showroom">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Tesla Premium Showroom Colombia | Catálogo, Precios COP y Financiación</title>
+  <meta name="description"
+    content="Showroom exclusivo de vehículos Tesla en Colombia. Catálogo interactivo de Model 3, Model Y, Model S Plaid, Model X y Cybertruck con Garaje 360°, simulador de cuotas en COP y cotización de compra con papeles legales al día.">
+  <meta name="keywords"
+    content="Tesla Colombia, autos electricos Colombia, comprar Tesla en Colombia, precio Tesla COP, Tesla Model 3 Colombia, Tesla Model Y Bogota, Model S Plaid, Model X, Cybertruck Colombia, showroom vehiculos electricos, financiacion autos electricos, movilidad sostenible Colombia, exencion pico y placa">
+  <meta name="author" content="Tesla Premium Showroom Colombia">
+  <meta name="publisher" content="Tesla Premium Showroom">
   <meta name="theme-color" content="#101010">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
 
-  <!-- Metadatos de Geolocalización (GEO) -->
-  <meta name="geo.region" content="CO">
+  <!-- =========================================================================
+       CABECERAS DE SEGURIDAD AVANZADA (HTTP Security Headers / Defense-in-Depth)
+       ========================================================================= -->
+  <!-- Content Security Policy (CSP): Restringe ejecución de scripts y ataques XSS -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;">
+  
+  <!-- Prevención de suplantación de tipo MIME (MIME-Sniffing) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  
+  <!-- Prevención contra ataques de Clickjacking -->
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  
+  <!-- Política estricta de Referrer para privacidad de usuario -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  
+  <!-- Permissions-Policy: Restricción de hardware y APIs sensibles del dispositivo -->
+  <meta http-equiv="Permissions-Policy"
+    content="camera=(), microphone=(), geolocation=(self), payment=(self), usb=(), vr=(), accelerometer=(), gyroscope=(), ambient-light-sensor=()">
+  
+  <!-- Aislamiento de origen para navegación segura contra Spectre / Side-Channel -->
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
+  <meta http-equiv="Cross-Origin-Resource-Policy" content="same-origin">
+
+  <!-- Canónicos y Alternativas de Idioma (SEO Internacional / Regional) -->
+  <link rel="canonical" href="https://teslacolombia-showroom.com/">
+  <link rel="alternate" hreflang="es-CO" href="https://teslacolombia-showroom.com/">
+  <link rel="alternate" hreflang="es" href="https://teslacolombia-showroom.com/">
+  <link rel="alternate" hreflang="x-default" href="https://teslacolombia-showroom.com/">
+
+  <!-- Metadatos de Geolocalización Exacta (GEO Local SEO Colombia) -->
+  <meta name="geo.region" content="CO-DC">
   <meta name="geo.placename" content="Bogotá, Colombia">
-  <meta name="geo.position" content="4.7110;-74.0721">
-  <meta name="ICBM" content="4.7110, -74.0721">
+  <meta name="geo.position" content="4.6682;-74.0539">
+  <meta name="ICBM" content="4.6682, -74.0539">
+  <meta name="coverage" content="Colombia, Bogotá, Medellín, Cali, Barranquilla, Bucaramanga, Cartagena, Eje Cafetero">
+  <meta name="distribution" content="global">
+  <meta name="target" content="all">
+  <meta name="rating" content="general">
+  <meta name="revisit-after" content="7 days">
+  <meta name="classification" content="Automotive, Electric Vehicles, Tesla Colombia, Concesionario y Showroom">
 
-  <!-- Metadatos Open Graph (Facebook, WhatsApp, LinkedIn) -->
+  <!-- =========================================================================
+       PROTOCOLO OPEN GRAPH COMPLETO (Facebook, WhatsApp, LinkedIn, Telegram, iMessage)
+       Especificación Oficial: https://ogp.me/
+       ========================================================================= -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Tesla Premium Showroom">
-  <meta property="og:title" content="Tesla Premium | Showroom y Catálogo de Vehículos Eléctricos en Colombia">
-  <meta property="og:description" content="Explora el showroom interactivo de vehículos Tesla en Colombia. Incluye Garaje 360°, simulador de cuotas en COP, catálogo con filtros y cotización de compra con papeles.">
-  <meta property="og:image" content="assets/images/hero.jpg">
-  <meta property="og:image:alt" content="Exhibición Tesla Premium Showroom">
+  <meta property="og:site_name" content="Tesla Premium Showroom Colombia">
+  <meta property="og:title" content="Tesla Premium Showroom Colombia | Catálogo, Precios COP y Financiación">
+  <meta property="og:description"
+    content="Showroom exclusivo de vehículos Tesla en Colombia: Garaje 360°, simulador financiero en COP, catálogo técnico de Model 3, Model Y, Model S, Model X, Cybertruck y entrega con papeles al día.">
+  <meta property="og:url" content="https://teslacolombia-showroom.com/">
+  
+  <!-- Imagen Principal Open Graph (URL Absoluta requerida por WhatsApp y Facebook) -->
+  <meta property="og:image" content="https://teslacolombia-showroom.com/assets/images/hero.jpg">
+  <meta property="og:image:secure_url" content="https://teslacolombia-showroom.com/assets/images/hero.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Showroom interactivo de vehículos eléctricos Tesla en Bogotá, Colombia">
+
+  <!-- Imágenes Secundarias para Previsualización Enriquecida -->
+  <meta property="og:image" content="https://teslacolombia-showroom.com/assets/images/model-3.jpg">
+  <meta property="og:image:secure_url" content="https://teslacolombia-showroom.com/assets/images/model-3.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Tesla Model 3 Long Range en Colombia">
+
+  <meta property="og:image" content="https://teslacolombia-showroom.com/assets/images/model-y.jpg">
+  <meta property="og:image:secure_url" content="https://teslacolombia-showroom.com/assets/images/model-y.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Tesla Model Y Performance en Colombia">
+
+  <!-- Idiomas y Actualización -->
   <meta property="og:locale" content="es_CO">
+  <meta property="og:locale:alternate" content="es_ES">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:updated_time" content="2026-10-24T15:00:00-05:00">
 
-  <!-- Metadatos Twitter Cards -->
+  <!-- Open Graph Business & Contact Data (Integración de Local Business en redes) -->
+  <meta property="business:contact_data:street_address" content="Calle 85 # 11-53">
+  <meta property="business:contact_data:locality" content="Bogotá">
+  <meta property="business:contact_data:region" content="Bogotá D.C.">
+  <meta property="business:contact_data:postal_code" content="110221">
+  <meta property="business:contact_data:country_name" content="Colombia">
+  <meta property="business:contact_data:email" content="contacto@teslapremium-colombia.com">
+  <meta property="business:contact_data:phone_number" content="+57-601-800-8375">
+  <meta property="business:contact_data:website" content="https://teslacolombia-showroom.com/">
+  <meta property="place:location:latitude" content="4.6682">
+  <meta property="place:location:longitude" content="-74.0539">
+
+  <!-- Metadatos Twitter Cards (X) con URL Absoluta -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tesla Premium | Showroom y Catálogo de Vehículos Eléctricos">
-  <meta name="twitter:description" content="Showroom interactivo de vehículos eléctricos de lujo en Colombia con garaje 360°, simulador financiero y configurador visual.">
-  <meta name="twitter:image" content="assets/images/hero.jpg">
-  <meta name="twitter:image:alt" content="Tesla Showroom Interactivo">
+  <meta name="twitter:site" content="@Tesla">
+  <meta name="twitter:creator" content="@Tesla">
+  <meta name="twitter:title" content="Tesla Premium Showroom Colombia | Vehículos Eléctricos de Lujo">
+  <meta name="twitter:description"
+    content="Showroom interactivo con garaje 360°, simulador de cuotas en COP, catálogo técnico y cotización con papeles al día.">
+  <meta name="twitter:image" content="https://teslacolombia-showroom.com/assets/images/hero.jpg">
+  <meta name="twitter:image:alt" content="Tesla Showroom Interactivo Colombia">
 
-  <!-- Datos Estructurados JSON-LD (Schema.org - AutoDealer & FAQPage para AEO/GEO) -->
+  <!-- Metadatos PWA y Dispositivos Móviles -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tesla Showroom">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- Datos Estructurados JSON-LD Unificados (Schema.org - AutoDealer, Car/Product, FAQPage, HowTo para SEO / GEO / AEO) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "AutoDealer",
-        "@id": "#autodealer",
+        "@type": ["AutoDealer", "LocalBusiness"],
+        "@id": "https://teslacolombia-showroom.com/#autodealer",
         "name": "Tesla Premium Showroom Colombia",
-        "description": "Showroom de exhibición y catálogo comercial de vehículos eléctricos de lujo en Colombia.",
+        "alternateName": "Tesla Showroom Colombia",
+        "description": "Showroom especializado en exhibición demostrativa, catálogo técnico comercial, garaje virtual 360° y simulación de financiación para vehículos eléctricos Tesla en Colombia.",
+        "url": "https://teslacolombia-showroom.com/",
+        "logo": "https://teslacolombia-showroom.com/assets/images/hero.jpg",
         "image": "assets/images/hero.jpg",
+        "hasMap": "https://maps.google.com/?q=Calle+85+11-53+Bogota+Colombia",
+        "telephone": "+57-601-800-8375",
+        "email": "contacto@teslapremium-colombia.com",
         "priceRange": "$$$$",
+        "currenciesAccepted": "COP, USD",
+        "paymentAccepted": "Transferencia Bancaria, Crédito Automotriz, Financiación, Tarjeta Débito/Crédito",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+57-601-800-8375",
+          "contactType": "customer service",
+          "areaServed": "CO",
+          "availableLanguage": ["Spanish", "English"]
+        },
         "address": {
           "@type": "PostalAddress",
-          "addressCountry": "CO",
-          "addressLocality": "Bogotá"
+          "streetAddress": "Calle 85 # 11-53",
+          "addressLocality": "Bogotá",
+          "addressRegion": "Bogotá D.C.",
+          "postalCode": "110221",
+          "addressCountry": "CO"
         },
-        "currenciesAccepted": "COP"
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 4.6682,
+          "longitude": -74.0539
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            "opens": "08:00",
+            "closes": "19:00"
+          }
+        ],
+        "areaServed": [
+          { "@type": "City", "name": "Bogotá" },
+          { "@type": "City", "name": "Medellín" },
+          { "@type": "City", "name": "Cali" },
+          { "@type": "City", "name": "Barranquilla" },
+          { "@type": "City", "name": "Bucaramanga" },
+          { "@type": "City", "name": "Cartagena" },
+          { "@type": "Country", "name": "Colombia" }
+        ],
+        "sameAs": [
+          "https://es.wikipedia.org/wiki/Tesla,_Inc.",
+          "https://www.wikidata.org/wiki/Q478214",
+          "https://www.tesla.com"
+        ],
+        "knowsAbout": [
+          "Vehículos Eléctricos",
+          "Tesla Model 3",
+          "Tesla Model Y",
+          "Tesla Model S Plaid",
+          "Tesla Model X",
+          "Tesla Cybertruck",
+          "Autonomía WLTP de Baterías",
+          "Red de Carga Rápida Supercharger",
+          "Ley 1964 de 2019 de Movilidad Eléctrica Colombia",
+          "Exención de Pico y Placa en Colombia",
+          "SOAT",
+          "RUNT"
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://teslacolombia-showroom.com/#breadcrumbs",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Inicio",
+            "item": "https://teslacolombia-showroom.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Modelos",
+            "item": "https://teslacolombia-showroom.com/#modelos"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Tesla 360°",
+            "item": "https://teslacolombia-showroom.com/#tesla-360"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Catálogo",
+            "item": "https://teslacolombia-showroom.com/#catalogo"
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "name": "Financiación",
+            "item": "https://teslacolombia-showroom.com/#financiacion"
+          },
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "name": "Comparador",
+            "item": "https://teslacolombia-showroom.com/#comparador"
+          },
+          {
+            "@type": "ListItem",
+            "position": 7,
+            "name": "Preguntas Frecuentes",
+            "item": "https://teslacolombia-showroom.com/#faqs"
+          },
+          {
+            "@type": "ListItem",
+            "position": 8,
+            "name": "Contacto y Showroom",
+            "item": "https://teslacolombia-showroom.com/#contacto"
+          }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://teslacolombia-showroom.com/#website",
+        "url": "https://teslacolombia-showroom.com/",
+        "name": "Tesla Premium Showroom Colombia",
+        "inLanguage": "es-CO",
+        "publisher": {
+          "@id": "https://teslacolombia-showroom.com/#autodealer"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://teslacolombia-showroom.com/#catalogo?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://teslacolombia-showroom.com/#inventario",
+        "name": "Catálogo de Vehículos Tesla en Colombia",
+        "numberOfItems": 5,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Model 3 Long Range AWD",
+              "image": "assets/images/model-3.jpg",
+              "description": "Sedán eléctrico de alta eficiencia con 629 km de autonomía WLTP, tracción integral Dual Motor y aceleración de 0 a 100 km/h en 4.4 segundos.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Long Range Dual Motor AWD",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 498,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "198000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Model Y Performance AWD",
+              "image": "assets/images/model-y.jpg",
+              "description": "SUV eléctrico familiar deportivo con 533 km de autonomía WLTP, 534 HP, aceleración 0-100 km/h en 3.7 segundos y 2.158 L de carga útil.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Performance All-Wheel Drive",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 534,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "235000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Model S Plaid Tri-Motor",
+              "image": "assets/images/model-s.jpg",
+              "description": "Hiperdeportivo de ultra lujo con 1.020 HP, aceleración récord de 0 a 100 km/h en 2.1 segundos, velocidad máxima de 322 km/h y 600 km de autonomía.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Plaid Tri-Motor AWD",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 1020,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "430000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Model X Plaid Falcon Wings",
+              "image": "assets/images/model-x.jpg",
+              "description": "El SUV más potente del mundo con 1.020 HP, puertas Falcon Wing inteligentes con sensores ultrasónicos, parabrisas panorámico y 543 km de autonomía.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Plaid Falcon Wings Tri-Motor",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 1020,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "475000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Cybertruck Cyberbeast",
+              "image": "assets/images/cybertruck.jpg",
+              "description": "Pickup futurista indestructible con exoesqueleto de acero inoxidable laminado en frío Serie 30X, dirección por cable en las 4 ruedas, 845 HP y 515 km de autonomía.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Cyberbeast Tri-Motor AWD",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 845,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "495000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          }
+        ]
       },
       {
         "@type": "FAQPage",
-        "@id": "#faq",
+        "@id": "https://teslacolombia-showroom.com/#faq",
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": [".faq-question", ".faq-answer", ".hero-subtitle"]
+        },
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "¿Cuál es la autonomía promedio de los vehículos Tesla en Colombia?",
+            "name": "¿Cuánto cuesta un carro Tesla en Colombia en pesos (COP)?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "La autonomía varía según el modelo: el Model 3 ofrece hasta 629 km WLTP, el Model Y hasta 533 km, el Model S Plaid hasta 600 km y el Model X hasta 543 km con una sola carga."
+              "text": "Los precios referenciales demostrativos para Colombia inician desde $198.000.000 COP para el Model 3 Long Range AWD, $235.000.000 COP para el Model Y Performance AWD, $430.000.000 COP para el Model S Plaid Tri-Motor, $475.000.000 COP para el Model X Plaid y $495.000.000 COP para Cybertruck Cyberbeast."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cuál es la autonomía de los vehículos Tesla en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "La autonomía WLTP según el modelo es: Model 3 hasta 629 km, Model Y hasta 533 km, Model S Plaid hasta 600 km, Model X hasta 543 km y Cybertruck hasta 515 km con una sola carga completa."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo se recarga un vehículo Tesla en Colombia y cuánto tarda?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Se puede recargar en casa conectándolo a una toma convencional o instalando un Wall Connector de 220V que recarga la batería durante la noche (6 a 8 horas). En estaciones de carga rápida públicas y Superchargers, recupera hasta 280-300 km de autonomía en solo 15 minutos."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Los vehículos Tesla tienen pico y placa o pagan impuestos en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "En Colombia, según la Ley 1964 de 2019 de Movilidad Eléctrica, los vehículos 100% eléctricos están totalmente exentos de la restricción vehicular de Pico y Placa en Bogotá, Medellín, Cali y principales ciudades, además de contar con tarifas tributarias y aranceles preferenciales de importación."
             }
           },
           {
@@ -68,7 +499,15 @@
             "name": "¿Cómo funciona la compra con el paquete de papeles legales al día?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "La cotización permite incluir un paquete legal integral que comprende matrícula inicial, SOAT vigente, impuesto departamental del año en curso y trámite de placas para entrega lista para rodar."
+              "text": "La cotización formal permite incluir un paquete legal integral que comprende matrícula inicial ante el RUNT, SOAT vigente, impuesto departamental y trámite de placas metálicas para entrega inmediata listo para rodar."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Qué mantenimiento requiere un vehículo eléctrico Tesla?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No requiere cambios de aceite, filtros de motor, bujías ni correas de distribución. El mantenimiento preventivo se limita a rotación e inspección de neumáticos, líquido de frenos y reemplazo del filtro de cabina HEPA, lo que reduce los costos de mantenimiento preventivo hasta en un 70% frente a motores a combustión."
             }
           },
           {
@@ -76,8 +515,56 @@
             "name": "¿El simulador de crédito compromete la aprobación financiera?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. El simulador de financiación en la plataforma es una herramienta exclusivamente demostrativa e informativa calculada con fórmulas financieras estándar fijas, sujeta a evaluación bancaria real."
+              "text": "No. El simulador de financiación es una herramienta matemática orientativa y demostrativa basada en la fórmula financiera de amortización mensual fija, sujeta a la posterior evaluación y aprobación crediticia por parte de las entidades bancarias colombianas aliadas."
             }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Qué beneficios tributarios y legales tienen los autos eléctricos en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "De acuerdo con la Ley 1964 de 2019 de Movilidad Eléctrica, los vehículos 100% eléctricos en Colombia gozan de un IVA reducido del 5% (frente al 19% estándar), impuesto vehicular anual con tope máximo del 1% del valor comercial, descuento del 10% en la tarifa del SOAT, exención arancelaria del 0% de importación (Decreto 1116) y exención permanente total de la restricción de Pico y Placa sin costo adicional."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Dónde están ubicados los puntos de carga rápida Tesla y estaciones públicas en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Colombia cuenta con una red de más de 200 puntos de recarga públicos y electrolineras activas en Bogotá (Zona Rosa, Usaquén, Chía), Medellín (El Poblado, Llanogrande), Cali y los principales corredores viales nacionales. Asimismo, cada vehículo incluye adaptador de carga Tipo 1 (J1772) y compatibilidad con cargadores Wall Connector residenciales de 220V para carga nocturna."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "@id": "https://teslacolombia-showroom.com/#como-comprar",
+        "name": "Cómo cotizar y adquirir un vehículo Tesla en Colombia con papeles al día",
+        "description": "Guía paso a paso para explorar, configurar, simular financiación y solicitar la cotización de un auto eléctrico Tesla en Colombia.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Explora el Catálogo y Modelos",
+            "text": "Navega por las secciones de Modelos y Catálogo interactivo para comparar autonomía, potencia en HP, aceleración y precios referenciales en pesos colombianos (COP)."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Personaliza en el Garaje 360°",
+            "text": "Accede al configurador 360° para elegir entre los diferentes colores multicapa oficiales, opciones de rines de aleación y acabados de tapicería interior."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Simula tu Cuota Mensual",
+            "text": "Usa el simulador financiero interactivo ingresando tu porcentaje de cuota inicial y plazo en meses para proyectar tus pagos mensuales."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Solicita tu Cotización Comercial con Papeles al Día",
+            "text": "Confirma tu pedido a través del portal de cliente o conéctate directamente por WhatsApp con un asesor para radicar tu matrícula, SOAT y placas oficiales."
           }
         ]
       }
@@ -88,6 +575,7 @@
   <!-- Enlace a la hoja de estilos principal -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
 
   <!-- Enlace accesible de salto al contenido -->
@@ -100,7 +588,8 @@
     <div class="container nav-container">
       <a href="#inicio" class="brand-logo" aria-label="Tesla Premium Inicio">
         <svg class="brand-icon-t" width="22" height="22" viewBox="0 0 342 35" fill="currentColor">
-          <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+          <path
+            d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z" />
         </svg>
         <span>SHOWROOM</span>
       </a>
@@ -127,6 +616,27 @@
               <span id="mobileAccountBtnText">Mi Cuenta</span>
             </button>
           </li>
+
+          <!-- CTAs de alta conversión al pie del drawer -->
+          <li class="mobile-only-nav-item" style="border-top: none; margin-top: auto; padding-top: 20px;">
+            <div class="drawer-footer-actions">
+              <a href="https://wa.me/573001234567?text=Hola!%20Quiero%20información%20sobre%20vehículos%20Tesla"
+                target="_blank" rel="noopener noreferrer" class="drawer-cta-whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg>
+                WhatsApp · Consultar Ahora
+              </a>
+              <a href="#contacto" class="drawer-cta-testdrive nav-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Agendar Prueba de Manejo
+              </a>
+            </div>
+          </li>
         </ul>
       </nav>
 
@@ -134,7 +644,8 @@
       <div class="header-actions">
         <!-- Pestaña y Menú de Cuenta Unificada (Completa) -->
         <div class="account-menu-container" id="accountMenuContainer">
-          <button type="button" class="btn-account-trigger" id="accountTriggerBtn" aria-label="Abrir Mi Cuenta Tesla" aria-expanded="false" title="Mi Cuenta Tesla">
+          <button type="button" class="btn-account-trigger" id="accountTriggerBtn" aria-label="Abrir Mi Cuenta Tesla"
+            aria-expanded="false" title="Mi Cuenta Tesla">
             <span class="user-avatar-icon" id="userAvatarIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -181,7 +692,9 @@
               <li>
                 <button type="button" class="dropdown-item" id="dropdownFavsBtn">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    <path
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                    </path>
                   </svg>
                   Vehículos Guardados (<span id="dropdownFavCount">0</span>)
                 </button>
@@ -211,16 +724,21 @@
         </div>
 
         <!-- Botón de Favoritos con contador -->
-        <button type="button" class="favorites-trigger" id="favTriggerBtn" aria-label="Ver vehículos favoritos guardados">
+        <button type="button" class="favorites-trigger" id="favTriggerBtn"
+          aria-label="Ver vehículos favoritos guardados">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+            </path>
           </svg>
           <span class="badge-count" id="favBadgeCount" style="display: none;">0</span>
         </button>
 
         <!-- Selector de Tema Claro / Oscuro en la esquina -->
-        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
-          <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn"
+          aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+          <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -231,7 +749,8 @@
             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
           </svg>
-          <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+          <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" style="display: none;">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
@@ -239,7 +758,8 @@
         <a href="#catalogo" class="btn btn-primary btn-sm">Explorar Vehículos</a>
 
         <!-- Botón menú móvil -->
-        <button type="button" class="mobile-toggle" id="mobileToggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+        <button type="button" class="mobile-toggle" id="mobileToggle" aria-label="Abrir menú de navegación"
+          aria-expanded="false">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -250,6 +770,9 @@
     </div>
   </header>
 
+  <!-- Off-canvas Nav Drawer Overlay -->
+  <div class="nav-drawer-overlay" id="navDrawerOverlay" aria-hidden="true"></div>
+
   <!-- =========================================================================
        CONTENIDO PRINCIPAL
        ========================================================================= -->
@@ -258,7 +781,7 @@
     <!-- 01. HERO CINEMATOGRÁFICO -->
     <section class="hero-section" id="inicio" aria-labelledby="heroTitle">
       <div class="hero-bg-container">
-        <img src="assets/images/hero.jpg" alt="Exhibición Tesla en Showroom Moderno" class="hero-bg-img">
+        <img src="assets/images/hero.jpg" alt="Vehículos eléctricos Tesla en exhibición en Showroom Premium de Bogotá, Colombia" class="hero-bg-img" fetchpriority="high" loading="eager">
         <div class="hero-overlay"></div>
       </div>
 
@@ -271,7 +794,8 @@
           El futuro del <span>rendimiento</span> eléctrico
         </h1>
         <p class="hero-subtitle">
-          Ingeniería de vanguardia, autonomía sin precedentes y aceleración pura. Explora el inventario de la marca automotriz que transformó la movilidad global.
+          Ingeniería de vanguardia, autonomía sin precedentes y aceleración pura. Explora el inventario de la marca
+          automotriz que transformó la movilidad global.
         </p>
 
         <div class="hero-actions">
@@ -303,7 +827,8 @@
           <span class="section-tag">Gama Seleccionada</span>
           <h2 class="section-title" id="featuredHeading">Modelos Destacados</h2>
           <p class="section-subtitle center-block">
-            Vehículos icónicos listos para demostración. Elige entre sedanes de alto rendimiento, SUVs familiares de lujo o la robustez geométrica de Cybertruck.
+            Vehículos icónicos listos para demostración. Elige entre sedanes de alto rendimiento, SUVs familiares de
+            lujo o la robustez geométrica de Cybertruck.
           </p>
         </div>
 
@@ -322,7 +847,8 @@
           <span class="section-tag">Cyber Garaje Tesla</span>
           <h2 class="section-title" id="garage360Heading">Tesla 360° · Garaje Interactivo de Exhibición</h2>
           <p class="section-subtitle center-block">
-            Elige cualquier vehículo Tesla, gíralo a 360° en la plataforma reflectiva del garaje, examina el diseño de las llantas de alto rendimiento y adéntrate en la cabina panorámica.
+            Elige cualquier vehículo Tesla, gíralo a 360° en la plataforma reflectiva del garaje, examina el diseño de
+            las llantas de alto rendimiento y adéntrate en la cabina panorámica.
           </p>
         </div>
 
@@ -385,7 +911,8 @@
             <div class="garage-wall-branding">
               <div class="garage-neon-logo">
                 <svg width="64" height="64" viewBox="0 0 342 35" fill="currentColor">
-                  <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+                  <path
+                    d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z" />
                 </svg>
               </div>
               <div class="garage-light-beams"></div>
@@ -395,7 +922,7 @@
             <div class="garage-turntable-wrapper" id="garageTurntable">
               <div class="turntable-light-ring"></div>
               <div class="turntable-inner-disc"></div>
-              
+
               <!-- Imagen del Vehículo con Rotación y Perspectiva 3D -->
               <div class="vehicle-360-container" id="vehicle360Container">
                 <img id="garage360CarImage" src="assets/images/model-3.jpg" alt="Tesla en Garaje 360" draggable="false">
@@ -423,12 +950,14 @@
               </div>
 
               <div class="garage-slider-wrap">
-                <input type="range" id="garageRotationSlider" min="0" max="360" value="0" step="1" aria-label="Control de giro 360 grados">
+                <input type="range" id="garageRotationSlider" min="0" max="360" value="0" step="1"
+                  aria-label="Control de giro 360 grados">
               </div>
 
               <div class="garage-action-buttons">
                 <button type="button" class="btn btn-secondary btn-sm" id="garageAutoRotateBtn">
-                  <svg id="autoRotateIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg id="autoRotateIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
                     <polygon points="5 3 19 12 5 21 5 3"></polygon>
                   </svg>
                   <span id="autoRotateText">Giro Automático</span>
@@ -469,7 +998,8 @@
                     </div>
                     <div class="wheel-center-cap">
                       <svg width="22" height="22" viewBox="0 0 342 35" fill="#ffffff">
-                        <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+                        <path
+                          d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z" />
                       </svg>
                     </div>
                     <div class="wheel-spokes-layer" id="wheelSpokesLayer"></div>
@@ -491,7 +1021,8 @@
                 <span class="section-tag" id="wheelCarBadge">Model 3 Performance</span>
                 <h3 class="wheel-name-title" id="wheelModelTitle">Ruedas Uberturbine de 21"</h3>
                 <p class="wheel-desc-text" id="wheelModelDesc">
-                  Forjadas en aleación de aluminio aeronáutico con aspas direccionales que extraen el aire caliente de los frenos y reducen la resistencia aerodinámica en autopista.
+                  Forjadas en aleación de aluminio aeronáutico con aspas direccionales que extraen el aire caliente de
+                  los frenos y reducen la resistencia aerodinámica en autopista.
                 </p>
 
                 <div class="wheel-selector-row" id="wheelOptionsRow">
@@ -524,14 +1055,16 @@
           <div class="garage-view-panel" id="garageInteriorPanel" style="display: none;">
             <div class="interior-viewer-container" id="interiorViewerContainer">
               <div class="interior-pan-canvas" id="interiorPanCanvas">
-                <img src="assets/images/interior-tech.jpg" alt="Interior Panorámico Tesla" class="interior-panoramic-img" id="interiorPanoramicImg" draggable="false">
+                <img src="assets/images/interior-tech.jpg" alt="Interior Panorámico Tesla"
+                  class="interior-panoramic-img" id="interiorPanoramicImg" draggable="false">
 
                 <!-- Hotspots Interactivos de Cabina -->
                 <div class="interior-hotspot" style="top: 55%; left: 38%;" data-spot="screen">
                   <button type="button" class="hotspot-pin" aria-label="Ver detalles de la pantalla táctil"></button>
                   <div class="hotspot-popup">
                     <strong>Pantalla Cinemática Central</strong>
-                    <p>Resolución 2200x1300 con 10 Teraflops de procesamiento. Control de mapas, climatización y juegos.</p>
+                    <p>Resolución 2200x1300 con 10 Teraflops de procesamiento. Control de mapas, climatización y juegos.
+                    </p>
                   </div>
                 </div>
 
@@ -563,8 +1096,10 @@
               <!-- Controles de Exploración Panorámica -->
               <div class="interior-pan-dock">
                 <span style="font-size: 0.8125rem; color: var(--color-silver);">Exploración Panorámica:</span>
-                <input type="range" id="interiorPanSlider" min="0" max="100" value="50" aria-label="Desplazar vista panorámica interior">
-                <span style="font-size: 0.75rem; color: var(--color-silver-light);">Pulsa los puntos brillantes para inspeccionar detalles</span>
+                <input type="range" id="interiorPanSlider" min="0" max="100" value="50"
+                  aria-label="Desplazar vista panorámica interior">
+                <span style="font-size: 0.75rem; color: var(--color-silver-light);">Pulsa los puntos brillantes para
+                  inspeccionar detalles</span>
               </div>
             </div>
           </div>
@@ -623,11 +1158,13 @@
           <div class="controls-main-row">
             <!-- Búsqueda reactiva -->
             <div class="search-box">
-              <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
-              <input type="text" id="catalogSearchInput" class="search-input" placeholder="Buscar por modelo, versión o característica..." aria-label="Buscar vehículo">
+              <input type="text" id="catalogSearchInput" class="search-input"
+                placeholder="Buscar por modelo, versión o característica..." aria-label="Buscar vehículo">
             </div>
 
             <!-- Ordenación -->
@@ -672,19 +1209,23 @@
           <span class="section-tag">Innovación y Vanguardia</span>
           <h2 class="section-title" id="experienceHeading">La Experiencia Eléctrica</h2>
           <p class="section-subtitle center-block">
-            Más que un automóvil: una plataforma digital integrada que redefine la seguridad, el entretenimiento y la eficiencia en ruta.
+            Más que un automóvil: una plataforma digital integrada que redefine la seguridad, el entretenimiento y la
+            eficiencia en ruta.
           </p>
         </div>
 
         <!-- Banner Editorial Destacado -->
         <div class="experience-hero-card">
-          <img src="assets/images/interior-tech.jpg" alt="Interior minimalista con pantalla táctil cinematográfica" class="experience-hero-bg">
+          <img src="assets/images/interior-tech.jpg" alt="Interior minimalista con pantalla táctil cinematográfica"
+            class="experience-hero-bg">
           <div class="experience-hero-overlay"></div>
           <div class="experience-hero-text">
             <span class="section-tag">Cabina Cinematográfica</span>
             <h3 style="font-size: 2rem; margin-bottom: 12px;">Minimalismo Arquitectónico y Conectividad Total</h3>
             <p style="color: var(--color-silver-light); font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">
-              Eliminamos los botones innecesarios para brindarte un entorno limpio. Controla la climatización invisible, navegación por satélite con tráfico en tiempo real y entretenimiento con sonido inmersivo desde una pantalla central de alta definición.
+              Eliminamos los botones innecesarios para brindarte un entorno limpio. Controla la climatización invisible,
+              navegación por satélite con tráfico en tiempo real y entretenimiento con sonido inmersivo desde una
+              pantalla central de alta definición.
             </p>
             <a href="#contacto" class="btn btn-primary btn-sm">Agendar Sesión en Cabina</a>
           </div>
@@ -704,7 +1245,8 @@
             <h4 class="experience-card-title">Autonomía y Carga Rápida</h4>
             <div class="experience-card-sub">Sin límites en autopista</div>
             <p class="experience-card-desc">
-              Hasta 629 km con una sola carga. Acceso a estaciones de carga rápida que recuperan hasta 300 km en solo 15 minutos mientras disfrutas un café.
+              Hasta 629 km con una sola carga. Acceso a estaciones de carga rápida que recuperan hasta 300 km en solo 15
+              minutos mientras disfrutas un café.
             </p>
           </div>
 
@@ -717,7 +1259,8 @@
             <h4 class="experience-card-title">Seguridad de 5 Estrellas</h4>
             <div class="experience-card-sub">Máxima calificación global</div>
             <p class="experience-card-desc">
-              Centro de gravedad bajo por el paquete de baterías en el chasis, reduciendo drásticamente el riesgo de vuelco e impactos laterales.
+              Centro de gravedad bajo por el paquete de baterías en el chasis, reduciendo drásticamente el riesgo de
+              vuelco e impactos laterales.
             </p>
           </div>
 
@@ -725,13 +1268,16 @@
             <div class="experience-icon-box">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
               </svg>
             </div>
             <h4 class="experience-card-title">Piloto Automático y Visión</h4>
             <div class="experience-card-sub">Redes neuronales en tiempo real</div>
             <p class="experience-card-desc">
-              Ocho cámaras envolventes procesadas por hardware de IA que leen señales viales, peatones y cambios de carril con precisión milimétrica.
+              Ocho cámaras envolventes procesadas por hardware de IA que leen señales viales, peatones y cambios de
+              carril con precisión milimétrica.
             </p>
           </div>
 
@@ -744,7 +1290,8 @@
             <h4 class="experience-card-title">Actualizaciones Inalámbricas</h4>
             <div class="experience-card-sub">Tu vehículo mejora con el tiempo</div>
             <p class="experience-card-desc">
-              Mediante conexión Wi-Fi o red celular, el software de tu vehículo recibe mejoras continuas de frenado, aceleración, mapas y entretenimiento.
+              Mediante conexión Wi-Fi o red celular, el software de tu vehículo recibe mejoras continuas de frenado,
+              aceleración, mapas y entretenimiento.
             </p>
           </div>
         </div>
@@ -758,7 +1305,8 @@
           <span class="section-tag">Calculadora Financiera</span>
           <h2 class="section-title" id="simHeading">Simulador de Financiación</h2>
           <p class="section-subtitle center-block">
-            Estima tu cuota fija mensual ingresando el valor del vehículo, tu cuota inicial y el plazo deseado. Cálculo realizado con la fórmula estándar de amortización francesa.
+            Estima tu cuota fija mensual ingresando el valor del vehículo, tu cuota inicial y el plazo deseado. Cálculo
+            realizado con la fórmula estándar de amortización francesa.
           </p>
         </div>
 
@@ -774,7 +1322,8 @@
 
             <div class="sim-field">
               <label for="simPriceInput" class="sim-label">Precio del Vehículo (COP)</label>
-              <input type="number" id="simPriceInput" class="form-control" style="margin-top: 8px;" step="1000000" min="50000000">
+              <input type="number" id="simPriceInput" class="form-control" style="margin-top: 8px;" step="1000000"
+                min="50000000">
             </div>
 
             <!-- Cuota Inicial -->
@@ -785,8 +1334,10 @@
                   <span id="simDownPercentLabel">20%</span> — <span id="simDownAmountLabel">$39.600.000 COP</span>
                 </span>
               </div>
-              <input type="range" id="simDownPercentRange" class="range-input" min="10" max="80" step="5" value="20" aria-label="Porcentaje de cuota inicial">
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-silver);">
+              <input type="range" id="simDownPercentRange" class="range-input" min="10" max="80" step="5" value="20"
+                aria-label="Porcentaje de cuota inicial">
+              <div
+                style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-silver);">
                 <span>10% (Mínimo sugerido)</span>
                 <span>80%</span>
               </div>
@@ -813,8 +1364,10 @@
                 <span class="sim-label">Tasa de Interés Anual (E.A.)</span>
                 <span class="sim-val-badge" id="simInterestLabel">14.5% EA (1.13% m.v.)</span>
               </div>
-              <input type="range" id="simInterestRange" class="range-input" min="0" max="28" step="0.5" value="14.5" aria-label="Tasa de interés anual">
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-silver);">
+              <input type="range" id="simInterestRange" class="range-input" min="0" max="28" step="0.5" value="14.5"
+                aria-label="Tasa de interés anual">
+              <div
+                style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-silver);">
                 <span>0.0% (Promocional sin intereses)</span>
                 <span>28.0% (Crédito estándar)</span>
               </div>
@@ -845,7 +1398,9 @@
             </div>
 
             <div class="sim-disclaimer">
-              <strong>Nota técnica de alcance:</strong> Esta simulación tiene fines estrictamente informativos y orientativos. No constituye una aprobación crediticia ni una oferta financiera vinculante por parte de ninguna entidad bancaria.
+              <strong>Nota técnica de alcance:</strong> Esta simulación tiene fines estrictamente informativos y
+              orientativos. No constituye una aprobación crediticia ni una oferta financiera vinculante por parte de
+              ninguna entidad bancaria.
             </div>
 
             <button type="button" class="btn btn-primary" id="simApplyBtn" style="width: 100%;">
@@ -863,7 +1418,8 @@
           <span class="section-tag">Análisis Lado a Lado</span>
           <h2 class="section-title" id="compareHeading">Comparador de Modelos</h2>
           <p class="section-subtitle center-block">
-            Contrasta especificaciones, velocidad, autonomía y capacidad entre dos vehículos para encontrar el modelo perfecto para tus necesidades.
+            Contrasta especificaciones, velocidad, autonomía y capacidad entre dos vehículos para encontrar el modelo
+            perfecto para tus necesidades.
           </p>
         </div>
 
@@ -908,7 +1464,8 @@
           <span class="section-tag">Atención Comercial</span>
           <h2 class="section-title" id="contactHeading">Agenda tu Experiencia de Manejo</h2>
           <p class="section-subtitle center-block">
-            Siente la aceleración instantánea y el confort acústico de un vehículo Tesla. Diligencia tus datos para que un asesor comercial se comunique contigo.
+            Siente la aceleración instantánea y el confort acústico de un vehículo Tesla. Diligencia tus datos para que
+            un asesor comercial se comunique contigo.
           </p>
         </div>
 
@@ -917,7 +1474,8 @@
           <div class="contact-info-panel">
             <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Showroom Demostrativo</h3>
             <p style="color: var(--color-silver); font-size: 0.9375rem; line-height: 1.6;">
-              Visítanos para conocer de cerca nuestra flota en exhibición, probar la interfaz táctil y resolver todas tus dudas sobre autonomía y recarga en Colombia.
+              Visítanos para conocer de cerca nuestra flota en exhibición, probar la interfaz táctil y resolver todas
+              tus dudas sobre autonomía y recarga en Colombia.
             </p>
 
             <div class="contact-channel-list">
@@ -937,7 +1495,9 @@
               <div class="channel-item">
                 <div class="channel-icon">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                    </path>
                   </svg>
                 </div>
                 <div>
@@ -964,6 +1524,10 @@
           <!-- Tarjeta del Formulario Comercial -->
           <div class="contact-form-card">
             <form id="commercialContactForm" novalidate>
+              <!-- Campo trampa Honeypot invisible para protección anti-bot / anti-spam -->
+              <div style="display:none !important; visibility:hidden !important; position:absolute; left:-9999px;" aria-hidden="true">
+                <input type="text" name="_hp_security_check" id="hpSecurityCheck" tabindex="-1" autocomplete="off">
+              </div>
               <div class="form-grid-2">
                 <div class="form-group">
                   <label for="clientName" class="form-label">Nombre Completo <span class="req">*</span></label>
@@ -1017,13 +1581,15 @@
 
               <div class="form-group">
                 <label for="clientComments" class="form-label">Comentarios o Preguntas Específicas</label>
-                <textarea id="clientComments" class="form-control" rows="3" placeholder="Indícanos si tienes preguntas sobre recarga doméstica, tiempos de entrega o disponibilidad..."></textarea>
+                <textarea id="clientComments" class="form-control" rows="3"
+                  placeholder="Indícanos si tienes preguntas sobre recarga doméstica, tiempos de entrega o disponibilidad..."></textarea>
               </div>
 
               <div class="checkbox-group">
                 <input type="checkbox" id="termsCheck" required checked>
                 <label for="termsCheck" class="checkbox-label">
-                  Autorizo de manera previa y voluntaria el tratamiento de mis datos de contacto con fines de asesoría comercial según la política de privacidad de la plataforma demostrativa.
+                  Autorizo de manera previa y voluntaria el tratamiento de mis datos de contacto con fines de asesoría
+                  comercial según la política de privacidad de la plataforma demostrativa.
                 </label>
               </div>
 
@@ -1046,7 +1612,8 @@
           <span class="section-tag">Dudas y Consultas</span>
           <h2 class="section-title" id="faqsHeading">Preguntas Frecuentes</h2>
           <p class="section-subtitle center-block">
-            Respuestas a las inquietudes más comunes sobre autonomía, recarga y mantenimiento de vehículos eléctricos en Colombia.
+            Respuestas a las inquietudes más comunes sobre autonomía, recarga y mantenimiento de vehículos eléctricos en
+            Colombia.
           </p>
         </div>
 
@@ -1067,7 +1634,8 @@
         <div>
           <div class="brand-logo">
             <svg class="brand-icon-t" width="22" height="22" viewBox="0 0 342 35" fill="currentColor">
-              <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+              <path
+                d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z" />
             </svg>
             <span>SHOWROOM</span>
           </div>
@@ -1094,6 +1662,7 @@
             <li><a href="#comparador" class="footer-link">Comparador de Modelos</a></li>
             <li><a href="#contacto" class="footer-link">Solicitar Prueba</a></li>
             <li><a href="#faqs" class="footer-link">Preguntas Frecuentes</a></li>
+            <li><a href="tests/index.html" class="footer-link" title="Suite de Calidad y Pruebas Unitarias">Suite de Pruebas (QA)</a></li>
           </ul>
         </div>
 
@@ -1110,7 +1679,11 @@
 
       <div class="footer-bottom">
         <p class="legal-notice">
-          <strong>Aviso Legal y Descargo de Responsabilidad:</strong> Este proyecto frontend es una plataforma técnica demostrativa desarrollada con HTML5, CSS3 y JavaScript nativo. Las marcas, logotipos y nombres comerciales de Tesla pertenecen a sus respectivos titulares. No existe vinculación comercial, afiliación oficial ni representación directa con Tesla, Inc. Los precios expresados en pesos colombianos (COP), especificaciones y disponibilidad tienen carácter ilustrativo.
+          <strong>Aviso Legal y Descargo de Responsabilidad:</strong> Este proyecto frontend es una plataforma técnica
+          demostrativa desarrollada con HTML5, CSS3 y JavaScript nativo. Las marcas, logotipos y nombres comerciales de
+          Tesla pertenecen a sus respectivos titulares. No existe vinculación comercial, afiliación oficial ni
+          representación directa con Tesla, Inc. Los precios expresados en pesos colombianos (COP), especificaciones y
+          disponibilidad tienen carácter ilustrativo.
         </p>
         <button type="button" class="back-to-top-btn" id="backToTopBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1125,7 +1698,8 @@
   <!-- =========================================================================
        MODAL DE DETALLE Y CONFIGURADOR DE VEHÍCULO (F-05, F-09)
        ========================================================================= -->
-  <div class="modal-backdrop" id="vehicleDetailModal" role="dialog" aria-modal="true" aria-labelledby="modalVehicleTitle">
+  <div class="modal-backdrop" id="vehicleDetailModal" role="dialog" aria-modal="true"
+    aria-labelledby="modalVehicleTitle">
     <div class="modal-dialog">
       <button type="button" class="modal-close-btn" id="closeModalBtn" aria-label="Cerrar ventana de detalle">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1147,7 +1721,9 @@
       <div class="drawer-header">
         <h3 class="drawer-title">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-red)" stroke-width="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+            </path>
           </svg>
           Vehículos Guardados
         </h3>
@@ -1164,11 +1740,14 @@
       </div>
 
       <div class="drawer-footer">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-16);">
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-16);">
           <span style="font-size: 0.8125rem; color: var(--color-silver);">Valor Demostrativo Total:</span>
-          <span style="font-size: 1.125rem; font-weight: 700; color: var(--color-white);" id="favDrawerTotal">$0 COP</span>
+          <span style="font-size: 1.125rem; font-weight: 700; color: var(--color-white);" id="favDrawerTotal">$0
+            COP</span>
         </div>
-        <a href="#contacto" class="btn btn-primary" style="width: 100%;" onclick="document.getElementById('favoritesDrawer').classList.remove('is-open');">
+        <a href="#contacto" class="btn btn-primary" style="width: 100%;"
+          onclick="document.getElementById('favoritesDrawer').classList.remove('is-open');">
           Cotizar Selección Guardada
         </a>
       </div>
@@ -1193,18 +1772,23 @@
       <!-- VISTA 1: USUARIO INVITADO (INICIAR SESIÓN / CREAR CUENTA) -->
       <div class="auth-modal-content" id="authGuestView">
         <div class="auth-header text-center">
-          <svg class="brand-icon-t" width="32" height="32" viewBox="0 0 342 35" fill="currentColor" style="margin: 0 auto 12px; color: var(--color-accent-red);">
-            <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+          <svg class="brand-icon-t" width="32" height="32" viewBox="0 0 342 35" fill="currentColor"
+            style="margin: 0 auto 12px; color: var(--color-accent-red);">
+            <path
+              d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z" />
           </svg>
           <h2 class="auth-title" id="modalLoginTitle">Portal de Clientes Tesla</h2>
-          <p class="auth-subtitle">Gestiona tus vehículos guardados, radicados con papeles al día y solicitudes en una sola cuenta.</p>
+          <p class="auth-subtitle">Gestiona tus vehículos guardados, radicados con papeles al día y solicitudes en una
+            sola cuenta.</p>
         </div>
 
         <!-- Selector de pestañas -->
         <div class="auth-tabs" role="tablist">
-          <button type="button" class="auth-tab active" id="tabLoginBtn" role="tab" aria-selected="true" aria-controls="loginTabPanel">Iniciar Sesión</button>
+          <button type="button" class="auth-tab active" id="tabLoginBtn" role="tab" aria-selected="true"
+            aria-controls="loginTabPanel">Iniciar Sesión</button>
           <span class="auth-tab-divider" aria-hidden="true">·</span>
-          <button type="button" class="auth-tab" id="tabRegisterBtn" role="tab" aria-selected="false" aria-controls="registerTabPanel">Crear Cuenta</button>
+          <button type="button" class="auth-tab" id="tabRegisterBtn" role="tab" aria-selected="false"
+            aria-controls="registerTabPanel">Crear Cuenta</button>
         </div>
 
         <!-- Pestaña 1: Iniciar Sesión -->
@@ -1212,24 +1796,32 @@
           <form id="authLoginForm" novalidate>
             <div class="form-group">
               <label for="loginEmail" class="form-label">Correo Electrónico</label>
-              <input type="email" id="loginEmail" class="form-control" placeholder="nombre@ejemplo.com" required autocomplete="email">
+              <input type="email" id="loginEmail" class="form-control" placeholder="nombre@ejemplo.com" required
+                autocomplete="email">
               <div class="field-error-msg">Por favor introduce un correo electrónico válido.</div>
             </div>
 
             <div class="form-group">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
                 <label for="loginPassword" class="form-label" style="margin-bottom: 0;">Contraseña</label>
                 <button type="button" class="forgot-pwd-btn-link" id="forgotPwdBtn">¿Olvidaste tu contraseña?</button>
               </div>
               <div class="password-input-wrap">
-                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
-                <button type="button" class="toggle-password-btn" id="toggleLoginPwdBtn" aria-label="Mostrar contraseña">
-                  <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required
+                  autocomplete="current-password">
+                <button type="button" class="toggle-password-btn" id="toggleLoginPwdBtn"
+                  aria-label="Mostrar contraseña">
+                  <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
-                  <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" style="display: none;">
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                    </path>
                     <line x1="1" y1="1" x2="23" y2="23"></line>
                   </svg>
                 </button>
@@ -1239,7 +1831,8 @@
 
             <!-- Caja desplegable de recuperación de contraseña -->
             <div class="forgot-pwd-box" id="forgotPwdBox" style="display: none;">
-              <p class="forgot-pwd-desc">Ingresa tu correo para recibir las instrucciones de restablecimiento referencial:</p>
+              <p class="forgot-pwd-desc">Ingresa tu correo para recibir las instrucciones de restablecimiento
+                referencial:</p>
               <div class="forgot-pwd-inputs">
                 <input type="email" id="recoveryEmailInput" class="form-control" placeholder="tu-correo@ejemplo.com">
                 <button type="button" class="btn btn-primary btn-sm" id="sendRecoveryBtn">Enviar Enlace</button>
@@ -1277,7 +1870,8 @@
             <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
               <div class="form-group">
                 <label for="regName" class="form-label">Nombre Completo</label>
-                <input type="text" id="regName" class="form-control" placeholder="Ej: Julian Ospina" required autocomplete="name">
+                <input type="text" id="regName" class="form-control" placeholder="Ej: Julian Ospina" required
+                  autocomplete="name">
                 <div class="field-error-msg">Ingresa tu nombre completo.</div>
               </div>
 
@@ -1289,21 +1883,27 @@
 
             <div class="form-group">
               <label for="regEmail" class="form-label">Correo Electrónico</label>
-              <input type="email" id="regEmail" class="form-control" placeholder="nombre@ejemplo.com" required autocomplete="email">
+              <input type="email" id="regEmail" class="form-control" placeholder="nombre@ejemplo.com" required
+                autocomplete="email">
               <div class="field-error-msg">Ingresa un correo electrónico válido.</div>
             </div>
 
             <div class="form-group">
               <label for="regPassword" class="form-label">Contraseña</label>
               <div class="password-input-wrap">
-                <input type="password" id="regPassword" class="form-control" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+                <input type="password" id="regPassword" class="form-control" placeholder="Mínimo 6 caracteres" required
+                  autocomplete="new-password">
                 <button type="button" class="toggle-password-btn" id="toggleRegPwdBtn" aria-label="Mostrar contraseña">
-                  <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
-                  <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" style="display: none;">
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                    </path>
                     <line x1="1" y1="1" x2="23" y2="23"></line>
                   </svg>
                 </button>
@@ -1362,7 +1962,9 @@
           </div>
           <div class="auth-perk-item">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+              </path>
             </svg>
             <span>Vehículos Guardados</span>
           </div>
@@ -1391,7 +1993,8 @@
                 <span id="dashUserEmail">julian.ospina@tesla-vip.co</span> • <span id="dashUserCity">Bogotá D.C.</span>
               </div>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm account-dash-logout-quick" id="dashQuickLogoutBtn" title="Cerrar Sesión">
+            <button type="button" class="btn btn-secondary btn-sm account-dash-logout-quick" id="dashQuickLogoutBtn"
+              title="Cerrar Sesión">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -1429,14 +2032,16 @@
 
         <!-- Pestañas de Navegación de Cuenta -->
         <div class="account-dash-tabs" role="tablist">
-          <button type="button" class="account-dash-tab active" id="tabDashProfileBtn" role="tab" aria-selected="true" data-tab="profile">
+          <button type="button" class="account-dash-tab active" id="tabDashProfileBtn" role="tab" aria-selected="true"
+            data-tab="profile">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
             Mis Datos
           </button>
-          <button type="button" class="account-dash-tab" id="tabDashOrdersBtn" role="tab" aria-selected="false" data-tab="orders">
+          <button type="button" class="account-dash-tab" id="tabDashOrdersBtn" role="tab" aria-selected="false"
+            data-tab="orders">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
@@ -1445,20 +2050,25 @@
             </svg>
             Mis Reservas (<span id="dashOrdersTabBadge">0</span>)
           </button>
-          <button type="button" class="account-dash-tab" id="tabDashFavsBtn" role="tab" aria-selected="false" data-tab="favs">
+          <button type="button" class="account-dash-tab" id="tabDashFavsBtn" role="tab" aria-selected="false"
+            data-tab="favs">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+              </path>
             </svg>
             Favoritos
           </button>
-          <button type="button" class="account-dash-tab" id="tabDashTestDriveBtn" role="tab" aria-selected="false" data-tab="testdrive">
+          <button type="button" class="account-dash-tab" id="tabDashTestDriveBtn" role="tab" aria-selected="false"
+            data-tab="testdrive">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
             Prueba de Manejo
           </button>
-          <button type="button" class="account-dash-tab" id="tabDashSecurityBtn" role="tab" aria-selected="false" data-tab="security">
+          <button type="button" class="account-dash-tab" id="tabDashSecurityBtn" role="tab" aria-selected="false"
+            data-tab="security">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -1479,7 +2089,8 @@
                 </div>
                 <div class="form-group">
                   <label for="dashEditEmail" class="form-label">Correo Electrónico (Principal)</label>
-                  <input type="email" id="dashEditEmail" class="form-control" readonly title="El correo identifica tu cuenta">
+                  <input type="email" id="dashEditEmail" class="form-control" readonly
+                    title="El correo identifica tu cuenta">
                 </div>
               </div>
 
@@ -1550,7 +2161,8 @@
                 <a href="#contacto" class="btn btn-primary btn-sm" onclick="closeLoginModal();">
                   Reprogramar o Solicitar Nueva Prueba
                 </a>
-                <a href="https://wa.me/573009123456?text=Hola,%20quisiera%20confirmar%20mi%20prueba%20de%20manejo%20Tesla" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+                <a href="https://wa.me/573009123456?text=Hola,%20quisiera%20confirmar%20mi%20prueba%20de%20manejo%20Tesla"
+                  target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
                   Confirmar por WhatsApp
                 </a>
               </div>
@@ -1562,7 +2174,8 @@
             <div class="dash-security-section">
               <h4 style="font-size: 1rem; color: var(--color-white); margin-bottom: 6px;">Sesión y Protección</h4>
               <p style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 16px;">
-                Tu sesión se encuentra activa en este navegador. Puedes actualizar tu clave demostrativa o desconectarte de forma segura en cualquier momento.
+                Tu sesión se encuentra activa en este navegador. Puedes actualizar tu clave demostrativa o desconectarte
+                de forma segura en cualquier momento.
               </p>
 
               <form id="dashChangePasswordForm" style="max-width: 420px; margin-bottom: 24px;">
@@ -1575,10 +2188,13 @@
 
               <div class="dash-danger-zone">
                 <div>
-                  <strong style="color: var(--color-accent-red); display: block; font-size: 0.875rem;">Cerrar Sesión</strong>
-                  <span style="font-size: 0.75rem; color: var(--color-silver);">Desconéctate de tu portal de cliente en este dispositivo.</span>
+                  <strong style="color: var(--color-accent-red); display: block; font-size: 0.875rem;">Cerrar
+                    Sesión</strong>
+                  <span style="font-size: 0.75rem; color: var(--color-silver);">Desconéctate de tu portal de cliente en
+                    este dispositivo.</span>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" id="dashLogoutFullBtn" style="color: var(--color-accent-red); border-color: rgba(232, 33, 39, 0.4);">
+                <button type="button" class="btn btn-secondary btn-sm" id="dashLogoutFullBtn"
+                  style="color: var(--color-accent-red); border-color: rgba(232, 33, 39, 0.4);">
                   Cerrar Sesión Segura
                 </button>
               </div>
@@ -1605,7 +2221,8 @@
         <div class="purchase-header">
           <span class="section-tag">Transacción Comercial</span>
           <h2 class="purchase-title" id="modalPurchaseTitle">Adquisición y Reserva de Vehículo</h2>
-          <p class="purchase-subtitle">Personaliza tu orden de compra y selecciona si deseas recibir tu vehículo listo para rodar con papeles al día.</p>
+          <p class="purchase-subtitle">Personaliza tu orden de compra y selecciona si deseas recibir tu vehículo listo
+            para rodar con papeles al día.</p>
         </div>
 
         <div class="purchase-body-grid">
@@ -1617,14 +2234,19 @@
               </div>
               <div class="purchase-car-meta">
                 <div class="form-group" style="margin-bottom: 8px;">
-                  <label for="purchaseModelSelect" class="form-label" style="font-size: 0.75rem;">Cambiar Vehículo:</label>
-                  <select id="purchaseModelSelect" class="select-custom" style="padding: 8px 12px; font-size: 0.875rem;">
+                  <label for="purchaseModelSelect" class="form-label" style="font-size: 0.75rem;">Cambiar
+                    Vehículo:</label>
+                  <select id="purchaseModelSelect" class="select-custom"
+                    style="padding: 8px 12px; font-size: 0.875rem;">
                     <!-- Opciones inyectadas dinámicamente -->
                   </select>
                 </div>
-                <div id="purchaseCarVersion" style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 6px;">Long Range Dual Motor AWD</div>
+                <div id="purchaseCarVersion"
+                  style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 6px;">Long Range Dual Motor
+                  AWD</div>
                 <div style="font-size: 0.75rem; color: var(--color-silver);">Precio Base del Automóvil:</div>
-                <div id="purchaseBasePrice" style="font-size: 1.25rem; font-weight: 700; color: var(--color-white);">$198.000.000 COP</div>
+                <div id="purchaseBasePrice" style="font-size: 1.25rem; font-weight: 700; color: var(--color-white);">
+                  $198.000.000 COP</div>
               </div>
             </div>
 
@@ -1642,7 +2264,8 @@
               </div>
 
               <p class="papers-box-desc">
-                Recibe tu Tesla totalmente legalizado y matriculado a tu nombre, sin filas en secretarías de tránsito ni trámites notariales.
+                Recibe tu Tesla totalmente legalizado y matriculado a tu nombre, sin filas en secretarías de tránsito ni
+                trámites notariales.
               </p>
 
               <!-- Desglose de lo que incluye el paquete de papeles -->
@@ -1723,7 +2346,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="buyerPhone" class="form-label">Teléfono Móvil (WhatsApp) <span class="req">*</span></label>
+                  <label for="buyerPhone" class="form-label">Teléfono Móvil (WhatsApp) <span
+                      class="req">*</span></label>
                   <input type="tel" id="buyerPhone" class="form-control" placeholder="Ej: 310 123 4567" required>
                   <div class="field-error-msg">Ingresa un número telefónico válido.</div>
                 </div>
@@ -1759,16 +2383,19 @@
 
               <div class="form-group">
                 <label for="buyerNotes" class="form-label">Comentarios o Indicaciones Especiales</label>
-                <textarea id="buyerNotes" class="form-control" rows="2" placeholder="Ej: Deseo entrega a domicilio, o requerimiento especial de placas..."></textarea>
+                <textarea id="buyerNotes" class="form-control" rows="2"
+                  placeholder="Ej: Deseo entrega a domicilio, o requerimiento especial de placas..."></textarea>
               </div>
 
               <div class="purchase-actions-grid">
                 <button type="submit" class="btn btn-primary" id="confirmPurchaseBtn" style="padding: 14px;">
                   Confirmar Solicitud de Compra
                 </button>
-                <button type="button" class="btn btn-secondary btn-whatsapp-order" id="sendOrderWhatsAppBtn" style="padding: 14px;">
+                <button type="button" class="btn btn-secondary btn-whatsapp-order" id="sendOrderWhatsAppBtn"
+                  style="padding: 14px;">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+                    <path
+                      d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z" />
                   </svg>
                   Enviar Pedido por WhatsApp
                 </button>
@@ -1791,25 +2418,29 @@
       <div class="wa-popover-header">
         <div class="wa-avatar-box">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffffff">
-            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+            <path
+              d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z" />
           </svg>
         </div>
         <div>
           <div class="wa-agent-name">Asesor Comercial Tesla</div>
           <div class="wa-agent-status"><span class="wa-status-dot"></span> En línea ahora</div>
         </div>
-        <button type="button" class="wa-close-popover" id="closeWaPopoverBtn" aria-label="Cerrar chat flotante">✕</button>
+        <button type="button" class="wa-close-popover" id="closeWaPopoverBtn"
+          aria-label="Cerrar chat flotante">✕</button>
       </div>
 
       <div class="wa-popover-body">
         <p class="wa-welcome-bubble">
-          ¡Hola! 👋 Bienvenido a Tesla Premium Showroom. ¿En qué vehículo estás interesado o deseas cotizar con papeles al día?
+          ¡Hola! 👋 Bienvenido a Tesla Premium Showroom. ¿En qué vehículo estás interesado o deseas cotizar con papeles
+          al día?
         </p>
         <div class="wa-quick-options">
           <button type="button" class="wa-chip-btn" data-msg="Hola, deseo cotizar el Model 3 con papeles al día">
             🚗 Cotizar Model 3 con papeles
           </button>
-          <button type="button" class="wa-chip-btn" data-msg="Hola, quiero información sobre disponibilidad y entrega de Model Y">
+          <button type="button" class="wa-chip-btn"
+            data-msg="Hola, quiero información sobre disponibilidad y entrega de Model Y">
             ⚡ Disponibilidad Model Y
           </button>
           <button type="button" class="wa-chip-btn" data-msg="Hola, quiero agendar una prueba de manejo">
@@ -1819,10 +2450,11 @@
       </div>
 
       <div class="wa-popover-footer">
-        <a href="https://wa.me/573105550199?text=Hola%2C%20deseo%20asesor%C3%ADa%20personalizada%20sobre%20los%20veh%C3%ADculos%20Tesla" target="_blank" rel="noopener noreferrer" class="btn btn-wa-direct" id="startWaChatBtn">
+        <a href="https://wa.me/573105550199?text=Hola%2C%20deseo%20asesor%C3%ADa%20personalizada%20sobre%20los%20veh%C3%ADculos%20Tesla"
+          target="_blank" rel="noopener noreferrer" class="btn btn-wa-direct" id="startWaChatBtn">
           Iniciar Chat en WhatsApp
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
+            <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </a>
       </div>
@@ -1833,7 +2465,8 @@
       <span class="wa-pulse-ring"></span>
       <span class="wa-online-indicator"></span>
       <svg class="wa-icon-svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm5.79 14.07c-.24.68-1.4 1.25-1.93 1.33-.51.08-1.18.11-1.91-.12-.44-.14-1.01-.33-1.74-.65-3.08-1.33-5.09-4.44-5.24-4.65-.15-.2-1.25-1.66-1.25-3.17 0-1.51.79-2.25 1.07-2.55.28-.3.62-.37.83-.37.21 0 .41.01.59.02.19.01.44-.07.69.53.25.6.86 2.1.94 2.25.07.16.12.35.02.55-.1.21-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.32-.13.63.17.31.78 1.28 1.67 2.07 1.15 1.02 2.11 1.34 2.42 1.49.3.15.48.13.66-.08.18-.21.77-.9 0.98-1.21.2-.31.41-.26.69-.15.28.1.1.77.89 2.08 1.05.3.15.51.23.59.36.08.13.08.75-.16 1.43z"/>
+        <path
+          d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm5.79 14.07c-.24.68-1.4 1.25-1.93 1.33-.51.08-1.18.11-1.91-.12-.44-.14-1.01-.33-1.74-.65-3.08-1.33-5.09-4.44-5.24-4.65-.15-.2-1.25-1.66-1.25-3.17 0-1.51.79-2.25 1.07-2.55.28-.3.62-.37.83-.37.21 0 .41.01.59.02.19.01.44-.07.69.53.25.6.86 2.1.94 2.25.07.16.12.35.02.55-.1.21-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.32-.13.63.17.31.78 1.28 1.67 2.07 1.15 1.02 2.11 1.34 2.42 1.49.3.15.48.13.66-.08.18-.21.77-.9 0.98-1.21.2-.31.41-.26.69-.15.28.1.1.77.89 2.08 1.05.3.15.51.23.59.36.08.13.08.75-.16 1.43z" />
       </svg>
       <span class="wa-tooltip">Asesor en WhatsApp</span>
     </button>
@@ -1848,4 +2481,5 @@
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>

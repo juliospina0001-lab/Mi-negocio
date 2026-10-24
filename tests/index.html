@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesla Premium Showroom | Suite de Pruebas & Calidad (Test Runner)</title>
+  <style>
+    :root {
+      --color-obsidian: #0d0d0e;
+      --color-carbon-dark: #141416;
+      --color-carbon: #1e1e22;
+      --color-carbon-border: #2a2a30;
+      --color-text-white: #ffffff;
+      --color-text-muted: #8e8e93;
+      --color-accent-red: #e82127;
+      --color-accent-green: #10b981;
+      --color-accent-amber: #f59e0b;
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-obsidian);
+      color: var(--color-text-white);
+      font-family: var(--font-main);
+      padding: 32px 20px 80px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* Header del Test Runner */
+    .runner-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--color-carbon-border);
+    }
+
+    .runner-title-group h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .runner-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: rgba(232, 33, 39, 0.15);
+      color: #ff5252;
+      border: 1px solid rgba(232, 33, 39, 0.3);
+    }
+
+    .runner-subtitle {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+
+    .runner-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--color-accent-red);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #c4181d;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--color-carbon);
+      color: var(--color-text-white);
+      border-color: var(--color-carbon-border);
+    }
+
+    .btn-secondary:hover {
+      background: #28282e;
+    }
+
+    /* Tarjetas de Métricas KPI */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--color-carbon-dark);
+      border: 1px solid var(--color-carbon-border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-label {
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-top: 4px;
+      line-height: 1.1;
+    }
+
+    .kpi-card.passed .kpi-value {
+      color: var(--color-accent-green);
+    }
+
+    .kpi-card.failed .kpi-value {
+      color: var(--color-accent-red);
+    }
+
+    .kpi-card.duration .kpi-value {
+      color: #60a5fa;
+    }
+
+    /* Barra de Progreso */
+    .progress-wrap {
+      width: 100%;
+      height: 8px;
+      background: var(--color-carbon);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+      transition: width 0.3s ease;
+    }
+
+    .progress-bar.has-failed {
+      background: linear-gradient(90deg, #10b981 0%, #e82127 100%);
+    }
+
+    /* Filtros de Suites */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: var(--color-carbon-dark);
+      border: 1px solid var(--color-carbon-border);
+      color: var(--color-text-muted);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .filter-chip:hover {
+      color: var(--color-text-white);
+      background: var(--color-carbon);
+    }
+
+    .filter-chip.active {
+      background: var(--color-text-white);
+      color: var(--color-obsidian);
+      border-color: var(--color-text-white);
+      font-weight: 700;
+    }
+
+    /* Lista de Suites y Tests */
+    .suite-card {
+      background: var(--color-carbon-dark);
+      border: 1px solid var(--color-carbon-border);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .suite-card:hover {
+      border-color: #3f3f48;
+    }
+
+    .suite-header {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--color-carbon-border);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .suite-title {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .suite-stats {
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-pass {
+      color: var(--color-accent-green);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-fail {
+      color: var(--color-accent-red);
+      background: rgba(232, 33, 39, 0.15);
+      border: 1px solid rgba(232, 33, 39, 0.3);
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .test-list {
+      list-style: none;
+    }
+
+    .test-item {
+      padding: 14px 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 0.875rem;
+    }
+
+    .test-item:last-child {
+      border-bottom: none;
+    }
+
+    .test-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .test-status-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .test-status-icon.pass {
+      color: var(--color-accent-green);
+    }
+
+    .test-status-icon.fail {
+      color: var(--color-accent-red);
+    }
+
+    .test-name {
+      color: var(--color-text-white);
+      font-weight: 500;
+    }
+
+    .test-error {
+      margin-top: 8px;
+      padding: 10px 14px;
+      background: rgba(232, 33, 39, 0.1);
+      border-left: 3px solid var(--color-accent-red);
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.8125rem;
+      color: #ff8585;
+      white-space: pre-wrap;
+    }
+
+    .test-duration {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-family: monospace;
+      flex-shrink: 0;
+    }
+
+    /* Modal / Toast del Runner */
+    .status-banner {
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+    }
+
+    .status-banner.all-passed {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    .status-banner.some-failed {
+      background: rgba(232, 33, 39, 0.15);
+      border: 1px solid rgba(232, 33, 39, 0.4);
+      color: #ff6b6b;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="runner-header">
+      <div class="runner-title-group">
+        <span class="runner-badge">QA & Test Suite 100%</span>
+        <h1>
+          Tesla Showroom · Test Runner
+        </h1>
+        <p class="runner-subtitle">
+          Batería automatizada de pruebas unitarias, financieras, criptográficas, XSS y consistencia de datos.
+        </p>
+      </div>
+
+      <div class="runner-actions">
+        <a href="../index.html" class="btn btn-secondary">
+          ← Volver al Showroom
+        </a>
+        <button type="button" class="btn btn-primary" id="btnRerun">
+          ↻ Re-ejecutar Tests
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnExport">
+          ↓ Exportar JSON
+        </button>
+      </div>
+    </header>
+
+    <!-- Banner de Estado Global -->
+    <div id="statusBanner" class="status-banner all-passed" style="display: none;">
+      <span id="statusIcon">✓</span>
+      <span id="statusMessage">Ejecutando pruebas del sistema...</span>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total de Tests</div>
+        <div class="kpi-value" id="kpiTotal">0</div>
+      </div>
+      <div class="kpi-card passed">
+        <div class="kpi-label">Tests Aprobados</div>
+        <div class="kpi-value" id="kpiPassed">0</div>
+      </div>
+      <div class="kpi-card failed">
+        <div class="kpi-label">Tests Fallidos</div>
+        <div class="kpi-value" id="kpiFailed">0</div>
+      </div>
+      <div class="kpi-card duration">
+        <div class="kpi-label">Tiempo Total</div>
+        <div class="kpi-value" id="kpiDuration">0 ms</div>
+      </div>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Filtros rápidos -->
+    <div class="filters-bar" id="filtersBar">
+      <button type="button" class="filter-chip active" data-filter="all">Todos (<span id="countAll">0</span>)</button>
+      <button type="button" class="filter-chip" data-filter="passed">Aprobados (<span id="countPassed">0</span>)</button>
+      <button type="button" class="filter-chip" data-filter="failed">Fallidos (<span id="countFailed">0</span>)</button>
+    </div>
+
+    <!-- Contenedor dinámico de suites -->
+    <div id="suitesContainer">
+      <div style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+        Cargando y ejecutando suite de pruebas...
+      </div>
+    </div>
+  </div>
+
+  <!-- Carga de datos base de la app -->
+  <script src="../js/data.js"></script>
+  <!-- Carga de la suite de pruebas -->
+  <script src="test-suite.js"></script>
+
+  <!-- Lógica de interfaz del Runner -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      let lastResults = null;
+      let activeFilter = "all";
+
+      const kpiTotal = document.getElementById("kpiTotal");
+      const kpiPassed = document.getElementById("kpiPassed");
+      const kpiFailed = document.getElementById("kpiFailed");
+      const kpiDuration = document.getElementById("kpiDuration");
+      const progressBar = document.getElementById("progressBar");
+      const suitesContainer = document.getElementById("suitesContainer");
+      const statusBanner = document.getElementById("statusBanner");
+      const statusIcon = document.getElementById("statusIcon");
+      const statusMessage = document.getElementById("statusMessage");
+      const btnRerun = document.getElementById("btnRerun");
+      const btnExport = document.getElementById("btnExport");
+
+      async function executeTests() {
+        progressBar.style.width = "0%";
+        progressBar.classList.remove("has-failed");
+        statusBanner.style.display = "flex";
+        statusBanner.className = "status-banner all-passed";
+        statusIcon.textContent = "⏳";
+        statusMessage.textContent = "Ejecutando pruebas unitarias e integración en tiempo real...";
+
+        const results = await TestRunner.runAll((progress) => {
+          const percent = Math.round((progress.total / (TestRunner.suites.reduce((acc, s) => acc + s.tests.length, 0) || 1)) * 100);
+          progressBar.style.width = `${percent}%`;
+          if (progress.failed > 0) {
+            progressBar.classList.add("has-failed");
+          }
+        });
+
+        lastResults = results;
+        renderDashboard(results);
+      }
+
+      function renderDashboard(results) {
+        kpiTotal.textContent = results.total;
+        kpiPassed.textContent = results.passed;
+        kpiFailed.textContent = results.failed;
+        kpiDuration.textContent = `${results.durationMs} ms`;
+
+        document.getElementById("countAll").textContent = results.total;
+        document.getElementById("countPassed").textContent = results.passed;
+        document.getElementById("countFailed").textContent = results.failed;
+
+        progressBar.style.width = "100%";
+
+        if (results.failed === 0) {
+          statusBanner.style.display = "flex";
+          statusBanner.className = "status-banner all-passed";
+          statusIcon.textContent = "✓";
+          statusMessage.textContent = `¡Excelente! Todas las ${results.total} pruebas superaron las verificaciones al 100% en ${results.durationMs} ms.`;
+        } else {
+          statusBanner.style.display = "flex";
+          statusBanner.className = "status-banner some-failed";
+          statusIcon.textContent = "⚠";
+          statusMessage.textContent = `Atención: ${results.failed} de ${results.total} pruebas fallaron. Revisa los detalles abajo.`;
+        }
+
+        renderSuitesList(results);
+      }
+
+      function renderSuitesList(results) {
+        suitesContainer.innerHTML = "";
+
+        results.suites.forEach((suite, sIdx) => {
+          let visibleTests = suite.tests;
+          if (activeFilter === "passed") {
+            visibleTests = suite.tests.filter(t => t.status === "passed");
+          } else if (activeFilter === "failed") {
+            visibleTests = suite.tests.filter(t => t.status === "failed");
+          }
+
+          if (visibleTests.length === 0 && activeFilter !== "all") {
+            return;
+          }
+
+          const card = document.createElement("div");
+          card.className = "suite-card";
+
+          card.innerHTML = `
+            <div class="suite-header" data-suite-idx="${sIdx}">
+              <div class="suite-title">
+                <span>${escapeHTML(suite.name)}</span>
+              </div>
+              <div class="suite-stats">
+                <span class="badge-pass">${suite.passed} ok</span>
+                ${suite.failed > 0 ? `<span class="badge-fail">${suite.failed} fallas</span>` : ""}
+                <span>${suite.durationMs} ms</span>
+              </div>
+            </div>
+            <ul class="test-list">
+              ${visibleTests.map(test => `
+                <li class="test-item">
+                  <div class="test-left">
+                    <span class="test-status-icon ${test.status === 'passed' ? 'pass' : 'fail'}">
+                      ${test.status === 'passed' ? '✓' : '✗'}
+                    </span>
+                    <div>
+                      <div class="test-name">${escapeHTML(test.name)}</div>
+                      ${test.error ? `<div class="test-error">${escapeHTML(test.error)}</div>` : ''}
+                    </div>
+                  </div>
+                  <div class="test-duration">${test.durationMs} ms</div>
+                </li>
+              `).join("")}
+            </ul>
+          `;
+
+          suitesContainer.appendChild(card);
+        });
+      }
+
+      function escapeHTML(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // Event Listeners
+      btnRerun.addEventListener("click", () => executeTests());
+
+      btnExport.addEventListener("click", () => {
+        if (!lastResults) return;
+        const blob = new Blob([JSON.stringify(lastResults, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `tesla_showroom_test_report_${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // Filtros
+      document.querySelectorAll(".filter-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+          activeFilter = chip.dataset.filter;
+          if (lastResults) renderSuitesList(lastResults);
+        });
+      });
+
+      // Ejecutar automáticamente al cargar
+      executeTests();
+    });
+  </script>
+</body>
+
+</html>

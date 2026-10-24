@@ -305,16 +305,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4000);
   }
 
-  // Sanitizador simple de texto para seguridad contra inyecciones
+  // Sanitizador robusto contra inyecciones XSS, backtick y entity evasion
   function escapeHTML(str) {
-    if (!str) return "";
+    if (str === null || str === undefined) return "";
     return String(str)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(/'/g, "&#039;")
+      .replace(/`/g, "&#96;")
+      .replace(/\//g, "&#x2F;");
   }
+
+  // Generador criptográficamente seguro de radicados y órdenes (CSPRNG)
+  function generateSecureId(prefix = "TSL") {
+    if (window.crypto && window.crypto.getRandomValues) {
+      const buf = new Uint32Array(1);
+      window.crypto.getRandomValues(buf);
+      const randNum = 100000 + (buf[0] % 900000);
+      return `${prefix}-${randNum}`;
+    }
+    return `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
+  }
+
+  // Rate Limiter preventivo contra abusos, flood y ataques de fuerza bruta en formularios
+  const securityRateLimiter = {
+    attempts: {},
+    check(actionKey, maxAttempts = 5, windowMs = 30000) {
+      const now = Date.now();
+      if (!this.attempts[actionKey]) {
+        this.attempts[actionKey] = [];
+      }
+      this.attempts[actionKey] = this.attempts[actionKey].filter(t => now - t < windowMs);
+      if (this.attempts[actionKey].length >= maxAttempts) {
+        return false;
+      }
+      this.attempts[actionKey].push(now);
+      return true;
+    }
+  };
 
   // =========================================================================
   // GESTIÓN DE FAVORITOS (LOCALSTORAGE SEGURO)
@@ -1070,6 +1100,19 @@ document.addEventListener("DOMContentLoaded", () => {
       let isValid = true;
       const form = elements.contactForm;
 
+      // Defensa contra bots automáticos (Honeypot)
+      const hpField = form.querySelector("#hpSecurityCheck");
+      if (hpField && hpField.value) {
+        console.warn("Intento de envío automatizado detectado y neutralizado por Honeypot.");
+        return;
+      }
+
+      // Rate Limiter: Máximo 3 envíos cada 30 segundos por sesión
+      if (!securityRateLimiter.check("contact_submit", 3, 30000)) {
+        showToast("Por seguridad, espera unos segundos antes de enviar otra solicitud.", "warning");
+        return;
+      }
+
       // Campos
       const nameInput = form.querySelector("#clientName");
       const phoneInput = form.querySelector("#clientPhone");
@@ -1121,8 +1164,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Generación de radicado demostrativo
-      const radicadoNum = "TSL-" + Math.floor(100000 + Math.random() * 900000);
+      // Generación criptográfica segura de radicado
+      const radicadoNum = generateSecureId("TSL");
       const selectedModelObj = state.vehicles.find(v => v.id === modelSelect.value);
       const modelName = selectedModelObj ? selectedModelObj.name : "Tesla";
 
@@ -1183,13 +1226,13 @@ document.addEventListener("DOMContentLoaded", () => {
     faqContainer.innerHTML = FAQS_DATA.map((faq, index) => `
       <div class="faq-item ${index === 0 ? 'is-open' : ''}">
         <button type="button" class="faq-btn" aria-expanded="${index === 0}">
-          <span>${escapeHTML(faq.q)}</span>
+          <span class="faq-question">${escapeHTML(faq.q)}</span>
           <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
         </button>
         <div class="faq-body">
-          <p>${escapeHTML(faq.a)}</p>
+          <p class="faq-answer">${escapeHTML(faq.a)}</p>
         </div>
       </div>
     `).join("");
@@ -1227,21 +1270,59 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Menú móvil
+    // =========================================================================
+    // MENÚ MÓVIL — OFF-CANVAS SIDE DRAWER
+    // =========================================================================
+    const navDrawerOverlay = document.getElementById("navDrawerOverlay");
+
+    function openNavDrawer() {
+      if (!elements.mainNavList) return;
+      elements.mainNavList.classList.add("is-open");
+      if (navDrawerOverlay) {
+        navDrawerOverlay.classList.add("is-visible");
+        navDrawerOverlay.setAttribute("aria-hidden", "false");
+      }
+      if (elements.navToggle) elements.navToggle.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    }
+
+    function closeNavDrawer() {
+      if (!elements.mainNavList) return;
+      elements.mainNavList.classList.remove("is-open");
+      if (navDrawerOverlay) {
+        navDrawerOverlay.classList.remove("is-visible");
+        navDrawerOverlay.setAttribute("aria-hidden", "true");
+      }
+      if (elements.navToggle) elements.navToggle.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
+
     if (elements.navToggle && elements.mainNavList) {
       elements.navToggle.addEventListener("click", () => {
-        const isOpen = elements.mainNavList.classList.toggle("is-open");
-        elements.navToggle.setAttribute("aria-expanded", isOpen);
+        const isOpen = elements.mainNavList.classList.contains("is-open");
+        isOpen ? closeNavDrawer() : openNavDrawer();
       });
 
-      // Cerrar al pulsar un enlace
+      // Cerrar al pulsar cualquier enlace dentro del drawer
       elements.mainNavList.querySelectorAll(".nav-link").forEach(link => {
-        link.addEventListener("click", () => {
-          elements.mainNavList.classList.remove("is-open");
-          if (elements.navToggle) elements.navToggle.setAttribute("aria-expanded", "false");
-        });
+        link.addEventListener("click", () => closeNavDrawer());
       });
     }
+
+    // Cerrar drawer al hacer clic en overlay
+    if (navDrawerOverlay) {
+      navDrawerOverlay.addEventListener("click", closeNavDrawer);
+    }
+
+    // Cerrar drawer con tecla Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && elements.mainNavList && elements.mainNavList.classList.contains("is-open")) {
+        closeNavDrawer();
+      }
+    });
+
 
     // Trigger de Favoritos
     if (elements.favTriggerBtn) {
@@ -1635,8 +1716,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.navMobileAccountBtn) {
       elements.navMobileAccountBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        if (elements.mainNavList) elements.mainNavList.classList.remove("is-open");
-        if (elements.navToggle) elements.navToggle.setAttribute("aria-expanded", "false");
+        closeNavDrawer();
         openLoginModal(state.currentUser ? "login" : "login", "profile");
       });
     }
@@ -1807,6 +1887,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.authLoginForm) {
       elements.authLoginForm.addEventListener("submit", (e) => {
         e.preventDefault();
+
+        // Rate Limiting anti-fuerza bruta: máximo 5 intentos en 30 segundos
+        if (!securityRateLimiter.check("auth_login_attempt", 5, 30000)) {
+          showToast("Límite de intentos de acceso alcanzado. Espera 30 segundos por seguridad.", "warning");
+          return;
+        }
+
         const emailInput = document.getElementById("loginEmail");
         const passInput = elements.loginPassword;
         let valid = true;
@@ -1852,6 +1939,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.authRegisterForm) {
       elements.authRegisterForm.addEventListener("submit", (e) => {
         e.preventDefault();
+
+        // Rate Limiting anti-fuerza bruta en registros
+        if (!securityRateLimiter.check("auth_register_attempt", 5, 30000)) {
+          showToast("Demasiadas solicitudes de registro. Espera unos segundos por seguridad.", "warning");
+          return;
+        }
+
         const nameInput = document.getElementById("regName");
         const emailInput = document.getElementById("regEmail");
         const phoneInput = document.getElementById("regPhone");
@@ -2109,7 +2203,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const includePapers = state.includePapersInPurchase;
         const papersCost = includePapers ? state.papersPackageCost : 0;
         const totalAmount = vehicle.price + papersCost;
-        const orderNum = "TSL-ORD-" + Math.floor(100000 + Math.random() * 900000);
+        const orderNum = generateSecureId("TSL-ORD");
 
         if (elements.purchaseStatusAlert) {
           elements.purchaseStatusAlert.style.display = "block";
