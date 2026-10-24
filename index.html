@@ -1,11 +1,89 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-CO">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Tesla Premium - Showroom y catálogo interactivo de vehículos eléctricos de lujo en Colombia. Explora Model 3, Model Y, Model S, Model X y Cybertruck con simulador de financiación y configurador visual.">
+  <title>Tesla Premium | Showroom y Catálogo de Vehículos Eléctricos en Colombia</title>
+  <meta name="description" content="Tesla Premium Showroom Colombia - Catálogo interactivo de vehículos eléctricos de lujo. Explora Model 3, Model Y, Model S, Model X y Cybertruck con Garaje 360°, simulador de cuotas de financiación y cotización comercial directa.">
+  <meta name="keywords" content="Tesla Colombia, autos electricos, Model 3, Model Y, Model S Plaid, Model X, Cybertruck, showroom automotriz, simulador de credito automotriz">
+  <meta name="author" content="Tesla Premium Showroom">
   <meta name="theme-color" content="#101010">
-  <title>Tesla Premium | Showroom y Catálogo de Vehículos Eléctricos</title>
+  <meta name="robots" content="index, follow">
+
+  <!-- Metadatos de Geolocalización (GEO) -->
+  <meta name="geo.region" content="CO">
+  <meta name="geo.placename" content="Bogotá, Colombia">
+  <meta name="geo.position" content="4.7110;-74.0721">
+  <meta name="ICBM" content="4.7110, -74.0721">
+
+  <!-- Metadatos Open Graph (Facebook, WhatsApp, LinkedIn) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Tesla Premium Showroom">
+  <meta property="og:title" content="Tesla Premium | Showroom y Catálogo de Vehículos Eléctricos en Colombia">
+  <meta property="og:description" content="Explora el showroom interactivo de vehículos Tesla en Colombia. Incluye Garaje 360°, simulador de cuotas en COP, catálogo con filtros y cotización de compra con papeles.">
+  <meta property="og:image" content="assets/images/hero.jpg">
+  <meta property="og:image:alt" content="Exhibición Tesla Premium Showroom">
+  <meta property="og:locale" content="es_CO">
+
+  <!-- Metadatos Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tesla Premium | Showroom y Catálogo de Vehículos Eléctricos">
+  <meta name="twitter:description" content="Showroom interactivo de vehículos eléctricos de lujo en Colombia con garaje 360°, simulador financiero y configurador visual.">
+  <meta name="twitter:image" content="assets/images/hero.jpg">
+  <meta name="twitter:image:alt" content="Tesla Showroom Interactivo">
+
+  <!-- Datos Estructurados JSON-LD (Schema.org - AutoDealer & FAQPage para AEO/GEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AutoDealer",
+        "@id": "#autodealer",
+        "name": "Tesla Premium Showroom Colombia",
+        "description": "Showroom de exhibición y catálogo comercial de vehículos eléctricos de lujo en Colombia.",
+        "image": "assets/images/hero.jpg",
+        "priceRange": "$$$$",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "CO",
+          "addressLocality": "Bogotá"
+        },
+        "currenciesAccepted": "COP"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Cuál es la autonomía promedio de los vehículos Tesla en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "La autonomía varía según el modelo: el Model 3 ofrece hasta 629 km WLTP, el Model Y hasta 533 km, el Model S Plaid hasta 600 km y el Model X hasta 543 km con una sola carga."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo funciona la compra con el paquete de papeles legales al día?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "La cotización permite incluir un paquete legal integral que comprende matrícula inicial, SOAT vigente, impuesto departamental del año en curso y trámite de placas para entrega lista para rodar."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿El simulador de crédito compromete la aprobación financiera?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. El simulador de financiación en la plataforma es una herramienta exclusivamente demostrativa e informativa calculada con fórmulas financieras estándar fijas, sujeta a evaluación bancaria real."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <!-- Enlace a la hoja de estilos principal -->
   <link rel="stylesheet" href="css/styles.css">
@@ -32,46 +110,73 @@
         <ul class="main-nav-list" id="mainNavList">
           <li><a href="#inicio" class="nav-link">Inicio</a></li>
           <li><a href="#modelos" class="nav-link">Modelos</a></li>
+          <li><a href="#tesla-360" class="nav-link" id="nav360Link">Tesla 360°</a></li>
           <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
           <li><a href="#experiencia" class="nav-link">Experiencia</a></li>
           <li><a href="#financiacion" class="nav-link">Financiación</a></li>
           <li><a href="#comparador" class="nav-link">Comparador</a></li>
           <li><a href="#contacto" class="nav-link">Contacto</a></li>
-          <li><a href="#login" class="nav-link nav-link-login" id="navLoginLink">Cuenta</a></li>
+          <li class="mobile-only-nav-item">
+            <button type="button" class="nav-link mobile-account-nav-btn" id="navMobileAccountBtn">
+              <span class="user-avatar-icon" style="margin-right: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+              <span id="mobileAccountBtnText">Mi Cuenta</span>
+            </button>
+          </li>
         </ul>
       </nav>
 
       <!-- Acciones de Encabezado -->
       <div class="header-actions">
-        <!-- Menú de Usuario / Login -->
+        <!-- Pestaña y Menú de Cuenta Unificada (Completa) -->
         <div class="account-menu-container" id="accountMenuContainer">
-          <button type="button" class="btn-account-trigger" id="accountTriggerBtn" aria-label="Iniciar Sesión o ver perfil" aria-expanded="false">
+          <button type="button" class="btn-account-trigger" id="accountTriggerBtn" aria-label="Abrir Mi Cuenta Tesla" aria-expanded="false" title="Mi Cuenta Tesla">
             <span class="user-avatar-icon" id="userAvatarIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
             </span>
-            <span class="account-btn-text" id="accountBtnText">Iniciar Sesión</span>
+            <span class="account-btn-text" id="accountBtnText">Mi Cuenta</span>
+            <span class="account-status-dot" id="accountStatusDot" style="display: none;"></span>
           </button>
 
-          <!-- Dropdown de Usuario Autenticado -->
+          <!-- Dropdown Rápido de Usuario Autenticado -->
           <div class="user-dropdown-menu" id="userDropdownMenu" style="display: none;">
             <div class="dropdown-user-header">
-              <div class="dropdown-user-name" id="dropdownUserName">Usuario</div>
-              <div class="dropdown-user-email" id="dropdownUserEmail">correo@ejemplo.com</div>
-              <span class="dropdown-user-badge">Cliente Premium</span>
+              <div class="dropdown-user-avatar-wrap">
+                <div class="dropdown-avatar-circle" id="dropdownAvatarCircle">U</div>
+                <div class="dropdown-user-info-text">
+                  <div class="dropdown-user-name" id="dropdownUserName">Usuario</div>
+                  <div class="dropdown-user-email" id="dropdownUserEmail">correo@ejemplo.com</div>
+                </div>
+              </div>
+              <span class="dropdown-user-badge">Cliente Premium VIP</span>
             </div>
             <ul class="dropdown-list">
               <li>
-                <a href="#catalogo" class="dropdown-item" id="dropdownGarageBtn">
+                <button type="button" class="dropdown-item dropdown-item-highlight" id="dropdownOpenFullProfileBtn">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                    <line x1="8" y1="21" x2="16" y2="21"></line>
-                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
                   </svg>
-                  Catálogo y Reservas
-                </a>
+                  <strong>Ver Mi Cuenta Completa</strong>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="dropdown-item" id="dropdownOpenOrdersBtn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                  Mis Reservas y Radicados
+                </button>
               </li>
               <li>
                 <button type="button" class="dropdown-item" id="dropdownFavsBtn">
@@ -205,6 +310,300 @@
         <div class="featured-grid" id="featuredGrid">
           <!-- Renderizado dinámico desde js/data.js vía app.js -->
         </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TESLA 360° · GARAJE ESTUDIO INTERACTIVO (EXTERIOR, LLANTAS E INTERIOR)
+         ========================================================================= -->
+    <section class="section-garage-360" id="tesla-360" aria-labelledby="garage360Heading">
+      <div class="container">
+        <div class="text-center">
+          <span class="section-tag">Cyber Garaje Tesla</span>
+          <h2 class="section-title" id="garage360Heading">Tesla 360° · Garaje Interactivo de Exhibición</h2>
+          <p class="section-subtitle center-block">
+            Elige cualquier vehículo Tesla, gíralo a 360° en la plataforma reflectiva del garaje, examina el diseño de las llantas de alto rendimiento y adéntrate en la cabina panorámica.
+          </p>
+        </div>
+
+        <!-- Selector de Modelo Tesla en el Garaje -->
+        <div class="garage-model-pills" id="garageModelPills">
+          <button type="button" class="garage-pill-btn active" data-model="model-3">
+            <span class="pill-dot"></span> Model 3
+          </button>
+          <button type="button" class="garage-pill-btn" data-model="model-y">
+            <span class="pill-dot"></span> Model Y
+          </button>
+          <button type="button" class="garage-pill-btn" data-model="model-s">
+            <span class="pill-dot"></span> Model S Plaid
+          </button>
+          <button type="button" class="garage-pill-btn" data-model="model-x">
+            <span class="pill-dot"></span> Model X
+          </button>
+          <button type="button" class="garage-pill-btn" data-model="cybertruck">
+            <span class="pill-dot"></span> Cybertruck
+          </button>
+        </div>
+
+        <!-- Barra de Modos de Vista 360° -->
+        <div class="garage-view-tabs" role="tablist">
+          <button type="button" class="garage-tab-btn active" id="tab360ExteriorBtn" role="tab" aria-selected="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+            </svg>
+            Exterior 360° (Giro Completo)
+          </button>
+
+          <button type="button" class="garage-tab-btn" id="tab360WheelsBtn" role="tab" aria-selected="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="4"></circle>
+              <line x1="12" y1="2" x2="12" y2="8"></line>
+              <line x1="12" y1="16" x2="12" y2="22"></line>
+              <line x1="2" y1="12" x2="8" y2="12"></line>
+              <line x1="16" y1="12" x2="22" y2="12"></line>
+            </svg>
+            Inspección de Llantas & Ruedas
+          </button>
+
+          <button type="button" class="garage-tab-btn" id="tab360InteriorBtn" role="tab" aria-selected="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            Cabina & Interior 360°
+          </button>
+        </div>
+
+        <!-- Escenario del Garaje Estudio 360° -->
+        <div class="garage-stage-viewport" id="garageStageViewport">
+
+          <!-- 1. VISTA EXTERIOR 360° -->
+          <div class="garage-view-panel active" id="garageExteriorPanel">
+            <!-- Emblema de Fondo en el Garaje con Luces de Estudio -->
+            <div class="garage-wall-branding">
+              <div class="garage-neon-logo">
+                <svg width="64" height="64" viewBox="0 0 342 35" fill="currentColor">
+                  <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+                </svg>
+              </div>
+              <div class="garage-light-beams"></div>
+            </div>
+
+            <!-- Plataforma Giratoria del Garaje -->
+            <div class="garage-turntable-wrapper" id="garageTurntable">
+              <div class="turntable-light-ring"></div>
+              <div class="turntable-inner-disc"></div>
+              
+              <!-- Imagen del Vehículo con Rotación y Perspectiva 3D -->
+              <div class="vehicle-360-container" id="vehicle360Container">
+                <img id="garage360CarImage" src="assets/images/model-3.jpg" alt="Tesla en Garaje 360" draggable="false">
+                <div class="turntable-shadow"></div>
+                <div class="turntable-reflection"></div>
+              </div>
+
+              <!-- Indicador de Arrastre 360 -->
+              <div class="drag-hint-badge" id="dragHintBadge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>Arrastra horizontalmente para rotar</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Controles de Rotación y Ángulos del Garaje -->
+            <div class="garage-controls-bar">
+              <div class="angle-badge-box">
+                <span class="angle-label">Ángulo de Giro:</span>
+                <span class="angle-val-pill" id="garageAngleValue">0° · Frontal</span>
+              </div>
+
+              <div class="garage-slider-wrap">
+                <input type="range" id="garageRotationSlider" min="0" max="360" value="0" step="1" aria-label="Control de giro 360 grados">
+              </div>
+
+              <div class="garage-action-buttons">
+                <button type="button" class="btn btn-secondary btn-sm" id="garageAutoRotateBtn">
+                  <svg id="autoRotateIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                  <span id="autoRotateText">Giro Automático</span>
+                </button>
+
+                <div class="preset-angles-group">
+                  <button type="button" class="btn-preset-angle active" data-angle="0">0° Frontal</button>
+                  <button type="button" class="btn-preset-angle" data-angle="45">45°</button>
+                  <button type="button" class="btn-preset-angle" data-angle="90">90° Perfil</button>
+                  <button type="button" class="btn-preset-angle" data-angle="135">135°</button>
+                  <button type="button" class="btn-preset-angle" data-angle="180">180° Trasera</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selector de Color en el Garaje -->
+            <div class="garage-color-dock" id="garageColorDock">
+              <span class="dock-label">Color de Carrocería:</span>
+              <div class="dock-swatches" id="garageSwatchesList">
+                <!-- Swatches inyectados dinámicamente -->
+              </div>
+              <span class="dock-color-name" id="garageColorName">Blanco Perla Multicapa</span>
+            </div>
+          </div>
+
+          <!-- 2. VISTA INSPECCIÓN DE LLANTAS & RUEDAS -->
+          <div class="garage-view-panel" id="garageWheelsPanel" style="display: none;">
+            <div class="wheels-inspector-layout">
+              <div class="wheel-visual-display">
+                <div class="wheel-disc-stage">
+                  <div class="wheel-rim-graphic" id="wheelRimGraphic">
+                    <div class="wheel-tire-outer">
+                      <div class="tire-tread-marks"></div>
+                      <span class="tire-brand-label">MICHELIN PILOT SPORT EV</span>
+                    </div>
+                    <div class="wheel-caliper-brembo">
+                      <span>TESLA</span>
+                    </div>
+                    <div class="wheel-center-cap">
+                      <svg width="22" height="22" viewBox="0 0 342 35" fill="#ffffff">
+                        <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
+                      </svg>
+                    </div>
+                    <div class="wheel-spokes-layer" id="wheelSpokesLayer"></div>
+                  </div>
+                </div>
+
+                <div class="wheel-spin-controls text-center">
+                  <button type="button" class="btn btn-secondary btn-sm" id="spinWheelBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                    </svg>
+                    Probar Giro de Rueda a Alta Velocidad
+                  </button>
+                </div>
+              </div>
+
+              <!-- Ficha Técnica de las Llantas -->
+              <div class="wheel-info-card">
+                <span class="section-tag" id="wheelCarBadge">Model 3 Performance</span>
+                <h3 class="wheel-name-title" id="wheelModelTitle">Ruedas Uberturbine de 21"</h3>
+                <p class="wheel-desc-text" id="wheelModelDesc">
+                  Forjadas en aleación de aluminio aeronáutico con aspas direccionales que extraen el aire caliente de los frenos y reducen la resistencia aerodinámica en autopista.
+                </p>
+
+                <div class="wheel-selector-row" id="wheelOptionsRow">
+                  <!-- Botones de rines disponibles inyectados por app.js -->
+                </div>
+
+                <div class="wheel-specs-matrix">
+                  <div class="wheel-spec-item">
+                    <span class="w-label">Diámetro de Rin</span>
+                    <strong class="w-val" id="wheelSpecDiameter">21 pulgadas (53.3 cm)</strong>
+                  </div>
+                  <div class="wheel-spec-item">
+                    <span class="w-label">Neumáticos de Fábrica</span>
+                    <strong class="w-val" id="wheelSpecTire">Pirelli P Zero Elect con espuma PNCS</strong>
+                  </div>
+                  <div class="wheel-spec-item">
+                    <span class="w-label">Sistema de Frenado</span>
+                    <strong class="w-val" id="wheelSpecBrakes">Pinzas Monobloque Rojas Tesla</strong>
+                  </div>
+                  <div class="wheel-spec-item">
+                    <span class="w-label">Eficiencia Aerodinámica</span>
+                    <strong class="w-val" id="wheelSpecAero">+15 km de Autonomía Ganada</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. VISTA CABINA & INTERIOR 360° -->
+          <div class="garage-view-panel" id="garageInteriorPanel" style="display: none;">
+            <div class="interior-viewer-container" id="interiorViewerContainer">
+              <div class="interior-pan-canvas" id="interiorPanCanvas">
+                <img src="assets/images/interior-tech.jpg" alt="Interior Panorámico Tesla" class="interior-panoramic-img" id="interiorPanoramicImg" draggable="false">
+
+                <!-- Hotspots Interactivos de Cabina -->
+                <div class="interior-hotspot" style="top: 55%; left: 38%;" data-spot="screen">
+                  <button type="button" class="hotspot-pin" aria-label="Ver detalles de la pantalla táctil"></button>
+                  <div class="hotspot-popup">
+                    <strong>Pantalla Cinemática Central</strong>
+                    <p>Resolución 2200x1300 con 10 Teraflops de procesamiento. Control de mapas, climatización y juegos.</p>
+                  </div>
+                </div>
+
+                <div class="interior-hotspot" style="top: 65%; left: 26%;" data-spot="yoke">
+                  <button type="button" class="hotspot-pin" aria-label="Ver detalles del volante"></button>
+                  <div class="hotspot-popup">
+                    <strong>Volante Yoke Deportivo</strong>
+                    <p>Sin palancas mecánicas. Conducción intuitiva con botones hápticos para direccionales y luces.</p>
+                  </div>
+                </div>
+
+                <div class="interior-hotspot" style="top: 18%; left: 52%;" data-spot="roof">
+                  <button type="button" class="hotspot-pin" aria-label="Ver detalles del techo de cristal"></button>
+                  <div class="hotspot-popup">
+                    <strong>Techo de Cristal Panorámico</strong>
+                    <p>Vidrio acústico laminado continuo con filtro UV e infrarrojo de grado aeroespacial.</p>
+                  </div>
+                </div>
+
+                <div class="interior-hotspot" style="top: 50%; left: 82%;" data-spot="audio">
+                  <button type="button" class="hotspot-pin" aria-label="Ver detalles del sistema de audio"></button>
+                  <div class="hotspot-popup">
+                    <strong>Audio Inmersivo de 22 Altavoces</strong>
+                    <p>Cancelación activa de ruido vial mediante micrófonos integrados en los asientos.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controles de Exploración Panorámica -->
+              <div class="interior-pan-dock">
+                <span style="font-size: 0.8125rem; color: var(--color-silver);">Exploración Panorámica:</span>
+                <input type="range" id="interiorPanSlider" min="0" max="100" value="50" aria-label="Desplazar vista panorámica interior">
+                <span style="font-size: 0.75rem; color: var(--color-silver-light);">Pulsa los puntos brillantes para inspeccionar detalles</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Barra Inferior de Acción y Especificaciones del Garaje 360 -->
+        <div class="garage-bottom-bar">
+          <div class="garage-car-summary">
+            <div>
+              <span class="garage-subtag" id="garageCarCategory">Sedán Deportivo Eléctrico</span>
+              <h3 class="garage-car-name" id="garageCarTitle">Tesla Model 3</h3>
+            </div>
+            <div class="garage-quick-metrics">
+              <div>
+                <span class="g-metric-val" id="garageCarAccel">4.4s</span>
+                <span class="g-metric-lbl">0-100 km/h</span>
+              </div>
+              <div>
+                <span class="g-metric-val" id="garageCarRange">629 km</span>
+                <span class="g-metric-lbl">Autonomía</span>
+              </div>
+              <div>
+                <span class="g-metric-val" id="garageCarPrice">$198.000.000 COP</span>
+                <span class="g-metric-lbl">Precio Base Sugerido</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="garage-actions-cluster">
+            <button type="button" class="btn btn-primary" id="garageBuyWithPapersBtn">
+              Comprar este Modelo con Papeles
+            </button>
+            <button type="button" class="btn btn-secondary" id="garageAskWaBtn">
+              Consultar Asesor 360° en WhatsApp
+            </button>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -779,22 +1178,26 @@
   <!-- =========================================================================
        MODAL DE INICIO DE SESIÓN Y REGISTRO
        ========================================================================= -->
+  <!-- =========================================================================
+       MODAL UNIFICADO: CENTRO DE MI CUENTA TESLA (COMPLETO)
+       ========================================================================= -->
   <div class="modal-backdrop" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="modalLoginTitle">
-    <div class="modal-dialog modal-dialog-auth">
-      <button type="button" class="modal-close-btn" id="closeLoginModalBtn" aria-label="Cerrar ventana de autenticación">
+    <div class="modal-dialog modal-dialog-auth" id="accountModalDialog">
+      <button type="button" class="modal-close-btn" id="closeLoginModalBtn" aria-label="Cerrar ventana de cuenta">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
 
-      <div class="auth-modal-content">
+      <!-- VISTA 1: USUARIO INVITADO (INICIAR SESIÓN / CREAR CUENTA) -->
+      <div class="auth-modal-content" id="authGuestView">
         <div class="auth-header text-center">
           <svg class="brand-icon-t" width="32" height="32" viewBox="0 0 342 35" fill="currentColor" style="margin: 0 auto 12px; color: var(--color-accent-red);">
             <path d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z"/>
           </svg>
           <h2 class="auth-title" id="modalLoginTitle">Portal de Clientes Tesla</h2>
-          <p class="auth-subtitle">Gestiona tus vehículos guardados, solicitudes y pruebas de manejo.</p>
+          <p class="auth-subtitle">Gestiona tus vehículos guardados, radicados con papeles al día y solicitudes en una sola cuenta.</p>
         </div>
 
         <!-- Selector de pestañas -->
@@ -815,7 +1218,7 @@
             <div class="form-group">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
                 <label for="loginPassword" class="form-label" style="margin-bottom: 0;">Contraseña</label>
-                <a href="#contacto" class="forgot-pwd-link" id="forgotPwdBtn">¿Olvidaste tu contraseña?</a>
+                <button type="button" class="forgot-pwd-btn-link" id="forgotPwdBtn">¿Olvidaste tu contraseña?</button>
               </div>
               <div class="password-input-wrap">
                 <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
@@ -831,6 +1234,15 @@
                 </button>
               </div>
               <div class="field-error-msg">Por favor introduce tu contraseña (mínimo 6 caracteres).</div>
+            </div>
+
+            <!-- Caja desplegable de recuperación de contraseña -->
+            <div class="forgot-pwd-box" id="forgotPwdBox" style="display: none;">
+              <p class="forgot-pwd-desc">Ingresa tu correo para recibir las instrucciones de restablecimiento referencial:</p>
+              <div class="forgot-pwd-inputs">
+                <input type="email" id="recoveryEmailInput" class="form-control" placeholder="tu-correo@ejemplo.com">
+                <button type="button" class="btn btn-primary btn-sm" id="sendRecoveryBtn">Enviar Enlace</button>
+              </div>
             </div>
 
             <div class="checkbox-group" style="margin-bottom: var(--space-20);">
@@ -853,7 +1265,7 @@
                 <circle cx="8.5" cy="7" r="4"></circle>
                 <polyline points="17 11 19 13 23 9"></polyline>
               </svg>
-              Ingresar como Cliente Demostrativo
+              Ingresar como Julian Ospina (Cliente VIP)
             </button>
           </form>
         </div>
@@ -861,10 +1273,17 @@
         <!-- Pestaña 2: Crear Cuenta -->
         <div class="auth-panel" id="registerTabPanel" role="tabpanel" style="display: none;">
           <form id="authRegisterForm" novalidate>
-            <div class="form-group">
-              <label for="regName" class="form-label">Nombre Completo</label>
-              <input type="text" id="regName" class="form-control" placeholder="Ej: Julian Ospina" required autocomplete="name">
-              <div class="field-error-msg">Ingresa tu nombre completo.</div>
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label for="regName" class="form-label">Nombre Completo</label>
+                <input type="text" id="regName" class="form-control" placeholder="Ej: Julian Ospina" required autocomplete="name">
+                <div class="field-error-msg">Ingresa tu nombre completo.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="regPhone" class="form-label">Teléfono Móvil</label>
+                <input type="tel" id="regPhone" class="form-control" placeholder="Ej: 310 123 4567" autocomplete="tel">
+              </div>
             </div>
 
             <div class="form-group">
@@ -888,24 +1307,40 @@
                   </svg>
                 </button>
               </div>
+              <div class="password-strength-bar" id="regPasswordStrengthBar">
+                <div class="strength-indicator" id="regStrengthIndicator"></div>
+              </div>
               <div class="field-error-msg">La contraseña debe tener al menos 6 caracteres.</div>
             </div>
 
-            <div class="form-group">
-              <label for="regPreferredModel" class="form-label">Modelo Preferido</label>
-              <select id="regPreferredModel" class="select-custom">
-                <option value="model-3">Model 3 (Sedán)</option>
-                <option value="model-y">Model Y (SUV)</option>
-                <option value="model-s">Model S Plaid (Hiperdeportivo)</option>
-                <option value="model-x">Model X (Falcon Wings)</option>
-                <option value="cybertruck">Cybertruck (Exoesqueleto)</option>
-              </select>
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label for="regCity" class="form-label">Ciudad / Showroom</label>
+                <select id="regCity" class="select-custom">
+                  <option value="Bogotá">Bogotá D.C.</option>
+                  <option value="Medellín">Medellín</option>
+                  <option value="Cali">Cali</option>
+                  <option value="Barranquilla">Barranquilla</option>
+                  <option value="Bucaramanga">Bucaramanga</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="regPreferredModel" class="form-label">Modelo Preferido</label>
+                <select id="regPreferredModel" class="select-custom">
+                  <option value="model-3">Model 3 (Sedán)</option>
+                  <option value="model-y">Model Y (SUV)</option>
+                  <option value="model-s">Model S Plaid</option>
+                  <option value="model-x">Model X</option>
+                  <option value="cybertruck">Cybertruck</option>
+                </select>
+              </div>
             </div>
 
             <div class="checkbox-group" style="margin-bottom: var(--space-20);">
               <input type="checkbox" id="regTermsCheck" required checked>
               <label for="regTermsCheck" class="checkbox-label">
-                Acepto los términos de servicio demostrativos y la política de privacidad.
+                Acepto los términos de servicio demostrativos y política de datos.
               </label>
             </div>
 
@@ -915,8 +1350,239 @@
           </form>
         </div>
 
-        <div class="auth-footer-notice">
-          <em>Aviso de alcance:</em> La autenticación simula un entorno de cliente frontend para personalizar tu experiencia, guardar tu selección y sincronizar solicitudes.
+        <!-- Beneficios de tu Cuenta -->
+        <div class="auth-perks-row">
+          <div class="auth-perk-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>Reservas con Papeles al Día</span>
+          </div>
+          <div class="auth-perk-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span>Vehículos Guardados</span>
+          </div>
+          <div class="auth-perk-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Test Drive Prioritario</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISTA 2: PANEL DE CONTROL DE CUENTA (USUARIO AUTENTICADO - COMPLETO) -->
+      <div class="auth-modal-content auth-dashboard-view" id="authDashboardView" style="display: none;">
+        <!-- Cabecera de Usuario -->
+        <div class="account-dash-header">
+          <div class="account-dash-avatar-row">
+            <div class="account-dash-avatar-circle" id="dashAvatarCircle">U</div>
+            <div class="account-dash-user-info">
+              <div class="account-dash-name-wrap">
+                <h2 class="account-dash-name" id="dashUserName">Julian Ospina</h2>
+                <span class="account-badge-vip" id="dashUserRole">Cliente VIP Tesla</span>
+              </div>
+              <div class="account-dash-meta">
+                <span id="dashUserEmail">julian.ospina@tesla-vip.co</span> • <span id="dashUserCity">Bogotá D.C.</span>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm account-dash-logout-quick" id="dashQuickLogoutBtn" title="Cerrar Sesión">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              <span>Salir</span>
+            </button>
+          </div>
+
+          <!-- Métricas Resumen -->
+          <div class="account-dash-kpis">
+            <div class="dash-kpi-card">
+              <div class="dash-kpi-icon">❤️</div>
+              <div class="dash-kpi-content">
+                <span class="dash-kpi-value" id="dashKpiFavsCount">0</span>
+                <span class="dash-kpi-label">Vehículos Guardados</span>
+              </div>
+            </div>
+            <div class="dash-kpi-card">
+              <div class="dash-kpi-icon">📋</div>
+              <div class="dash-kpi-content">
+                <span class="dash-kpi-value" id="dashKpiOrdersCount">0</span>
+                <span class="dash-kpi-label">Reservas / Radicados</span>
+              </div>
+            </div>
+            <div class="dash-kpi-card">
+              <div class="dash-kpi-icon">⚡</div>
+              <div class="dash-kpi-content">
+                <span class="dash-kpi-value" id="dashKpiPreferredModel">Model 3</span>
+                <span class="dash-kpi-label">Modelo de Interés</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestañas de Navegación de Cuenta -->
+        <div class="account-dash-tabs" role="tablist">
+          <button type="button" class="account-dash-tab active" id="tabDashProfileBtn" role="tab" aria-selected="true" data-tab="profile">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Mis Datos
+          </button>
+          <button type="button" class="account-dash-tab" id="tabDashOrdersBtn" role="tab" aria-selected="false" data-tab="orders">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            Mis Reservas (<span id="dashOrdersTabBadge">0</span>)
+          </button>
+          <button type="button" class="account-dash-tab" id="tabDashFavsBtn" role="tab" aria-selected="false" data-tab="favs">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            Favoritos
+          </button>
+          <button type="button" class="account-dash-tab" id="tabDashTestDriveBtn" role="tab" aria-selected="false" data-tab="testdrive">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Prueba de Manejo
+          </button>
+          <button type="button" class="account-dash-tab" id="tabDashSecurityBtn" role="tab" aria-selected="false" data-tab="security">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Seguridad
+          </button>
+        </div>
+
+        <!-- Paneles de Contenido -->
+        <div class="account-dash-body">
+          <!-- Panel 1: Mis Datos -->
+          <div class="dash-panel-content active" id="dashProfilePanel">
+            <form id="dashEditProfileForm">
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="form-group">
+                  <label for="dashEditName" class="form-label">Nombre y Apellidos</label>
+                  <input type="text" id="dashEditName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="dashEditEmail" class="form-label">Correo Electrónico (Principal)</label>
+                  <input type="email" id="dashEditEmail" class="form-control" readonly title="El correo identifica tu cuenta">
+                </div>
+              </div>
+
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="form-group">
+                  <label for="dashEditPhone" class="form-label">Teléfono de Contacto</label>
+                  <input type="tel" id="dashEditPhone" class="form-control" placeholder="+57 310 123 4567">
+                </div>
+                <div class="form-group">
+                  <label for="dashEditCity" class="form-label">Ciudad / Showroom Asignado</label>
+                  <select id="dashEditCity" class="select-custom">
+                    <option value="Bogotá D.C.">Bogotá D.C. (Showroom Calle 85)</option>
+                    <option value="Medellín">Medellín (Showroom El Poblado)</option>
+                    <option value="Cali">Cali (Showroom Granada)</option>
+                    <option value="Barranquilla">Barranquilla (Showroom Norte)</option>
+                    <option value="Bucaramanga">Bucaramanga (Showroom Cabecera)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="dashEditPreferredModel" class="form-label">Vehículo Tesla de Preferencia</label>
+                <select id="dashEditPreferredModel" class="select-custom">
+                  <option value="model-3">Tesla Model 3 — Sedán Deportivo</option>
+                  <option value="model-y">Tesla Model Y — SUV Más Vendido</option>
+                  <option value="model-s">Tesla Model S Plaid — Hiperdeportivo Tri-Motor</option>
+                  <option value="model-x">Tesla Model X — SUV Falcon Wings</option>
+                  <option value="cybertruck">Cybertruck — Exoesqueleto Inoxidable</option>
+                </select>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Panel 2: Mis Reservas y Radicados -->
+          <div class="dash-panel-content" id="dashOrdersPanel" style="display: none;">
+            <div id="dashOrdersListContainer">
+              <!-- Renderizado dinámico de órdenes -->
+            </div>
+          </div>
+
+          <!-- Panel 3: Favoritos -->
+          <div class="dash-panel-content" id="dashFavsPanel" style="display: none;">
+            <div id="dashFavsListContainer">
+              <!-- Renderizado dinámico de favoritos -->
+            </div>
+          </div>
+
+          <!-- Panel 4: Test Drive -->
+          <div class="dash-panel-content" id="dashTestDrivePanel" style="display: none;">
+            <div class="dash-testdrive-card">
+              <div class="dash-testdrive-status-header">
+                <div class="dash-testdrive-badge">Estado de Prueba de Manejo</div>
+                <span class="status-indicator-pill active">Activo</span>
+              </div>
+              <h3 style="font-size: 1.125rem; color: var(--color-white); margin-bottom: 8px;" id="dashTdModelTitle">
+                Tesla Model 3 Gran Autonomía
+              </h3>
+              <p style="font-size: 0.875rem; color: var(--color-silver); margin-bottom: 14px;" id="dashTdLocation">
+                Showroom Calle 85 # 11-53, Bogotá D.C. • Asesor comercial asignado
+              </p>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="#contacto" class="btn btn-primary btn-sm" onclick="closeLoginModal();">
+                  Reprogramar o Solicitar Nueva Prueba
+                </a>
+                <a href="https://wa.me/573009123456?text=Hola,%20quisiera%20confirmar%20mi%20prueba%20de%20manejo%20Tesla" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+                  Confirmar por WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 5: Seguridad -->
+          <div class="dash-panel-content" id="dashSecurityPanel" style="display: none;">
+            <div class="dash-security-section">
+              <h4 style="font-size: 1rem; color: var(--color-white); margin-bottom: 6px;">Sesión y Protección</h4>
+              <p style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 16px;">
+                Tu sesión se encuentra activa en este navegador. Puedes actualizar tu clave demostrativa o desconectarte de forma segura en cualquier momento.
+              </p>
+
+              <form id="dashChangePasswordForm" style="max-width: 420px; margin-bottom: 24px;">
+                <div class="form-group">
+                  <label for="dashNewPassword" class="form-label">Nueva Contraseña</label>
+                  <input type="password" id="dashNewPassword" class="form-control" placeholder="••••••••" minlength="6">
+                </div>
+                <button type="submit" class="btn btn-secondary btn-sm">Actualizar Contraseña</button>
+              </form>
+
+              <div class="dash-danger-zone">
+                <div>
+                  <strong style="color: var(--color-accent-red); display: block; font-size: 0.875rem;">Cerrar Sesión</strong>
+                  <span style="font-size: 0.75rem; color: var(--color-silver);">Desconéctate de tu portal de cliente en este dispositivo.</span>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="dashLogoutFullBtn" style="color: var(--color-accent-red); border-color: rgba(232, 33, 39, 0.4);">
+                  Cerrar Sesión Segura
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

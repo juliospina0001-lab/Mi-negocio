@@ -36,6 +36,18 @@ document.addEventListener("DOMContentLoaded", () => {
       downPaymentPercent: 20, // 20%
       termMonths: 48,
       annualInterestRate: 14.5 // Tasa EA anual orientativa en Colombia (aprox 1.13% mensual)
+    },
+    // Garaje 360 y Estudio Interactivo
+    garage360: {
+      modelId: "model-3",
+      angle: 0,
+      autoRotate: false,
+      autoRotateRafId: null,
+      selectedColorFilter: "none",
+      selectedColorName: "Blanco Perla Multicapa",
+      isDragging: false,
+      startX: 0,
+      startAngle: 0
     }
   };
 
@@ -48,24 +60,35 @@ document.addEventListener("DOMContentLoaded", () => {
     navToggle: document.getElementById("mobileToggle"),
     mainNavList: document.getElementById("mainNavList"),
     navLoginLink: document.getElementById("navLoginLink"),
+    navMobileAccountBtn: document.getElementById("navMobileAccountBtn"),
+    mobileAccountBtnText: document.getElementById("mobileAccountBtnText"),
     themeToggleBtn: document.getElementById("themeToggleBtn"),
     favCountBadge: document.getElementById("favBadgeCount"),
     favTriggerBtn: document.getElementById("favTriggerBtn"),
 
-    // Cuenta & Login
+    // Cuenta & Login Unificado
     accountMenuContainer: document.getElementById("accountMenuContainer"),
     accountTriggerBtn: document.getElementById("accountTriggerBtn"),
     accountBtnText: document.getElementById("accountBtnText"),
+    accountStatusDot: document.getElementById("accountStatusDot"),
     userDropdownMenu: document.getElementById("userDropdownMenu"),
+    dropdownAvatarCircle: document.getElementById("dropdownAvatarCircle"),
     dropdownUserName: document.getElementById("dropdownUserName"),
     dropdownUserEmail: document.getElementById("dropdownUserEmail"),
     dropdownFavCount: document.getElementById("dropdownFavCount"),
     dropdownFavsBtn: document.getElementById("dropdownFavsBtn"),
+    dropdownOpenFullProfileBtn: document.getElementById("dropdownOpenFullProfileBtn"),
+    dropdownOpenOrdersBtn: document.getElementById("dropdownOpenOrdersBtn"),
     logoutBtn: document.getElementById("logoutBtn"),
 
-    // Modal de Login
+    // Modal de Cuenta Completa
     loginModal: document.getElementById("loginModal"),
+    accountModalDialog: document.getElementById("accountModalDialog"),
+    authGuestView: document.getElementById("authGuestView"),
+    authDashboardView: document.getElementById("authDashboardView"),
     closeLoginModalBtn: document.getElementById("closeLoginModalBtn"),
+
+    // Vistas de Invitado
     tabLoginBtn: document.getElementById("tabLoginBtn"),
     tabRegisterBtn: document.getElementById("tabRegisterBtn"),
     loginTabPanel: document.getElementById("loginTabPanel"),
@@ -77,6 +100,44 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleRegPwdBtn: document.getElementById("toggleRegPwdBtn"),
     loginPassword: document.getElementById("loginPassword"),
     regPassword: document.getElementById("regPassword"),
+    forgotPwdBtn: document.getElementById("forgotPwdBtn"),
+    forgotPwdBox: document.getElementById("forgotPwdBox"),
+    recoveryEmailInput: document.getElementById("recoveryEmailInput"),
+    sendRecoveryBtn: document.getElementById("sendRecoveryBtn"),
+    regStrengthIndicator: document.getElementById("regStrengthIndicator"),
+
+    // Vistas del Dashboard de Cuenta
+    dashAvatarCircle: document.getElementById("dashAvatarCircle"),
+    dashUserName: document.getElementById("dashUserName"),
+    dashUserRole: document.getElementById("dashUserRole"),
+    dashUserEmail: document.getElementById("dashUserEmail"),
+    dashUserCity: document.getElementById("dashUserCity"),
+    dashQuickLogoutBtn: document.getElementById("dashQuickLogoutBtn"),
+    dashKpiFavsCount: document.getElementById("dashKpiFavsCount"),
+    dashKpiOrdersCount: document.getElementById("dashKpiOrdersCount"),
+    dashKpiPreferredModel: document.getElementById("dashKpiPreferredModel"),
+    dashOrdersTabBadge: document.getElementById("dashOrdersTabBadge"),
+    tabDashProfileBtn: document.getElementById("tabDashProfileBtn"),
+    tabDashOrdersBtn: document.getElementById("tabDashOrdersBtn"),
+    tabDashFavsBtn: document.getElementById("tabDashFavsBtn"),
+    tabDashTestDriveBtn: document.getElementById("tabDashTestDriveBtn"),
+    tabDashSecurityBtn: document.getElementById("tabDashSecurityBtn"),
+    dashProfilePanel: document.getElementById("dashProfilePanel"),
+    dashOrdersPanel: document.getElementById("dashOrdersPanel"),
+    dashFavsPanel: document.getElementById("dashFavsPanel"),
+    dashTestDrivePanel: document.getElementById("dashTestDrivePanel"),
+    dashSecurityPanel: document.getElementById("dashSecurityPanel"),
+    dashEditProfileForm: document.getElementById("dashEditProfileForm"),
+    dashEditName: document.getElementById("dashEditName"),
+    dashEditEmail: document.getElementById("dashEditEmail"),
+    dashEditPhone: document.getElementById("dashEditPhone"),
+    dashEditCity: document.getElementById("dashEditCity"),
+    dashEditPreferredModel: document.getElementById("dashEditPreferredModel"),
+    saveProfileBtn: document.getElementById("saveProfileBtn"),
+    dashOrdersListContainer: document.getElementById("dashOrdersListContainer"),
+    dashFavsListContainer: document.getElementById("dashFavsListContainer"),
+    dashLogoutFullBtn: document.getElementById("dashLogoutFullBtn"),
+    dashChangePasswordForm: document.getElementById("dashChangePasswordForm"),
 
     // Modal de Compra y Papeles
     purchaseModal: document.getElementById("purchaseModal"),
@@ -155,7 +216,56 @@ document.addEventListener("DOMContentLoaded", () => {
     formStatusAlert: document.getElementById("formStatusAlert"),
 
     // Modales informativos / Toasts
-    toastContainer: document.getElementById("toastContainer")
+    toastContainer: document.getElementById("toastContainer"),
+
+    // Tesla 360° Estudio & Garaje
+    garageModelPills: document.getElementById("garageModelPills"),
+    tab360ExteriorBtn: document.getElementById("tab360ExteriorBtn"),
+    tab360WheelsBtn: document.getElementById("tab360WheelsBtn"),
+    tab360InteriorBtn: document.getElementById("tab360InteriorBtn"),
+    garageExteriorPanel: document.getElementById("garageExteriorPanel"),
+    garageWheelsPanel: document.getElementById("garageWheelsPanel"),
+    garageInteriorPanel: document.getElementById("garageInteriorPanel"),
+    garageTurntable: document.getElementById("garageTurntable"),
+    vehicle360Container: document.getElementById("vehicle360Container"),
+    garage360CarImage: document.getElementById("garage360CarImage"),
+    turntableLightRing: document.querySelector(".turntable-light-ring"),
+    turntableInnerDisc: document.querySelector(".turntable-inner-disc"),
+    turntableShadow: document.querySelector(".turntable-shadow"),
+    turntableReflection: document.querySelector(".turntable-reflection"),
+    dragHintBadge: document.getElementById("dragHintBadge"),
+    garageAngleValue: document.getElementById("garageAngleValue"),
+    garageRotationSlider: document.getElementById("garageRotationSlider"),
+    garageAutoRotateBtn: document.getElementById("garageAutoRotateBtn"),
+    autoRotateIcon: document.getElementById("autoRotateIcon"),
+    autoRotateText: document.getElementById("autoRotateText"),
+    presetAngleBtns: document.querySelectorAll(".btn-preset-angle"),
+    garageSwatchesList: document.getElementById("garageSwatchesList"),
+    garageColorName: document.getElementById("garageColorName"),
+    // Garaje - Llantas
+    spinWheelBtn: document.getElementById("spinWheelBtn"),
+    wheelRimGraphic: document.getElementById("wheelRimGraphic"),
+    wheelCarBadge: document.getElementById("wheelCarBadge"),
+    wheelModelTitle: document.getElementById("wheelModelTitle"),
+    wheelModelDesc: document.getElementById("wheelModelDesc"),
+    wheelOptionsRow: document.getElementById("wheelOptionsRow"),
+    wheelSpecDiameter: document.getElementById("wheelSpecDiameter"),
+    wheelSpecTire: document.getElementById("wheelSpecTire"),
+    wheelSpecBrakes: document.getElementById("wheelSpecBrakes"),
+    wheelSpecAero: document.getElementById("wheelSpecAero"),
+    // Garaje - Interior
+    interiorViewerContainer: document.getElementById("interiorViewerContainer"),
+    interiorPanCanvas: document.getElementById("interiorPanCanvas"),
+    interiorPanSlider: document.getElementById("interiorPanSlider"),
+    interiorHotspots: document.querySelectorAll(".interior-hotspot"),
+    // Garaje - Barra inferior
+    garageCarCategory: document.getElementById("garageCarCategory"),
+    garageCarTitle: document.getElementById("garageCarTitle"),
+    garageCarAccel: document.getElementById("garageCarAccel"),
+    garageCarRange: document.getElementById("garageCarRange"),
+    garageCarPrice: document.getElementById("garageCarPrice"),
+    garageBuyWithPapersBtn: document.getElementById("garageBuyWithPapersBtn"),
+    garageAskWaBtn: document.getElementById("garageAskWaBtn")
   };
 
   // =========================================================================
@@ -1219,22 +1329,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = state.currentUser;
     const isLogged = !!user;
 
+    // Actualizar botón único de cuenta en el header
     if (elements.accountTriggerBtn) {
       if (isLogged) {
         elements.accountTriggerBtn.classList.add("is-logged-in");
         const firstName = user.name.trim().split(" ")[0] || "Usuario";
-        if (elements.accountBtnText) elements.accountBtnText.textContent = firstName;
-        elements.accountTriggerBtn.setAttribute("aria-label", `Menú de cuenta de ${user.name}`);
-        elements.accountTriggerBtn.setAttribute("title", `Conectado como ${user.name}`);
+        if (elements.accountBtnText) elements.accountBtnText.textContent = `Mi Cuenta (${firstName})`;
+        if (elements.accountStatusDot) elements.accountStatusDot.style.display = "inline-block";
+        elements.accountTriggerBtn.setAttribute("aria-label", `Mi Cuenta de ${user.name}`);
+        elements.accountTriggerBtn.setAttribute("title", `Mi Cuenta (${user.name})`);
       } else {
         elements.accountTriggerBtn.classList.remove("is-logged-in");
-        if (elements.accountBtnText) elements.accountBtnText.textContent = "Iniciar Sesión";
-        elements.accountTriggerBtn.setAttribute("aria-label", "Iniciar Sesión o crear cuenta");
-        elements.accountTriggerBtn.setAttribute("title", "Iniciar Sesión");
+        if (elements.accountBtnText) elements.accountBtnText.textContent = "Mi Cuenta";
+        if (elements.accountStatusDot) elements.accountStatusDot.style.display = "none";
+        elements.accountTriggerBtn.setAttribute("aria-label", "Abrir Mi Cuenta (Iniciar sesión o Registrarse)");
+        elements.accountTriggerBtn.setAttribute("title", "Abrir Mi Cuenta Tesla");
         closeUserDropdown();
       }
     }
 
+    // Actualizar botón móvil si existe
+    if (elements.mobileAccountBtnText) {
+      if (isLogged) {
+        const firstName = user.name.trim().split(" ")[0] || "Usuario";
+        elements.mobileAccountBtnText.textContent = `Mi Cuenta (${firstName})`;
+      } else {
+        elements.mobileAccountBtnText.textContent = "Mi Cuenta";
+      }
+    }
+
+    // Compatibilidad si hubiera enlace en el menú
     if (elements.navLoginLink) {
       if (isLogged) {
         const firstName = user.name.trim().split(" ")[0] || "Usuario";
@@ -1244,20 +1368,42 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    if (elements.dropdownUserName && user) {
-      elements.dropdownUserName.textContent = user.name;
-    }
-    if (elements.dropdownUserEmail && user) {
-      elements.dropdownUserEmail.textContent = user.email;
+    // Dropdown rápido
+    if (user) {
+      const initials = user.name.trim().split(" ").map(n => n.charAt(0)).slice(0, 2).join("").toUpperCase() || "U";
+      if (elements.dropdownAvatarCircle) elements.dropdownAvatarCircle.textContent = initials;
+      if (elements.dropdownUserName) elements.dropdownUserName.textContent = user.name;
+      if (elements.dropdownUserEmail) elements.dropdownUserEmail.textContent = user.email;
     }
     if (elements.dropdownFavCount) {
       elements.dropdownFavCount.textContent = state.favorites.length;
     }
+
+    // Si el modal está abierto actualmente y hay usuario, sincronizar dashboard
+    if (isLogged && elements.loginModal && elements.loginModal.classList.contains("is-visible")) {
+      renderAccountDashboard();
+    }
   }
 
-  function openLoginModal(defaultTab = "login") {
+  function openLoginModal(authTab = "login", defaultDashTab = "profile") {
     if (!elements.loginModal) return;
-    switchAuthTab(defaultTab);
+    const isLogged = !!state.currentUser;
+
+    if (isLogged) {
+      // Mostrar Vista Completa de Dashboard de Cliente
+      if (elements.authGuestView) elements.authGuestView.style.display = "none";
+      if (elements.authDashboardView) elements.authDashboardView.style.display = "block";
+      if (elements.accountModalDialog) elements.accountModalDialog.classList.add("is-dashboard");
+      renderAccountDashboard();
+      switchDashboardTab(defaultDashTab);
+    } else {
+      // Mostrar Vista de Invitado (Login / Registro)
+      if (elements.authGuestView) elements.authGuestView.style.display = "block";
+      if (elements.authDashboardView) elements.authDashboardView.style.display = "none";
+      if (elements.accountModalDialog) elements.accountModalDialog.classList.remove("is-dashboard");
+      switchAuthTab(authTab);
+    }
+
     elements.loginModal.classList.add("is-visible");
     document.body.style.overflow = "hidden";
     closeUserDropdown();
@@ -1274,6 +1420,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (elements.authRegisterForm) {
       elements.authRegisterForm.querySelectorAll(".form-control").forEach(inp => inp.classList.remove("is-invalid"));
+    }
+    if (elements.forgotPwdBox) {
+      elements.forgotPwdBox.style.display = "none";
     }
   }
 
@@ -1300,6 +1449,137 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (elements.loginTabPanel) elements.loginTabPanel.style.display = "block";
       if (elements.registerTabPanel) elements.registerTabPanel.style.display = "none";
+    }
+  }
+
+  function switchDashboardTab(tabName) {
+    const tabs = [
+      { id: "profile", btn: elements.tabDashProfileBtn, panel: elements.dashProfilePanel },
+      { id: "orders", btn: elements.tabDashOrdersBtn, panel: elements.dashOrdersPanel },
+      { id: "favs", btn: elements.tabDashFavsBtn, panel: elements.dashFavsPanel },
+      { id: "testdrive", btn: elements.tabDashTestDriveBtn, panel: elements.dashTestDrivePanel },
+      { id: "security", btn: elements.tabDashSecurityBtn, panel: elements.dashSecurityPanel }
+    ];
+
+    tabs.forEach(t => {
+      if (!t.btn || !t.panel) return;
+      if (t.id === tabName) {
+        t.btn.classList.add("active");
+        t.btn.setAttribute("aria-selected", "true");
+        t.panel.style.display = "block";
+      } else {
+        t.btn.classList.remove("active");
+        t.btn.setAttribute("aria-selected", "false");
+        t.panel.style.display = "none";
+      }
+    });
+  }
+
+  function renderAccountDashboard() {
+    const user = state.currentUser;
+    if (!user) return;
+
+    // Iniciales
+    const initials = user.name.trim().split(" ").map(n => n.charAt(0)).slice(0, 2).join("").toUpperCase() || "U";
+    if (elements.dashAvatarCircle) elements.dashAvatarCircle.textContent = initials;
+    if (elements.dashUserName) elements.dashUserName.textContent = user.name;
+    if (elements.dashUserRole) elements.dashUserRole.textContent = user.role || "Cliente VIP Tesla";
+    if (elements.dashUserEmail) elements.dashUserEmail.textContent = user.email;
+    if (elements.dashUserCity) elements.dashUserCity.textContent = user.city || "Colombia";
+
+    // KPIs
+    if (elements.dashKpiFavsCount) elements.dashKpiFavsCount.textContent = state.favorites.length;
+    const orders = user.orders || [];
+    if (elements.dashKpiOrdersCount) elements.dashKpiOrdersCount.textContent = orders.length;
+    if (elements.dashOrdersTabBadge) elements.dashOrdersTabBadge.textContent = orders.length;
+
+    const preferredModelObj = state.vehicles.find(v => v.id === (user.preferredModel || "model-3"));
+    if (elements.dashKpiPreferredModel) {
+      elements.dashKpiPreferredModel.textContent = preferredModelObj ? preferredModelObj.name : "Model 3";
+    }
+
+    // Llenar formulario de edición de datos
+    if (elements.dashEditName) elements.dashEditName.value = user.name || "";
+    if (elements.dashEditEmail) elements.dashEditEmail.value = user.email || "";
+    if (elements.dashEditPhone) elements.dashEditPhone.value = user.phone || "";
+    if (elements.dashEditCity) elements.dashEditCity.value = user.city || "Bogotá D.C.";
+    if (elements.dashEditPreferredModel) elements.dashEditPreferredModel.value = user.preferredModel || "model-3";
+
+    // Renderizar pestaña de Órdenes y Radicados
+    if (elements.dashOrdersListContainer) {
+      if (orders.length === 0) {
+        elements.dashOrdersListContainer.innerHTML = `
+          <div class="account-empty-state">
+            <div class="account-empty-icon">📋</div>
+            <h4 style="color: var(--color-white); font-size: 1.05rem; margin-bottom: 6px;">No tienes órdenes o reservas activas</h4>
+            <p style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 16px;">
+              Configura tu vehículo soñado con o sin paquete de papeles legales al día desde nuestro catálogo.
+            </p>
+            <a href="#catalogo" class="btn btn-primary btn-sm" onclick="closeLoginModal();">Explorar Catálogo y Reservar</a>
+          </div>
+        `;
+      } else {
+        elements.dashOrdersListContainer.innerHTML = orders.map(ord => `
+          <div class="account-order-card">
+            <img src="${ord.vehicleImage || 'assets/model-3.jpg'}" alt="${escapeHTML(ord.vehicleName)}" class="account-order-img">
+            <div>
+              <div class="account-order-title">${escapeHTML(ord.vehicleName)} <span style="font-size: 0.8rem; font-weight: 400; color: var(--color-silver);">(${escapeHTML(ord.vehicleVersion || '')})</span></div>
+              <div class="account-order-meta">
+                Radicado: <strong style="color: var(--color-white);">${escapeHTML(ord.orderNum)}</strong> • Fecha: ${escapeHTML(ord.date)}<br>
+                Paquete de Papeles: <strong style="color: ${ord.includePapers ? '#10b981' : 'var(--color-silver)'};">${ord.includePapers ? 'Incluido (Al Día)' : 'No incluido'}</strong>
+              </div>
+              <span class="account-order-status">${escapeHTML(ord.status || 'En Proceso')}</span>
+            </div>
+            <div class="account-order-price-wrap">
+              <span class="account-order-price">${formatCurrencyCOP(ord.totalAmount)}</span>
+              <a href="https://wa.me/573009123456?text=Hola,%20quisiera%20consultar%20el%20estado%20de%20mi%20orden%20${encodeURIComponent(ord.orderNum)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" style="margin-top: 6px; padding: 5px 10px; font-size: 0.75rem;">
+                Consultar Radicado
+              </a>
+            </div>
+          </div>
+        `).join("");
+      }
+    }
+
+    // Renderizar pestaña de Favoritos
+    if (elements.dashFavsListContainer) {
+      const favVehicles = state.vehicles.filter(v => state.favorites.includes(v.id));
+      if (favVehicles.length === 0) {
+        elements.dashFavsListContainer.innerHTML = `
+          <div class="account-empty-state">
+            <div class="account-empty-icon">🤍</div>
+            <h4 style="color: var(--color-white); font-size: 1.05rem; margin-bottom: 6px;">No tienes vehículos guardados</h4>
+            <p style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 16px;">
+              Haz clic en el corazón de cualquier Tesla del catálogo para guardarlo y compararlo aquí.
+            </p>
+            <a href="#catalogo" class="btn btn-primary btn-sm" onclick="closeLoginModal();">Ver Modelos Disponibles</a>
+          </div>
+        `;
+      } else {
+        elements.dashFavsListContainer.innerHTML = favVehicles.map(veh => `
+          <div class="account-order-card">
+            <img src="${veh.image}" alt="${escapeHTML(veh.name)}" class="account-order-img">
+            <div>
+              <div class="account-order-title">${escapeHTML(veh.name)} — ${escapeHTML(veh.version)}</div>
+              <div class="account-order-meta">
+                Autonomía: <strong style="color: var(--color-white);">${veh.range} km</strong> • Aceleración: <strong style="color: var(--color-white);">${veh.acceleration}s</strong>
+              </div>
+              <span class="status-indicator-pill" style="margin-top: 6px; display: inline-block;">En Showroom</span>
+            </div>
+            <div class="account-order-price-wrap">
+              <span class="account-order-price">${formatCurrencyCOP(veh.price)}</span>
+              <div style="display: flex; gap: 6px; margin-top: 6px;">
+                <button type="button" class="btn btn-primary btn-sm" style="padding: 5px 10px; font-size: 0.75rem;" onclick="closeLoginModal(); openPurchaseModal('${escapeHTML(veh.id)}');">
+                  Comprar
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 5px 10px; font-size: 0.75rem; color: var(--color-silver);" onclick="toggleFavorite('${escapeHTML(veh.id)}'); renderAccountDashboard();">
+                  Quitar
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      }
     }
   }
 
@@ -1339,7 +1619,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Actualizar estado inicial
     updateAuthUI();
 
-    // Trigger de botón Cuenta en header
+    // Trigger de botón ÚNICO "Mi Cuenta" en header
     if (elements.accountTriggerBtn) {
       elements.accountTriggerBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -1351,15 +1631,21 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Enlace en menú de navegación
+    // Botón Móvil de Cuenta en el menú lateral
+    if (elements.navMobileAccountBtn) {
+      elements.navMobileAccountBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (elements.mainNavList) elements.mainNavList.classList.remove("is-open");
+        if (elements.navToggle) elements.navToggle.setAttribute("aria-expanded", "false");
+        openLoginModal(state.currentUser ? "login" : "login", "profile");
+      });
+    }
+
+    // Enlace en menú de navegación (si existe)
     if (elements.navLoginLink) {
       elements.navLoginLink.addEventListener("click", (e) => {
         e.preventDefault();
-        if (state.currentUser) {
-          toggleUserDropdown();
-        } else {
-          openLoginModal("login");
-        }
+        openLoginModal(state.currentUser ? "login" : "login", "profile");
       });
     }
 
@@ -1370,7 +1656,21 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Botones dentro del dropdown
+    // Botones del dropdown rápido
+    if (elements.dropdownOpenFullProfileBtn) {
+      elements.dropdownOpenFullProfileBtn.addEventListener("click", () => {
+        closeUserDropdown();
+        openLoginModal("login", "profile");
+      });
+    }
+
+    if (elements.dropdownOpenOrdersBtn) {
+      elements.dropdownOpenOrdersBtn.addEventListener("click", () => {
+        closeUserDropdown();
+        openLoginModal("login", "orders");
+      });
+    }
+
     if (elements.dropdownFavsBtn) {
       elements.dropdownFavsBtn.addEventListener("click", () => {
         closeUserDropdown();
@@ -1386,7 +1686,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Modal de Login: Cerrar
+    // Modal de Cuenta: Cerrar
     if (elements.closeLoginModalBtn) {
       elements.closeLoginModalBtn.addEventListener("click", closeLoginModal);
     }
@@ -1398,12 +1698,29 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Selector de pestañas
+    // Selector de pestañas de Invitado
     if (elements.tabLoginBtn) {
       elements.tabLoginBtn.addEventListener("click", () => switchAuthTab("login"));
     }
     if (elements.tabRegisterBtn) {
       elements.tabRegisterBtn.addEventListener("click", () => switchAuthTab("register"));
+    }
+
+    // Pestañas del Dashboard de Cuenta
+    if (elements.tabDashProfileBtn) {
+      elements.tabDashProfileBtn.addEventListener("click", () => switchDashboardTab("profile"));
+    }
+    if (elements.tabDashOrdersBtn) {
+      elements.tabDashOrdersBtn.addEventListener("click", () => switchDashboardTab("orders"));
+    }
+    if (elements.tabDashFavsBtn) {
+      elements.tabDashFavsBtn.addEventListener("click", () => switchDashboardTab("favs"));
+    }
+    if (elements.tabDashTestDriveBtn) {
+      elements.tabDashTestDriveBtn.addEventListener("click", () => switchDashboardTab("testdrive"));
+    }
+    if (elements.tabDashSecurityBtn) {
+      elements.tabDashSecurityBtn.addEventListener("click", () => switchDashboardTab("security"));
     }
 
     // Visibilidad de contraseñas
@@ -1418,18 +1735,71 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Acceso Rápido Demostrativo
+    // Indicador de fortaleza de contraseña en registro
+    if (elements.regPassword && elements.regStrengthIndicator) {
+      elements.regPassword.addEventListener("input", (e) => {
+        const val = e.target.value;
+        const ind = elements.regStrengthIndicator;
+        ind.className = "strength-indicator";
+        if (val.length === 0) {
+          ind.style.width = "0%";
+        } else if (val.length < 6) {
+          ind.classList.add("strength-weak");
+        } else if (val.length < 10 || !/[0-9]/.test(val) || !/[A-Z]/.test(val)) {
+          ind.classList.add("strength-medium");
+        } else {
+          ind.classList.add("strength-strong");
+        }
+      });
+    }
+
+    // Desplegable de Olvidé mi Contraseña
+    if (elements.forgotPwdBtn && elements.forgotPwdBox) {
+      elements.forgotPwdBtn.addEventListener("click", () => {
+        const isShown = elements.forgotPwdBox.style.display === "block";
+        elements.forgotPwdBox.style.display = isShown ? "none" : "block";
+      });
+    }
+    if (elements.sendRecoveryBtn && elements.recoveryEmailInput) {
+      elements.sendRecoveryBtn.addEventListener("click", () => {
+        const email = elements.recoveryEmailInput.value.trim();
+        if (!email || !email.includes("@")) {
+          showToast("Introduce un correo válido para recuperar tu clave.", "warning");
+          return;
+        }
+        showToast(`Enlace de recuperación referencial enviado a ${email}`, "success");
+        if (elements.forgotPwdBox) elements.forgotPwdBox.style.display = "none";
+        elements.recoveryEmailInput.value = "";
+      });
+    }
+
+    // Acceso Rápido Demostrativo VIP
     if (elements.demoQuickLoginBtn) {
       elements.demoQuickLoginBtn.addEventListener("click", () => {
         const demoUser = {
           name: "Julian Ospina",
           email: "julian.ospina@tesla-vip.co",
+          phone: "+57 310 987 6543",
+          city: "Bogotá D.C.",
           preferredModel: "model-3",
-          role: "Cliente VIP"
+          role: "Cliente VIP Tesla",
+          orders: [
+            {
+              orderNum: "TSL-ORD-742918",
+              date: "24/10/2026",
+              vehicleId: "model-3",
+              vehicleName: "Tesla Model 3 Gran Autonomía",
+              vehicleVersion: "Dual Motor AWD",
+              vehicleImage: "assets/model-3.jpg",
+              includePapers: true,
+              totalAmount: 203200000,
+              status: "Radicado Activo — Matrícula y SOAT al Día"
+            }
+          ]
         };
         saveAuthUser(demoUser);
-        closeLoginModal();
-        showToast(`¡Bienvenido de nuevo, ${demoUser.name}! (Acceso Demo Activo)`, "success");
+        openLoginModal("login", "profile");
+        showToast(`¡Bienvenido de nuevo, ${demoUser.name}! (Acceso VIP Activo)`, "success");
       });
     }
 
@@ -1464,12 +1834,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const authenticatedUser = {
           name: formattedName || "Cliente Tesla",
           email: emailInput.value.trim(),
+          phone: "+57 300 000 0000",
+          city: "Bogotá D.C.",
           preferredModel: "model-3",
-          role: "Cliente Registrado"
+          role: "Cliente Registrado",
+          orders: []
         };
 
         saveAuthUser(authenticatedUser);
-        closeLoginModal();
+        openLoginModal("login", "profile");
         elements.authLoginForm.reset();
         showToast(`¡Bienvenido de nuevo, ${authenticatedUser.name}!`, "success");
       });
@@ -1481,6 +1854,8 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const nameInput = document.getElementById("regName");
         const emailInput = document.getElementById("regEmail");
+        const phoneInput = document.getElementById("regPhone");
+        const citySelect = document.getElementById("regCity");
         const passInput = elements.regPassword;
         const modelSelect = document.getElementById("regPreferredModel");
         let valid = true;
@@ -1512,14 +1887,68 @@ document.addEventListener("DOMContentLoaded", () => {
         const newUser = {
           name: nameInput.value.trim(),
           email: emailInput.value.trim(),
+          phone: phoneInput ? phoneInput.value.trim() : "",
+          city: citySelect ? citySelect.value : "Bogotá D.C.",
           preferredModel: modelSelect ? modelSelect.value : "model-3",
-          role: "Nuevo Propietario"
+          role: "Nuevo Propietario VIP",
+          orders: []
         };
 
         saveAuthUser(newUser);
-        closeLoginModal();
+        openLoginModal("login", "profile");
         elements.authRegisterForm.reset();
         showToast(`¡Cuenta creada con éxito! Bienvenido, ${newUser.name}.`, "success");
+      });
+    }
+
+    // Guardar cambios en el formulario de edición de perfil
+    if (elements.dashEditProfileForm) {
+      elements.dashEditProfileForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!state.currentUser) return;
+        const newName = elements.dashEditName.value.trim();
+        if (!newName || newName.length < 3) {
+          showToast("Por favor ingresa un nombre válido.", "warning");
+          return;
+        }
+
+        state.currentUser.name = newName;
+        state.currentUser.phone = elements.dashEditPhone ? elements.dashEditPhone.value.trim() : "";
+        state.currentUser.city = elements.dashEditCity ? elements.dashEditCity.value : "Bogotá D.C.";
+        state.currentUser.preferredModel = elements.dashEditPreferredModel ? elements.dashEditPreferredModel.value : "model-3";
+
+        saveAuthUser(state.currentUser);
+        showToast("¡Datos de perfil actualizados exitosamente!", "success");
+      });
+    }
+
+    // Cerrar sesión desde el Dashboard
+    if (elements.dashQuickLogoutBtn) {
+      elements.dashQuickLogoutBtn.addEventListener("click", () => {
+        closeLoginModal();
+        saveAuthUser(null);
+        showToast("Has cerrado tu sesión.", "info");
+      });
+    }
+    if (elements.dashLogoutFullBtn) {
+      elements.dashLogoutFullBtn.addEventListener("click", () => {
+        closeLoginModal();
+        saveAuthUser(null);
+        showToast("Has cerrado tu sesión.", "info");
+      });
+    }
+
+    // Cambio de contraseña en seguridad
+    if (elements.dashChangePasswordForm) {
+      elements.dashChangePasswordForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const pwdInput = document.getElementById("dashNewPassword");
+        if (!pwdInput || pwdInput.value.length < 6) {
+          showToast("La contraseña debe tener al menos 6 caracteres.", "warning");
+          return;
+        }
+        pwdInput.value = "";
+        showToast("Contraseña demostrativa actualizada correctamente.", "success");
       });
     }
   }
@@ -1709,6 +2138,25 @@ document.addEventListener("DOMContentLoaded", () => {
           elements.purchaseStatusAlert.scrollIntoView({ behavior: "smooth" });
         }
 
+        // Guardar la orden en la cuenta del usuario si está conectado
+        const newOrder = {
+          orderNum: orderNum,
+          date: new Date().toLocaleDateString("es-CO"),
+          vehicleId: vehicle.id,
+          vehicleName: `Tesla ${vehicle.name}`,
+          vehicleVersion: vehicle.version,
+          vehicleImage: vehicle.image,
+          includePapers: includePapers,
+          totalAmount: totalAmount,
+          status: includePapers ? "Gestión de Matrícula y SOAT (Papeles al Día)" : "Reserva Comercial Base"
+        };
+
+        if (state.currentUser) {
+          state.currentUser.orders = state.currentUser.orders || [];
+          state.currentUser.orders.unshift(newOrder);
+          saveAuthUser(state.currentUser);
+        }
+
         showToast(`Orden ${orderNum} registrada con éxito`, "success");
       });
     }
@@ -1778,6 +2226,461 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================================================
+  // TESLA 360° · GARAJE ESTUDIO INTERACTIVO (EXTERIOR, LLANTAS E INTERIOR)
+  // =========================================================================
+
+  function initGarage360() {
+    if (!elements.garageExteriorPanel) return;
+
+    let activeAngle = 0;
+    let autoRotateId = null;
+    let isAutoRotating = false;
+
+    // Helper: Ocultar el badge indicador de arrastre
+    function hideDragHint() {
+      if (elements.dragHintBadge) {
+        elements.dragHintBadge.style.opacity = "0";
+        elements.dragHintBadge.style.pointerEvents = "none";
+      }
+    }
+
+    // Helper: Describir el ángulo de giro para accesibilidad y visualización
+    function getAngleDescription(angle) {
+      if (angle > 22 && angle <= 67) return "Tres Cuartos Frontal";
+      if (angle > 67 && angle <= 112) return "Perfil Lateral Derecho";
+      if (angle > 112 && angle <= 157) return "Tres Cuartos Posterior";
+      if (angle > 157 && angle <= 202) return "Vista Trasera";
+      if (angle > 202 && angle <= 247) return "Tres Cuartos Trasera Izq.";
+      if (angle > 247 && angle <= 292) return "Perfil Lateral Izquierdo";
+      if (angle > 292 && angle <= 337) return "Tres Cuartos Frontal Izq.";
+      return "Frontal";
+    }
+
+    // Actualizar el ángulo de giro 360°
+    function setGarageAngle(rawAngle, syncSlider = true) {
+      const norm = ((rawAngle % 360) + 360) % 360;
+      activeAngle = norm;
+      state.garage360.angle = norm;
+
+      // 1. Sincronizar control deslizante
+      if (syncSlider && elements.garageRotationSlider) {
+        elements.garageRotationSlider.value = Math.round(norm);
+      }
+
+      // 2. Actualizar píldora de texto de ángulo
+      if (elements.garageAngleValue) {
+        elements.garageAngleValue.textContent = `${Math.round(norm)}° · ${getAngleDescription(norm)}`;
+      }
+
+      // 3. Actualizar botones de ángulos preestablecidos
+      if (elements.presetAngleBtns) {
+        elements.presetAngleBtns.forEach(btn => {
+          const btnAngle = parseFloat(btn.dataset.angle || 0);
+          if (Math.abs(norm - btnAngle) <= 6) {
+            btn.classList.add("active");
+          } else {
+            btn.classList.remove("active");
+          }
+        });
+      }
+
+      // 4. Transformación 3D de la plataforma giratoria
+      if (elements.turntableLightRing) {
+        elements.turntableLightRing.style.transform = `translateX(-50%) rotateX(74deg) rotateZ(${norm}deg)`;
+      }
+      if (elements.turntableInnerDisc) {
+        elements.turntableInnerDisc.style.transform = `translateX(-50%) rotateX(74deg) rotateZ(${norm}deg)`;
+      }
+
+      // 5. Transformación y física 3D del vehículo sobre la plataforma
+      const rad = (norm * Math.PI) / 180;
+      let yaw = 0;
+      let scaleX = 1;
+      let shiftX = 0;
+
+      if (norm <= 90) {
+        yaw = (norm / 90) * -38;
+        scaleX = 1;
+        shiftX = (norm / 90) * -18;
+      } else if (norm <= 180) {
+        yaw = ((180 - norm) / 90) * 38;
+        scaleX = -1;
+        shiftX = ((norm - 90) / 90) * 18;
+      } else if (norm <= 270) {
+        yaw = ((norm - 180) / 90) * -38;
+        scaleX = -1;
+        shiftX = ((270 - norm) / 90) * 18;
+      } else {
+        yaw = ((360 - norm) / 90) * 38;
+        scaleX = 1;
+        shiftX = ((norm - 270) / 90) * -18;
+      }
+
+      const pitch = -Math.cos(rad) * 4;
+      const scale = 1 + (Math.cos(rad) * 0.04);
+
+      if (elements.garage360CarImage) {
+        elements.garage360CarImage.style.transform = `perspective(1100px) translateX(${shiftX}px) rotateY(${yaw}deg) rotateX(${pitch}deg) scaleX(${scaleX}) scale(${scale})`;
+      }
+
+      // 6. Dinámica de sombra y reflejo del piso
+      if (elements.turntableShadow) {
+        const shadowScaleX = 1 + Math.sin(rad) * 0.12;
+        const shadowShiftX = Math.sin(rad) * 14;
+        elements.turntableShadow.style.transform = `scale(${shadowScaleX}, 1) translateX(${shadowShiftX}px)`;
+      }
+
+      if (elements.turntableReflection) {
+        const reflShiftX = Math.sin(rad) * -14;
+        const reflOpacity = Math.max(0.3, 0.75 + Math.cos(rad) * 0.25);
+        elements.turntableReflection.style.transform = `translateX(${reflShiftX}px)`;
+        elements.turntableReflection.style.opacity = reflOpacity;
+      }
+    }
+
+    // Animación suave hacia un ángulo destino
+    function animateToAngle(targetAngle) {
+      const startAngle = activeAngle;
+      let diff = targetAngle - startAngle;
+      if (diff > 180) diff -= 360;
+      if (diff < -180) diff += 360;
+
+      const duration = 320;
+      const startTime = performance.now();
+
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = startAngle + (diff * ease);
+        setGarageAngle(current, true);
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    // Giro Automático
+    function startAutoRotate() {
+      if (isAutoRotating) return;
+      isAutoRotating = true;
+      state.garage360.autoRotate = true;
+      if (elements.autoRotateText) elements.autoRotateText.textContent = "Pausar Giro";
+      if (elements.autoRotateIcon) {
+        elements.autoRotateIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+      }
+
+      function loop() {
+        if (!isAutoRotating) return;
+        setGarageAngle(activeAngle + 0.65, true);
+        autoRotateId = requestAnimationFrame(loop);
+      }
+      autoRotateId = requestAnimationFrame(loop);
+    }
+
+    function stopAutoRotate() {
+      if (!isAutoRotating) return;
+      isAutoRotating = false;
+      state.garage360.autoRotate = false;
+      if (autoRotateId) {
+        cancelAnimationFrame(autoRotateId);
+        autoRotateId = null;
+      }
+      if (elements.autoRotateText) elements.autoRotateText.textContent = "Giro Automático";
+      if (elements.autoRotateIcon) {
+        elements.autoRotateIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+      }
+    }
+
+    function toggleAutoRotate() {
+      if (isAutoRotating) {
+        stopAutoRotate();
+        showToast("Giro automático pausado", "info");
+      } else {
+        startAutoRotate();
+        hideDragHint();
+        showToast("Giro 360° automático activado", "info");
+      }
+    }
+
+    // Interacción con el slider de rotación
+    if (elements.garageRotationSlider) {
+      elements.garageRotationSlider.addEventListener("input", (e) => {
+        stopAutoRotate();
+        hideDragHint();
+        setGarageAngle(parseFloat(e.target.value), false);
+      });
+    }
+
+    // Interacción con botones de ángulos preestablecidos
+    if (elements.presetAngleBtns) {
+      elements.presetAngleBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          stopAutoRotate();
+          hideDragHint();
+          const target = parseFloat(btn.dataset.angle || 0);
+          animateToAngle(target);
+        });
+      });
+    }
+
+    // Interacción con botón de Giro Automático
+    if (elements.garageAutoRotateBtn) {
+      elements.garageAutoRotateBtn.addEventListener("click", toggleAutoRotate);
+    }
+
+    // Gesto de Arrastre Táctil y Ratón (Pointer Events con captura)
+    const turntable = elements.garageTurntable;
+    if (turntable) {
+      let isDragging = false;
+      let startX = 0;
+      let startAngle = 0;
+
+      turntable.addEventListener("pointerdown", (e) => {
+        if (e.button !== undefined && e.button !== 0) return;
+        isDragging = true;
+        startX = e.clientX;
+        startAngle = activeAngle;
+        turntable.style.cursor = "grabbing";
+        stopAutoRotate();
+        hideDragHint();
+
+        if (turntable.setPointerCapture) {
+          try { turntable.setPointerCapture(e.pointerId); } catch (_) {}
+        }
+      });
+
+      turntable.addEventListener("pointermove", (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        // Factor de sensibilidad: 0.6 grados por píxel
+        const newAngle = startAngle - (dx * 0.6);
+        setGarageAngle(newAngle, true);
+      });
+
+      const endDrag = (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        turntable.style.cursor = "grab";
+        if (turntable.releasePointerCapture && e.pointerId) {
+          try { turntable.releasePointerCapture(e.pointerId); } catch (_) {}
+        }
+      };
+
+      turntable.addEventListener("pointerup", endDrag);
+      turntable.addEventListener("pointercancel", endDrag);
+    }
+
+    // Selector de Modelo en el Garaje (Model 3, Model Y, Model S, Model X, Cybertruck)
+    function selectGarageModel(modelId) {
+      const vehicle = state.vehicles.find(v => v.id === modelId) || state.vehicles[0];
+      state.garage360.modelId = vehicle.id;
+
+      // 1. Actualizar imagen del vehículo
+      if (elements.garage360CarImage) {
+        elements.garage360CarImage.src = vehicle.image;
+        elements.garage360CarImage.alt = `Tesla ${vehicle.name} en Garaje 360`;
+      }
+
+      // 2. Actualizar barra de datos inferior
+      if (elements.garageCarTitle) elements.garageCarTitle.textContent = `Tesla ${vehicle.name}`;
+      if (elements.garageCarCategory) elements.garageCarCategory.textContent = `${vehicle.category} · ${vehicle.version}`;
+      if (elements.garageCarAccel) elements.garageCarAccel.textContent = `${vehicle.accelerationSeconds}s`;
+      if (elements.garageCarRange) elements.garageCarRange.textContent = `${vehicle.rangeKm} km`;
+      if (elements.garageCarPrice) elements.garageCarPrice.textContent = formatCurrencyCOP(vehicle.price);
+
+      // 3. Inyectar colores disponibles
+      renderGarageSwatches(vehicle);
+
+      // 4. Actualizar pestaña de Llantas para este modelo
+      updateGarageWheelsInfo(vehicle);
+
+      // Reiniciar ángulo con suavidad
+      setGarageAngle(0, true);
+    }
+
+    // Inyectar swatches de color dinámicos
+    function renderGarageSwatches(vehicle) {
+      if (!elements.garageSwatchesList) return;
+      elements.garageSwatchesList.innerHTML = "";
+
+      const colors = vehicle.colors || [
+        { id: "white", name: "Blanco Perla Multicapa", hex: "#E8E9EB", filter: "none" }
+      ];
+
+      colors.forEach((color, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `dock-swatch-btn ${idx === 0 ? "active" : ""}`;
+        btn.style.backgroundColor = color.hex;
+        btn.title = color.name;
+        btn.setAttribute("aria-label", `Color ${color.name}`);
+
+        btn.addEventListener("click", () => {
+          elements.garageSwatchesList.querySelectorAll(".dock-swatch-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          if (elements.garageColorName) {
+            elements.garageColorName.textContent = color.name;
+          }
+
+          if (elements.garage360CarImage) {
+            const baseShadow = "drop-shadow(0 15px 25px rgba(0, 0, 0, 0.65))";
+            elements.garage360CarImage.style.filter = color.filter === "none" ? baseShadow : `${color.filter} ${baseShadow}`;
+          }
+
+          // Reflejo acentuado del anillo de luz
+          if (elements.turntableLightRing && color.hex) {
+            elements.turntableLightRing.style.borderColor = `${color.hex}88`;
+            elements.turntableLightRing.style.boxShadow = `0 0 45px ${color.hex}66, inset 0 0 35px ${color.hex}44`;
+          }
+        });
+
+        elements.garageSwatchesList.appendChild(btn);
+      });
+
+      if (elements.garageColorName && colors[0]) {
+        elements.garageColorName.textContent = colors[0].name;
+      }
+      if (elements.garage360CarImage) {
+        elements.garage360CarImage.style.filter = "drop-shadow(0 15px 25px rgba(0, 0, 0, 0.65))";
+      }
+    }
+
+    // Configurar información de llantas
+    function updateGarageWheelsInfo(vehicle) {
+      if (elements.wheelCarBadge) elements.wheelCarBadge.textContent = `${vehicle.name} ${vehicle.version}`;
+      if (elements.wheelModelTitle && vehicle.wheels && vehicle.wheels[0]) {
+        elements.wheelModelTitle.textContent = vehicle.wheels[0];
+      }
+
+      if (elements.wheelOptionsRow && vehicle.wheels) {
+        elements.wheelOptionsRow.innerHTML = "";
+        vehicle.wheels.forEach((wheelName, idx) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = `wheel-choice-btn ${idx === 0 ? "active" : ""}`;
+          btn.textContent = wheelName;
+          btn.addEventListener("click", () => {
+            elements.wheelOptionsRow.querySelectorAll(".wheel-choice-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            if (elements.wheelModelTitle) elements.wheelModelTitle.textContent = wheelName;
+            showToast(`Ruedas actualizadas: ${wheelName}`, "info");
+          });
+          elements.wheelOptionsRow.appendChild(btn);
+        });
+      }
+    }
+
+    // Configuración de píldoras de modelos
+    if (elements.garageModelPills) {
+      elements.garageModelPills.querySelectorAll(".garage-pill-btn").forEach(pill => {
+        pill.addEventListener("click", () => {
+          elements.garageModelPills.querySelectorAll(".garage-pill-btn").forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          const modelId = pill.dataset.model;
+          if (modelId) selectGarageModel(modelId);
+        });
+      });
+    }
+
+    // Pestañas de Modos de Vista 360 (Exterior, Llantas, Interior)
+    const tabs = [
+      { btn: elements.tab360ExteriorBtn, panel: elements.garageExteriorPanel },
+      { btn: elements.tab360WheelsBtn, panel: elements.garageWheelsPanel },
+      { btn: elements.tab360InteriorBtn, panel: elements.garageInteriorPanel }
+    ];
+
+    tabs.forEach(({ btn, panel }) => {
+      if (!btn || !panel) return;
+      btn.addEventListener("click", () => {
+        tabs.forEach(t => {
+          if (t.btn) {
+            t.btn.classList.remove("active");
+            t.btn.setAttribute("aria-selected", "false");
+          }
+          if (t.panel) {
+            t.panel.style.display = "none";
+            t.panel.classList.remove("active");
+          }
+        });
+
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
+        panel.style.display = "block";
+        panel.classList.add("active");
+
+        if (btn !== elements.tab360ExteriorBtn) {
+          stopAutoRotate();
+        }
+      });
+    });
+
+    // Giro de Rueda a Alta Velocidad (Llantas)
+    if (elements.spinWheelBtn && elements.wheelRimGraphic) {
+      elements.spinWheelBtn.addEventListener("click", () => {
+        elements.wheelRimGraphic.classList.add("is-spinning");
+        showToast("Probando giro de ruedas a alta velocidad (250 km/h simulados)", "info");
+        setTimeout(() => {
+          elements.wheelRimGraphic.classList.remove("is-spinning");
+        }, 3000);
+      });
+    }
+
+    // Exploración Panorámica Interior (Cabina)
+    if (elements.interiorPanSlider && elements.interiorPanCanvas) {
+      elements.interiorPanSlider.addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value);
+        const shiftPercent = (50 - val) * 0.7;
+        elements.interiorPanCanvas.style.transform = `translateX(${shiftPercent}%)`;
+      });
+    }
+
+    // Hotspots interactivos de cabina
+    if (elements.interiorHotspots) {
+      elements.interiorHotspots.forEach(spot => {
+        const pin = spot.querySelector(".hotspot-pin");
+        if (pin) {
+          pin.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isOpen = spot.classList.contains("is-open");
+            elements.interiorHotspots.forEach(s => s.classList.remove("is-open"));
+            if (!isOpen) spot.classList.add("is-open");
+          });
+        }
+      });
+
+      document.addEventListener("click", () => {
+        elements.interiorHotspots.forEach(s => s.classList.remove("is-open"));
+      });
+    }
+
+    // Botones de acción en la barra inferior del garaje
+    if (elements.garageBuyWithPapersBtn) {
+      elements.garageBuyWithPapersBtn.addEventListener("click", () => {
+        openPurchaseModal(state.garage360.modelId);
+      });
+    }
+
+    if (elements.garageAskWaBtn) {
+      elements.garageAskWaBtn.addEventListener("click", () => {
+        const vehicle = state.vehicles.find(v => v.id === state.garage360.modelId) || state.vehicles[0];
+        const msg = encodeURIComponent(
+          `Hola, estoy explorando el Garaje 360° en su showroom y me interesa el Tesla ${vehicle.name} (${vehicle.version}) con precio orientativo de ${formatCurrencyCOP(vehicle.price)}. ¿Tienen disponibilidad para asesorarme?`
+        );
+        window.open(`https://wa.me/573105550199?text=${msg}`, "_blank", "noopener,noreferrer");
+      });
+    }
+
+    // Inicializar con el Model 3 por defecto
+    selectGarageModel("model-3");
+    setGarageAngle(0, true);
+  }
+
+  // =========================================================================
   // INICIALIZACIÓN COMPLETA
   // =========================================================================
 
@@ -1791,6 +2694,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initAuth();
     initPurchaseModal();
     initWhatsAppWidget();
+    initGarage360();
     renderFeaturedVehicles();
     initCatalogEvents();
     renderCatalog();
@@ -1802,3 +2706,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   init();
 });
+

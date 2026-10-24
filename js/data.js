@@ -235,3 +235,116 @@ const FAQS_DATA = [
     a: "El simulador utiliza la fórmula financiera estándar de amortización fija mensual para calcular una cuota orientativa con base en el precio seleccionado, tu cuota inicial y el plazo deseado. Dicho cálculo tiene carácter netamente informativo y no constituye una aprobación formal de crédito."
   }
 ];
+
+const WHEELS_DETAILED_DATA = {
+  "model-3": [
+    {
+      id: "photon-18",
+      name: "Ruedas Photon de 18\"",
+      diameter: "18 pulgadas (45.7 cm)",
+      tire: "Michelin e-Primacy 235/45 R18 con espuma acústica",
+      brakes: "Pinzas Flotantes de Alto Rendimiento",
+      aero: "+25 km de Autonomía Extra",
+      description: "Tapacubos aerodinámicos optimizados mediante túnel de viento virtual para reducir la resistencia al avance y elevar la autonomía.",
+      spokesCount: 7,
+      color: "#2a2b2e"
+    },
+    {
+      id: "nova-19",
+      name: "Ruedas Nova de 19\"",
+      diameter: "19 pulgadas (48.3 cm)",
+      tire: "Continental ProContact RX 235/40 R19",
+      brakes: "Frenos Deportivos Asistidos",
+      aero: "+10 km de Eficiencia Dinámica",
+      description: "Diseño de aleación deportiva bi-tono con acabado pulido al diamante y aspas en corte direccional.",
+      spokesCount: 10,
+      color: "#4a4d52"
+    }
+  ],
+  "model-y": [
+    {
+      id: "uberturbine-21",
+      name: "Ruedas Uberturbine de 21\"",
+      diameter: "21 pulgadas (53.3 cm)",
+      tire: "Pirelli P Zero Elect 255/35 R21 Del / 275/35 R21 Tras",
+      brakes: "Pinzas Monobloque Rojas Performance",
+      aero: "+15 km y agarre lateral de 1.1G",
+      description: "Forjadas con diseño en turbina que extrae activamente el calor del conjunto de frenos en conducción exigente.",
+      spokesCount: 14,
+      color: "#1f2022"
+    },
+    {
+      id: "gemini-19",
+      name: "Ruedas Gemini Oscuras de 19\"",
+      diameter: "19 pulgadas (48.3 cm)",
+      tire: "Hankook Ventus S1 evo3 EV 255/45 R19",
+      brakes: "Frenos Regenerativos Dual Motor",
+      aero: "+32 km de Autonomía Máxima",
+      description: "Cubiertas modulares aerodinámicas en color gris antracita oscuro de bajo rozamiento para viajes largos.",
+      spokesCount: 5,
+      color: "#383a3f"
+    }
+  ],
+  "model-s": [
+    {
+      id: "arachnid-21",
+      name: "Ruedas Arachnid de 21\"",
+      diameter: "21 pulgadas (53.3 cm)",
+      tire: "Michelin Pilot Sport 4S Plaid Spec 265/35ZR21 / 295/30ZR21",
+      brakes: "Frenos Carbocerámicos Plaid con Pinzas Rojas de 6 Pistones",
+      aero: "Disipación Térmica de hasta 800°C",
+      description: "Aleación ultraligera forjada con tecnología de competición aeroespacial para soportar más de 1.020 CV.",
+      spokesCount: 10,
+      color: "#18191a"
+    },
+    {
+      id: "tempest-19",
+      name: "Ruedas Tempest de 19\"",
+      diameter: "19 pulgadas (48.3 cm)",
+      tire: "Pirelli Cinturato P7 Elect 255/45 R19",
+      brakes: "Pinzas Brembo Monobloque Plaid",
+      aero: "+40 km de Alcance en Autopista",
+      description: "Diseño de inserciones oscuras desarrollado para conseguir el récord de coeficiente aerodinámico de 0.208 Cd.",
+      spokesCount: 5,
+      color: "#2c2e33"
+    }
+  ],
+  "model-x": [
+    {
+      id: "turbine-22",
+      name: "Ruedas Turbine de 22\"",
+      diameter: "22 pulgadas (55.9 cm)",
+      tire: "Continental SportContact 6 265/35 R22 Del / 285/35 R22 Tras",
+      brakes: "Pinzas Ventiladas de 4 Pistones Plaid",
+      aero: "Estabilidad de Crucero a Alta Velocidad",
+      description: "Imponentes rines de turbina escalonada que otorgan un porte agresivo, mayor adherencia y aplomo en autopista.",
+      spokesCount: 12,
+      color: "#222428"
+    },
+    {
+      id: "cyberstream-20",
+      name: "Ruedas Cyberstream de 20\"",
+      diameter: "20 pulgadas (50.8 cm)",
+      tire: "Michelin Latitude Sport 3 255/45 R20",
+      brakes: "Frenos Asistidos con Regeneración Continua",
+      aero: "+28 km de Autonomía en Viajes Largos",
+      description: "Perfil aerodinámico balanceado para máxima absorción de imperfecciones en terrenos irregulares.",
+      spokesCount: 8,
+      color: "#3f4247"
+    }
+  ],
+  "cybertruck": [
+    {
+      id: "cyber-20",
+      name: "Ruedas Cyber de 20\" con Cubiertas Todoterreno",
+      diameter: "20 pulgadas (50.8 cm) + Neumático 35\"",
+      tire: "Goodyear Wrangler Territory RT 285/65 R20 (35\" Total)",
+      brakes: "Frenos de Trabajo Pesado con Discos Ventilados de 380mm",
+      aero: "Cubiertas de Goma Encastrables y Tracción Todo Clima",
+      description: "Neumáticos todo terreno blindados de 35 pulgadas montados sobre rines de aleación con cubiertas poliméricas aerodinámicas desmontables.",
+      spokesCount: 6,
+      color: "#1a1b1d"
+    }
+  ]
+};
+

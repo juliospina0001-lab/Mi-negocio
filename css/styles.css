@@ -78,13 +78,11 @@
 }
 
 [data-theme="light"] .hero-overlay {
-  background: linear-gradient(
-    180deg,
-    rgba(245, 245, 247, 0.6) 0%,
-    rgba(245, 245, 247, 0.25) 40%,
-    rgba(245, 245, 247, 0.9) 85%,
-    var(--color-obsidian) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(245, 245, 247, 0.6) 0%,
+      rgba(245, 245, 247, 0.25) 40%,
+      rgba(245, 245, 247, 0.9) 85%,
+      var(--color-obsidian) 100%);
 }
 
 [data-theme="light"] .experience-hero-overlay {
@@ -184,7 +182,9 @@
 }
 
 /* Reset y caja */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -219,7 +219,10 @@ a {
   transition: color var(--transition-fast);
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
@@ -268,7 +271,10 @@ button {
    TIPOGRAFÍA Y ENCABEZADOS
    ========================================================================== */
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--color-white);
@@ -300,6 +306,7 @@ h1, h2, h3, h4 {
 .text-center {
   text-align: center;
 }
+
 .center-block {
   margin-left: auto;
   margin-right: auto;
@@ -562,13 +569,11 @@ h1, h2, h3, h4 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    180deg,
-    rgba(16, 16, 16, 0.6) 0%,
-    rgba(16, 16, 16, 0.2) 40%,
-    rgba(16, 16, 16, 0.85) 85%,
-    var(--color-obsidian) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(16, 16, 16, 0.6) 0%,
+      rgba(16, 16, 16, 0.2) 40%,
+      rgba(16, 16, 16, 0.85) 85%,
+      var(--color-obsidian) 100%);
 }
 
 .hero-content {
@@ -1461,7 +1466,7 @@ h1, h2, h3, h4 {
   display: none;
 }
 
-.form-control.is-invalid + .field-error-msg {
+.form-control.is-invalid+.field-error-msg {
   display: block;
 }
 
@@ -1983,6 +1988,7 @@ h1, h2, h3, h4 {
    ========================================================================== */
 
 @media (max-width: 1024px) {
+
   .simulator-layout,
   .contact-layout,
   .configurator-view {
@@ -2059,13 +2065,99 @@ h1, h2, h3, h4 {
     gap: var(--space-32);
   }
 
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
   .modal-dialog {
-    margin: 10px;
-    max-height: 95vh;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 92dvh;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    animation: slideUpBottomModal 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUpBottomModal {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 
   .modal-body {
     padding: var(--space-20);
+    max-height: calc(92dvh - 120px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevención de zoom forzado en iOS Safari */
+  input,
+  select,
+  textarea,
+  .form-control,
+  .search-input {
+    font-size: 16px !important;
+  }
+
+  /* Comparador de Vehículos Responsivo */
+  .compare-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-md);
+  }
+
+  .compare-table {
+    min-width: 560px;
+  }
+}
+
+/* Modo Ultra Compacto para Móviles Pequeños (iPhone SE, Galaxy A, etc.) */
+@media (max-width: 540px) {
+  .account-btn-text {
+    display: none;
+  }
+
+  .btn-account-trigger {
+    padding: 8px;
+    width: 38px;
+    height: 38px;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .theme-toggle-btn,
+  .favorites-trigger,
+  .mobile-toggle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .vehicles-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-20);
   }
 }
 
@@ -2104,6 +2196,50 @@ h1, h2, h3, h4 {
   color: var(--color-white);
 }
 
+.account-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.85);
+  margin-left: 6px;
+  flex-shrink: 0;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.mobile-only-nav-item {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .mobile-only-nav-item {
+    display: block;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mobile-account-nav-btn {
+    width: 100%;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+}
+
 .user-avatar-icon {
   display: inline-flex;
   align-items: center;
@@ -2120,7 +2256,7 @@ h1, h2, h3, h4 {
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 260px;
+  width: 280px;
   background-color: var(--color-surface-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -2135,6 +2271,7 @@ h1, h2, h3, h4 {
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2145,6 +2282,32 @@ h1, h2, h3, h4 {
   padding: 16px;
   background-color: var(--color-obsidian);
   border-bottom: 1px solid var(--color-border);
+}
+
+.dropdown-user-avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.dropdown-avatar-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent-red), #991b1b);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(232, 33, 39, 0.3);
+}
+
+.dropdown-user-info-text {
+  min-width: 0;
 }
 
 .dropdown-user-name {
@@ -2171,7 +2334,6 @@ h1, h2, h3, h4 {
   background-color: rgba(16, 185, 129, 0.12);
   padding: 2px 8px;
   border-radius: var(--radius-sm);
-  margin-top: 8px;
 }
 
 .dropdown-list {
@@ -2189,10 +2351,23 @@ h1, h2, h3, h4 {
   color: var(--color-silver-light);
   text-align: left;
   transition: all var(--transition-fast);
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .dropdown-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-white);
+}
+
+.dropdown-item-highlight {
+  color: var(--color-white);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.dropdown-item-highlight:hover {
+  background-color: rgba(232, 33, 39, 0.12);
   color: var(--color-white);
 }
 
@@ -2211,9 +2386,14 @@ h1, h2, h3, h4 {
   color: var(--color-accent-red);
 }
 
-/* Modal de Autenticación */
+/* Modal de Autenticación y Cuenta Completa */
 .modal-dialog-auth {
-  max-width: 480px;
+  max-width: 520px;
+  transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-dialog-auth.is-dashboard {
+  max-width: 820px;
 }
 
 .auth-modal-content {
@@ -2283,15 +2463,88 @@ h1, h2, h3, h4 {
   color: var(--color-white);
 }
 
-.forgot-pwd-link {
-  font-size: 0.75rem;
+.forgot-pwd-btn-link {
+  background: none;
+  border: none;
   color: var(--color-silver);
+  font-size: 0.75rem;
   text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
   transition: color var(--transition-fast);
 }
 
-.forgot-pwd-link:hover {
+.forgot-pwd-btn-link:hover {
   color: var(--color-accent-red);
+}
+
+.forgot-pwd-box {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  animation: fadeInDown 0.25s ease;
+}
+
+.forgot-pwd-desc {
+  font-size: 0.75rem;
+  color: var(--color-silver-light);
+  margin-bottom: 8px;
+}
+
+.forgot-pwd-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.password-strength-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.strength-indicator {
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s ease;
+}
+
+.strength-weak {
+  width: 33%;
+  background-color: #ef4444;
+}
+
+.strength-medium {
+  width: 66%;
+  background-color: #f59e0b;
+}
+
+.strength-strong {
+  width: 100%;
+  background-color: #10b981;
+}
+
+.auth-perks-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.auth-perk-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  font-size: 0.6875rem;
+  color: var(--color-silver);
+  line-height: 1.3;
 }
 
 .demo-auth-divider {
@@ -2320,6 +2573,7 @@ h1, h2, h3, h4 {
   font-size: 0.8125rem;
   padding: 10px;
   border-color: rgba(255, 255, 255, 0.25);
+  width: 100%;
 }
 
 .demo-quick-btn:hover {
@@ -2327,14 +2581,336 @@ h1, h2, h3, h4 {
   color: var(--color-white);
 }
 
-.auth-footer-notice {
+/* ==========================================================================
+   ESTILOS DEL DASHBOARD COMPLETO DE CUENTA (LOGUEADO)
+   ========================================================================== */
+
+.account-dash-header {
+  background: linear-gradient(180deg, rgba(232, 33, 39, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.account-dash-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.account-dash-avatar-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent-red), #991b1b);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(232, 33, 39, 0.35);
+  flex-shrink: 0;
+}
+
+.account-dash-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.account-dash-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.account-dash-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+}
+
+.account-badge-vip {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.account-dash-meta {
+  font-size: 0.8125rem;
+  color: var(--color-silver);
+  margin-top: 4px;
+}
+
+.account-dash-logout-quick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
   font-size: 0.75rem;
   color: var(--color-silver);
-  line-height: 1.5;
-  margin-top: var(--space-20);
-  padding-top: var(--space-16);
-  border-top: 1px solid var(--color-border);
+}
+
+.account-dash-logout-quick:hover {
+  color: var(--color-accent-red);
+  border-color: rgba(232, 33, 39, 0.4);
+}
+
+.account-dash-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dash-kpi-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-kpi-icon {
+  font-size: 1.25rem;
+}
+
+.dash-kpi-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-kpi-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1.2;
+}
+
+.dash-kpi-label {
+  font-size: 0.6875rem;
+  color: var(--color-silver);
+}
+
+.account-dash-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.account-dash-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-silver);
+  background: transparent;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.account-dash-tab:hover {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.account-dash-tab.active {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.account-dash-tab.active svg {
+  color: var(--color-accent-red);
+}
+
+.dash-panel-content {
+  animation: fadeInDown 0.25s ease;
+}
+
+.account-order-card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  transition: border-color var(--transition-fast);
+}
+
+.account-order-card:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.account-order-img {
+  width: 80px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--color-obsidian);
+}
+
+.account-order-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-white);
+  margin-bottom: 4px;
+}
+
+.account-order-meta {
+  font-size: 0.75rem;
+  color: var(--color-silver);
+  line-height: 1.4;
+}
+
+.account-order-status {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  margin-top: 6px;
+}
+
+.account-order-price-wrap {
+  text-align: right;
+}
+
+.account-order-price {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-white);
+  display: block;
+}
+
+.account-empty-state {
   text-align: center;
+  padding: 32px 16px;
+  color: var(--color-silver);
+}
+
+.account-empty-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.dash-danger-zone {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border: 1px solid rgba(232, 33, 39, 0.25);
+  background: rgba(232, 33, 39, 0.04);
+  border-radius: var(--radius-md);
+  margin-top: 20px;
+}
+
+.dash-testdrive-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.dash-testdrive-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.dash-testdrive-badge {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-silver);
+}
+
+.status-indicator-pill {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+@media (max-width: 768px) {
+  .account-dash-kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .account-order-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .account-order-price-wrap {
+    text-align: left;
+  }
+
+  .dash-danger-zone {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* Soporte Tema Claro para Cuenta */
+[data-theme="light"] .account-dash-header {
+  background: linear-gradient(180deg, rgba(232, 33, 39, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+}
+
+[data-theme="light"] .dash-kpi-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .dash-kpi-value,
+[data-theme="light"] .account-dash-name,
+[data-theme="light"] .account-order-title,
+[data-theme="light"] .account-order-price {
+  color: var(--color-obsidian);
+}
+
+[data-theme="light"] .account-dash-tab.active {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--color-obsidian);
+}
+
+[data-theme="light"] .forgot-pwd-box,
+[data-theme="light"] .dash-testdrive-card {
+  background: rgba(0, 0, 0, 0.02);
 }
 
 /* ==========================================================================
@@ -2450,11 +3026,11 @@ h1, h2, h3, h4 {
   transition: transform var(--transition-fast);
 }
 
-.papers-toggle-input:checked + .papers-toggle-custom {
+.papers-toggle-input:checked+.papers-toggle-custom {
   background-color: #10b981;
 }
 
-.papers-toggle-input:checked + .papers-toggle-custom::after {
+.papers-toggle-input:checked+.papers-toggle-custom::after {
   transform: translateX(20px);
 }
 
@@ -2632,10 +3208,12 @@ h1, h2, h3, h4 {
     transform: scale(0.95);
     opacity: 0.8;
   }
+
   50% {
     transform: scale(1.25);
     opacity: 0;
   }
+
   100% {
     transform: scale(1.25);
     opacity: 0;
@@ -2820,13 +3398,991 @@ h1, h2, h3, h4 {
   .purchase-body-grid {
     grid-template-columns: 1fr;
   }
+
   .whatsapp-chat-popover {
     width: calc(100vw - 32px);
     right: -12px;
   }
+
   .whatsapp-float-widget {
     bottom: 20px;
     right: 20px;
+  }
+}
+
+/* ==========================================================================
+   TESLA 360° · GARAJE ESTUDIO INTERACTIVO (EXTERIOR, LLANTAS E INTERIOR)
+   ========================================================================== */
+
+.section-garage-360 {
+  padding: var(--space-80) 0;
+  background: radial-gradient(circle at 50% 20%, #16171a 0%, #08090a 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+body.light-theme .section-garage-360 {
+  background: radial-gradient(circle at 50% 20%, #f0f2f5 0%, #e2e5e9 100%);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Selector de modelos en el garaje */
+.garage-model-pills {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: var(--space-32) 0 var(--space-24);
+}
+
+.garage-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+  color: var(--color-silver-light);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(8px);
+}
+
+.garage-pill-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.garage-pill-btn.active {
+  background: linear-gradient(135deg, rgba(232, 33, 39, 0.2) 0%, rgba(22, 22, 23, 0.9) 100%);
+  border-color: var(--color-tesla-red);
+  color: var(--color-white);
+  box-shadow: 0 4px 20px rgba(232, 33, 39, 0.25);
+}
+
+.pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-silver);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.garage-pill-btn.active .pill-dot {
+  background-color: var(--color-tesla-red);
+  box-shadow: 0 0 8px var(--color-tesla-red);
+  transform: scale(1.2);
+}
+
+body.light-theme .garage-pill-btn {
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--color-carbon);
+}
+
+body.light-theme .garage-pill-btn.active {
+  background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%);
+  border-color: var(--color-tesla-red);
+  color: var(--color-tesla-red);
+  box-shadow: 0 4px 16px rgba(232, 33, 39, 0.15);
+}
+
+/* Pestañas de Vista (Exterior 360, Llantas, Interior) */
+.garage-view-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-32);
+  flex-wrap: wrap;
+}
+
+.garage-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  background-color: var(--color-obsidian);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-silver);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.garage-tab-btn:hover {
+  color: var(--color-white);
+  border-color: var(--color-silver);
+  background-color: var(--color-carbon);
+}
+
+.garage-tab-btn.active {
+  background-color: var(--color-carbon-light);
+  border-color: var(--color-tesla-red);
+  color: var(--color-white);
+  box-shadow: 0 2px 12px rgba(232, 33, 39, 0.2);
+}
+
+body.light-theme .garage-tab-btn {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+body.light-theme .garage-tab-btn.active {
+  background-color: #ffffff;
+  border-color: var(--color-tesla-red);
+  color: var(--color-tesla-red);
+  box-shadow: 0 2px 10px rgba(232, 33, 39, 0.12);
+}
+
+/* Escenario Viewport Principal del Garaje */
+.garage-stage-viewport {
+  position: relative;
+  background: radial-gradient(ellipse at 50% 40%, #1c1d22 0%, #0b0c0e 85%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  min-height: 520px;
+}
+
+body.light-theme .garage-stage-viewport {
+  background: radial-gradient(ellipse at 50% 40%, #ffffff 0%, #e2e8f0 85%);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.garage-view-panel {
+  position: relative;
+  width: 100%;
+  animation: fadeIn 0.4s ease;
+}
+
+/* 1. VISTA EXTERIOR 360 */
+.garage-wall-branding {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.garage-neon-logo {
+  color: rgba(255, 255, 255, 0.08);
+  filter: drop-shadow(0 0 20px rgba(232, 33, 39, 0.25));
+  transition: all var(--transition-medium);
+}
+
+body.light-theme .garage-neon-logo {
+  color: rgba(0, 0, 0, 0.08);
+  filter: drop-shadow(0 0 15px rgba(232, 33, 39, 0.15));
+}
+
+.garage-turntable-wrapper {
+  position: relative;
+  min-height: 440px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px 20px;
+  cursor: grab;
+  user-select: none;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.garage-turntable-wrapper:active,
+.garage-turntable-wrapper.is-dragging {
+  cursor: grabbing;
+}
+
+/* Anillo de luz en el piso del garaje */
+.turntable-light-ring {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(74deg);
+  width: 580px;
+  height: 580px;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 33, 39, 0.5);
+  box-shadow: 0 0 45px rgba(232, 33, 39, 0.4), inset 0 0 35px rgba(232, 33, 39, 0.25);
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.turntable-inner-disc {
+  position: absolute;
+  bottom: 55px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(74deg);
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.7) 100%);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+/* Contenedor del vehículo 360 */
+.vehicle-360-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  perspective: 1200px;
+  text-align: center;
+}
+
+#garage360CarImage {
+  width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  transition: transform 0.08s ease-out, filter 0.25s ease;
+  pointer-events: none;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.65));
+}
+
+.turntable-shadow {
+  position: absolute;
+  bottom: -15px;
+  left: 10%;
+  right: 10%;
+  height: 30px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85) 0%, transparent 75%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.turntable-reflection {
+  position: absolute;
+  bottom: -35px;
+  left: 15%;
+  right: 15%;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(232, 33, 39, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  filter: blur(8px);
+}
+
+/* Indicador de arrastre */
+.drag-hint-badge {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(14, 14, 15, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--color-silver-light);
+  pointer-events: none;
+  z-index: 3;
+  animation: pulseHint 2.5s infinite;
+}
+
+@keyframes pulseHint {
+
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: translateX(-50%) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.04);
+  }
+}
+
+/* Barra de Controles de Rotación */
+.garage-controls-bar {
+  padding: 16px 28px;
+  background-color: rgba(14, 14, 15, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+body.light-theme .garage-controls-bar {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.angle-badge-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.angle-label {
+  font-size: 0.8125rem;
+  color: var(--color-silver);
+  font-weight: 500;
+}
+
+.angle-val-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: var(--color-obsidian);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-white);
+  min-width: 110px;
+  text-align: center;
+}
+
+body.light-theme .angle-val-pill {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: var(--color-carbon);
+}
+
+.garage-slider-wrap {
+  flex: 1;
+  min-width: 200px;
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+}
+
+#garageRotationSlider {
+  width: 100%;
+  accent-color: var(--color-tesla-red);
+  cursor: pointer;
+  height: 6px;
+  border-radius: var(--radius-full);
+}
+
+.garage-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.preset-angles-group {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-preset-angle {
+  padding: 5px 10px;
+  background-color: var(--color-obsidian);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-silver);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-preset-angle:hover {
+  color: var(--color-white);
+  border-color: var(--color-silver);
+}
+
+.btn-preset-angle.active {
+  background-color: var(--color-tesla-red);
+  border-color: var(--color-tesla-red);
+  color: var(--color-white);
+}
+
+/* Selector de Color de Carrocería */
+.garage-color-dock {
+  padding: 12px 28px;
+  background-color: rgba(10, 10, 11, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+body.light-theme .garage-color-dock {
+  background-color: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.dock-label {
+  font-size: 0.8125rem;
+  color: var(--color-silver);
+  font-weight: 500;
+}
+
+.dock-swatches {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dock-swatch-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-clip: content-box;
+}
+
+.dock-swatch-btn:hover {
+  transform: scale(1.15);
+}
+
+.dock-swatch-btn.active {
+  border-color: var(--color-tesla-red);
+  box-shadow: 0 0 10px rgba(232, 33, 39, 0.5);
+  transform: scale(1.2);
+}
+
+.dock-color-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+body.light-theme .dock-color-name {
+  color: var(--color-carbon);
+}
+
+/* ==========================================================================
+   2. VISTA INSPECCIÓN DE LLANTAS Y RUEDAS
+   ========================================================================== */
+
+.wheels-inspector-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: var(--space-32);
+  padding: var(--space-40);
+  align-items: center;
+}
+
+.wheel-visual-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-20);
+}
+
+.wheel-disc-stage {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle, #25282e 0%, #111215 70%);
+  border-radius: 50%;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 0, 0, 0.8);
+  border: 4px solid #1a1b1e;
+}
+
+body.light-theme .wheel-disc-stage {
+  background: radial-gradient(circle, #f1f5f9 0%, #cbd5e1 70%);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(0, 0, 0, 0.1);
+  border-color: #94a3b8;
+}
+
+.wheel-rim-graphic {
+  position: relative;
+  width: 270px;
+  height: 270px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.1s linear;
+}
+
+.wheel-rim-graphic.is-spinning {
+  animation: spinWheel 0.6s linear infinite;
+}
+
+@keyframes spinWheel {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.wheel-tire-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 22px solid #141517;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.tire-tread-marks {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  border: 4px dashed rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.tire-brand-label {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.5625rem;
+  letter-spacing: 0.15em;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+}
+
+.wheel-caliper-brembo {
+  position: absolute;
+  top: 45px;
+  right: 22px;
+  width: 58px;
+  height: 30px;
+  background: linear-gradient(135deg, #e82127 0%, #b30f17 100%);
+  border-radius: 6px 18px 18px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(232, 33, 39, 0.6);
+  z-index: 5;
+}
+
+.wheel-caliper-brembo span {
+  font-size: 0.5625rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+}
+
+.wheel-center-cap {
+  position: relative;
+  z-index: 6;
+  width: 54px;
+  height: 54px;
+  background: radial-gradient(circle, #3a3d44 0%, #18191b 100%);
+  border-radius: 50%;
+  border: 2px solid #555861;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+}
+
+.wheel-spokes-layer {
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+      #2a2c30 0deg 18deg,
+      transparent 18deg 36deg,
+      #2a2c30 36deg 54deg,
+      transparent 54deg 72deg,
+      #2a2c30 72deg 90deg,
+      transparent 90deg 108deg,
+      #2a2c30 108deg 126deg,
+      transparent 126deg 144deg,
+      #2a2c30 144deg 162deg,
+      transparent 162deg 180deg,
+      #2a2c30 180deg 198deg,
+      transparent 198deg 216deg,
+      #2a2c30 216deg 234deg,
+      transparent 234deg 252deg,
+      #2a2c30 252deg 270deg,
+      transparent 270deg 288deg,
+      #2a2c30 288deg 306deg,
+      transparent 306deg 324deg,
+      #2a2c30 324deg 342deg,
+      transparent 342deg 360deg);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+.wheel-info-card {
+  background-color: rgba(22, 22, 25, 0.8);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-28);
+}
+
+body.light-theme .wheel-info-card {
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.wheel-name-title {
+  font-size: 1.5rem;
+  margin: 8px 0;
+  color: var(--color-white);
+}
+
+body.light-theme .wheel-name-title {
+  color: var(--color-carbon);
+}
+
+.wheel-desc-text {
+  font-size: 0.9375rem;
+  color: var(--color-silver);
+  line-height: 1.5;
+  margin-bottom: var(--space-20);
+}
+
+.wheel-selector-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-24);
+}
+
+.wheel-choice-btn {
+  padding: 8px 16px;
+  background-color: var(--color-obsidian);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-silver-light);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.wheel-choice-btn:hover {
+  border-color: var(--color-silver);
+  color: var(--color-white);
+}
+
+.wheel-choice-btn.active {
+  background-color: rgba(232, 33, 39, 0.15);
+  border-color: var(--color-tesla-red);
+  color: var(--color-white);
+}
+
+.wheel-specs-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.wheel-spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  background-color: var(--color-obsidian);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+}
+
+body.light-theme .wheel-spec-item {
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.w-label {
+  font-size: 0.75rem;
+  color: var(--color-silver);
+}
+
+.w-val {
+  font-size: 0.875rem;
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+body.light-theme .w-val {
+  color: var(--color-carbon);
+}
+
+/* ==========================================================================
+   3. VISTA CABINA & INTERIOR 360°
+   ========================================================================== */
+
+.interior-viewer-container {
+  position: relative;
+  overflow: hidden;
+  height: 480px;
+  background-color: #0b0c0e;
+}
+
+.interior-pan-canvas {
+  position: relative;
+  width: 150%;
+  height: 100%;
+  transition: transform 0.12s ease-out;
+  cursor: grab;
+  user-select: none;
+}
+
+.interior-pan-canvas:active {
+  cursor: grabbing;
+}
+
+.interior-panoramic-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Hotspots interactivos de cabina */
+.interior-hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.hotspot-pin {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(232, 33, 39, 0.85);
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(232, 33, 39, 0.8);
+  position: relative;
+  animation: radarPulse 2s infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hotspot-pin::after {
+  content: "+";
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+@keyframes radarPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(232, 33, 39, 0.8);
+  }
+
+  70% {
+    box-shadow: 0 0 0 14px rgba(232, 33, 39, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(232, 33, 39, 0);
+  }
+}
+
+.hotspot-popup {
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background-color: rgba(14, 14, 15, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  width: 250px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+  z-index: 20;
+}
+
+.hotspot-popup strong {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--color-white);
+  margin-bottom: 4px;
+}
+
+.hotspot-popup p {
+  font-size: 0.75rem;
+  color: var(--color-silver-light);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.interior-hotspot:hover .hotspot-popup,
+.interior-hotspot.is-open .hotspot-popup {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.interior-pan-dock {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(14, 14, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 15;
+  width: 90%;
+  max-width: 620px;
+}
+
+body.light-theme .interior-pan-dock {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+#interiorPanSlider {
+  flex: 1;
+  accent-color: var(--color-tesla-red);
+  cursor: pointer;
+}
+
+/* Barra Inferior del Garaje 360 */
+.garage-bottom-bar {
+  margin-top: var(--space-24);
+  padding: var(--space-20) var(--space-28);
+  background-color: var(--color-obsidian);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-24);
+  flex-wrap: wrap;
+}
+
+body.light-theme .garage-bottom-bar {
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.garage-car-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-32);
+  flex-wrap: wrap;
+}
+
+.garage-subtag {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-tesla-red);
+  font-weight: 700;
+}
+
+.garage-car-name {
+  font-size: 1.5rem;
+  margin: 2px 0 0;
+  color: var(--color-white);
+}
+
+body.light-theme .garage-car-name {
+  color: var(--color-carbon);
+}
+
+.garage-quick-metrics {
+  display: flex;
+  gap: var(--space-24);
+}
+
+.g-metric-val {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+body.light-theme .g-metric-val {
+  color: var(--color-carbon);
+}
+
+.g-metric-lbl {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--color-silver);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.garage-actions-cluster {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Responsividad del Garaje 360 */
+@media (max-width: 992px) {
+  .wheels-inspector-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-24);
+    padding: var(--space-24);
+  }
+
+  .garage-car-summary {
+    gap: var(--space-20);
+  }
+}
+
+@media (max-width: 768px) {
+  .garage-controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .garage-slider-wrap {
+    max-width: 100%;
+  }
+
+  .preset-angles-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .garage-bottom-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .garage-actions-cluster {
+    flex-direction: column;
+  }
+
+  .garage-actions-cluster button {
+    width: 100%;
   }
 }
 
@@ -2835,7 +4391,10 @@ h1, h2, h3, h4 {
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
