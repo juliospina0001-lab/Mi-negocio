@@ -451,7 +451,7 @@ h4 {
   display: flex;
   align-items: center;
   list-style: none;
-  gap: var(--space-32);
+  gap: clamp(14px, 1.6vw, 24px);
 }
 
 .nav-link {
@@ -460,6 +460,7 @@ h4 {
   color: var(--color-silver-light);
   position: relative;
   padding: 6px 0;
+  white-space: nowrap;
 }
 
 .nav-link:hover,
@@ -486,7 +487,20 @@ h4 {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-16);
+  gap: clamp(10px, 1vw, 16px);
+  margin-left: clamp(24px, 3vw, 48px);
+  flex-shrink: 0;
+}
+
+@media (min-width: 992px) {
+  .header-actions::before {
+    content: "";
+    display: inline-block;
+    width: 1px;
+    height: 22px;
+    background-color: var(--color-border);
+    margin-right: 8px;
+  }
 }
 
 .favorites-trigger {
@@ -1987,6 +2001,21 @@ h4 {
    RESPONSIVE DESIGN (MÓVIL Y TABLET)
    ========================================================================== */
 
+@media (max-width: 1260px) and (min-width: 769px) {
+  .main-nav-list {
+    gap: 16px;
+  }
+
+  .nav-link {
+    font-size: 0.8125rem;
+  }
+
+  .header-actions {
+    margin-left: 20px;
+    gap: 10px;
+  }
+}
+
 @media (max-width: 1024px) {
 
   .simulator-layout,
@@ -2173,7 +2202,7 @@ h4 {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background-color: rgba(255, 255, 255, 0.04);
@@ -2182,6 +2211,7 @@ h4 {
   font-weight: 600;
   transition: all var(--transition-fast);
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .btn-account-trigger:hover {
@@ -2413,33 +2443,69 @@ h4 {
 }
 
 .auth-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  background-color: var(--color-obsidian);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 4px;
-  margin-bottom: var(--space-24);
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin-bottom: var(--space-28);
+  position: relative;
+}
+
+.auth-tabs::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-border);
+  border-radius: 2px;
 }
 
 .auth-tab {
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.8125rem;
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 0;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-silver);
   text-align: center;
   transition: all var(--transition-fast);
+  border-bottom: 2px solid transparent;
+  position: relative;
+  z-index: 1;
+  letter-spacing: 0.01em;
+}
+
+/* Separador visual entre las dos pestañas */
+.auth-tab-divider {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 6px;
+  padding-bottom: 14px;
+  color: var(--color-border);
+  font-size: 1.1rem;
+  font-weight: 400;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  user-select: none;
+  opacity: 0.6;
 }
 
 .auth-tab:hover {
   color: var(--color-white);
+  background: rgba(255,255,255,0.04);
 }
 
 .auth-tab.active {
-  background-color: var(--color-white);
-  color: var(--color-obsidian);
+  background-color: transparent;
+  color: var(--color-white);
+  border-bottom: 2px solid var(--color-accent-red);
+  font-weight: 700;
 }
 
 .password-input-wrap {
