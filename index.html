@@ -572,8 +572,50 @@
   }
   </script>
 
-  <!-- Enlace a la hoja de estilos principal -->
-  <link rel="stylesheet" href="css/styles.css">
+  <!-- =========================================================================
+       OPTIMIZACIÓN DE RENDIMIENTO: Resource Hints y Critical Path
+       ========================================================================= -->
+  <!-- Preconnect para origenes externos críticos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://wa.me">
+  <link rel="dns-prefetch" href="https://api.whatsapp.com">
+
+  <!-- Preload de la imagen LCP (Largest Contentful Paint) - Hero -->
+  <link rel="preload" href="assets/images/hero.jpg" as="image" fetchpriority="high">
+  <!-- Preload del CSS principal -->
+  <link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/styles.css"></noscript>
+
+  <!-- CSS Crítico en línea para renderizado inmediato above-the-fold -->
+  <style id="critical-css">
+    /* Reset mínimo y tokens críticos */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;overflow-x:hidden}
+    body{background:#101010;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.5;overflow-x:hidden}
+    /* Skip link */
+    .skip-link{position:absolute;top:-100%;left:0;z-index:9999;padding:12px 20px;background:#e82127;color:#fff;font-weight:700;text-decoration:none;border-radius:0 0 8px 0;transition:top .2s}
+    .skip-link:focus{top:0}
+    /* Header crítico */
+    .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;display:flex;align-items:center;background:rgba(16,16,16,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+    .nav-container{width:100%;max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+    .brand-logo{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:.8125rem;font-weight:700;letter-spacing:.18em}
+    /* Hero section crítico */
+    .hero-section{position:relative;width:100%;height:100vh;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#101010}
+    .hero-bg-container{position:absolute;inset:0;z-index:0}
+    .hero-bg-img{width:100%;height:100%;object-fit:cover;object-position:center}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(16,16,16,.9) 0%,rgba(16,16,16,.55) 50%,rgba(16,16,16,.75) 100%)}
+    .hero-content{position:relative;z-index:1;width:100%;max-width:1280px;padding:0 20px}
+    /* Contenedor base */
+    .container{width:100%;max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+    /* Loader */
+    #pageLoader{position:fixed;inset:0;background:#101010;z-index:9998;display:flex;align-items:center;justify-content:center;transition:opacity .4s}
+    #pageLoader.hidden{opacity:0;pointer-events:none}
+  </style>
+
+
+
 </head>
 
 <body>
@@ -925,7 +967,7 @@
 
               <!-- Imagen del Vehículo con Rotación y Perspectiva 3D -->
               <div class="vehicle-360-container" id="vehicle360Container">
-                <img id="garage360CarImage" src="assets/images/model-3.jpg" alt="Tesla en Garaje 360" draggable="false">
+                <img id="garage360CarImage" src="assets/images/model-3.jpg" alt="Tesla en Garaje 360" draggable="false" loading="lazy" decoding="async">
                 <div class="turntable-shadow"></div>
                 <div class="turntable-reflection"></div>
               </div>
@@ -1056,7 +1098,7 @@
             <div class="interior-viewer-container" id="interiorViewerContainer">
               <div class="interior-pan-canvas" id="interiorPanCanvas">
                 <img src="assets/images/interior-tech.jpg" alt="Interior Panorámico Tesla"
-                  class="interior-panoramic-img" id="interiorPanoramicImg" draggable="false">
+                  class="interior-panoramic-img" id="interiorPanoramicImg" draggable="false" loading="lazy" decoding="async">
 
                 <!-- Hotspots Interactivos de Cabina -->
                 <div class="interior-hotspot" style="top: 55%; left: 38%;" data-spot="screen">
@@ -1217,7 +1259,7 @@
         <!-- Banner Editorial Destacado -->
         <div class="experience-hero-card">
           <img src="assets/images/interior-tech.jpg" alt="Interior minimalista con pantalla táctil cinematográfica"
-            class="experience-hero-bg">
+            class="experience-hero-bg" loading="lazy" decoding="async">
           <div class="experience-hero-overlay"></div>
           <div class="experience-hero-text">
             <span class="section-tag">Cabina Cinematográfica</span>
@@ -2230,7 +2272,7 @@
           <div class="purchase-vehicle-col">
             <div class="purchase-selected-card">
               <div class="purchase-img-wrap">
-                <img id="purchaseVehicleImg" src="assets/images/model-3.jpg" alt="Tesla Seleccionado">
+                <img id="purchaseVehicleImg" src="assets/images/model-3.jpg" alt="Tesla Seleccionado" loading="lazy" decoding="async">
               </div>
               <div class="purchase-car-meta">
                 <div class="form-group" style="margin-bottom: 8px;">
@@ -2477,9 +2519,9 @@
        ========================================================================= -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-  <!-- Scripts JavaScript (Vanilla) -->
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Scripts JavaScript (Vanilla) - defer para no bloquear renderizado -->
+  <script src="js/data.js" defer></script>
+  <script src="js/app.js" defer></script>
 </body>
 
 </html>

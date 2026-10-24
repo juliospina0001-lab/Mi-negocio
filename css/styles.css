@@ -5161,3 +5161,94 @@ textarea {
     padding-right: max(var(--space-20), env(safe-area-inset-right));
   }
 }
+
+/* ==========================================================================
+   OPTIMIZACIONES DE RENDIMIENTO (PERFORMANCE)
+   - will-change: Promueve elementos animados al compositor de GPU
+   - content-visibility: Omite renderizado de secciones fuera de pantalla
+   - contain: Aísla subsecciones del árbol de layout/paint
+   - prefers-reduced-motion: Accesibilidad y perf en dispositivos de gama baja
+   ========================================================================== */
+
+/* Promoted GPU layers para elementos con transformaciones frecuentes */
+.hero-bg-img {
+  will-change: transform;
+}
+
+.modal-dialog,
+.drawer-panel,
+.main-nav-list {
+  will-change: transform, opacity;
+}
+
+.btn-whatsapp-bubble {
+  will-change: transform;
+}
+
+.wa-pulse-ring {
+  will-change: transform, opacity;
+}
+
+/* content-visibility para secciones fuera de la vista inicial */
+/* Esto permite al navegador omitir el layout y paint de estas secciones
+   hasta que el usuario haga scroll, mejorando significativamente el LCP y FCP */
+.modelos-section,
+.catalog-section,
+.experience-section,
+.financiacion-section,
+.comparador-section,
+.contact-section,
+.site-footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+}
+
+/* Containment para componentes auto-contenidos */
+.vehicle-card {
+  contain: layout style;
+}
+
+.modal-backdrop {
+  contain: strict;
+}
+
+/* Optimización de imágenes en el layout */
+img {
+  image-rendering: auto;
+  content-visibility: auto;
+}
+
+/* Reducir uso de backdrop-filter en dispositivos de baja potencia */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-bg-img {
+    transform: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+}
+
+/* Scroll suave con hardware acceleration en iOS/Android */
+.main-nav-list,
+.drawer-panel,
+.modal-dialog,
+.catalog-scroll-area,
+.compare-table-wrap {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Forzar aceleración hardware en capas animadas */
+.site-header,
+.whatsapp-aside,
+.toast-container {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
