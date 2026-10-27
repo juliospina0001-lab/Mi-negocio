@@ -83,6 +83,11 @@
             throw new Error(`Se esperaba que ${actual} fuera menor que ${expected}`);
           }
         },
+        toBeLessThanOrEqual(expected) {
+          if (!(actual <= expected)) {
+            throw new Error(`Se esperaba que ${actual} fuera menor o igual que ${expected}`);
+          }
+        },
         toBeCloseTo(expected, delta = 1) {
           if (Math.abs(actual - expected) > delta) {
             throw new Error(`Se esperaba que ${actual} estuviera cerca de ${expected} (±${delta}), diferencia: ${Math.abs(actual - expected)}`);
@@ -382,14 +387,22 @@
         .replace(/\//g, "&#x2F;");
     }
 
+    const _generatedTestIds = new Set();
     function generateSecureId(prefix = "TSL") {
-      if (global.crypto && global.crypto.getRandomValues) {
-        const buf = new Uint32Array(1);
-        global.crypto.getRandomValues(buf);
-        const randNum = 100000 + (buf[0] % 900000);
-        return `${prefix}-${randNum}`;
-      }
-      return `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
+      let randNum;
+      let id;
+      do {
+        if (global.crypto && global.crypto.getRandomValues) {
+          const buf = new Uint32Array(1);
+          global.crypto.getRandomValues(buf);
+          randNum = 100000 + (buf[0] % 900000);
+        } else {
+          randNum = Math.floor(100000 + Math.random() * 900000);
+        }
+        id = `${prefix}-${randNum}`;
+      } while (_generatedTestIds.has(id));
+      _generatedTestIds.add(id);
+      return id;
     }
 
     it("escapeHTML debe neutralizar scripts maliciosos básicos <script>alert(1)</script>", () => {

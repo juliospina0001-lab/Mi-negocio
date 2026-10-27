@@ -8,11 +8,28 @@ document.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
   // =========================================================================
-  // ESTADO GLOBAL DE LA APLICACIÓN
+  // ESTADO GLOBAL DE LA APLICACIÓN (SINCRONIZADO CON CONSOLA ADMIN)
   // =========================================================================
+  const STORAGE_KEY_VEHICLES = "tesla_showroom_vehicles_catalog";
+  const STORAGE_KEY_LEADS = "tesla_showroom_leads";
+  const SYNC_CHANNEL_NAME = "tesla_sync_channel";
+
+  function loadInitialVehicles() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_VEHICLES);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return (typeof VEHICLES_DATA !== "undefined" && Array.isArray(VEHICLES_DATA)) ? [...VEHICLES_DATA] : [];
+  }
+
+  const initialVehiclesList = loadInitialVehicles();
+
   const state = {
-    vehicles: VEHICLES_DATA || [],
-    filteredVehicles: [...(VEHICLES_DATA || [])],
+    vehicles: initialVehiclesList,
+    filteredVehicles: [...initialVehiclesList],
     favorites: loadFavorites(),
     currentUser: loadAuthUser(),
     activeCategory: "all",
@@ -27,27 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
     papersPackageCost: 5200000,
     selectedVehicleForPurchase: "model-3",
     includePapersInPurchase: true,
-    // Modo de Tema (oscuro / claro)
-    theme: loadTheme(),
+    pendingPurchaseVehicleId: null,
     // Simulador
     simulator: {
       vehicleId: "model-3",
       vehiclePrice: 198000000,
       downPaymentPercent: 20, // 20%
       termMonths: 48,
-      annualInterestRate: 14.5 // Tasa EA anual orientativa en Colombia (aprox 1.13% mensual)
-    },
-    // Garaje 360 y Estudio Interactivo
-    garage360: {
-      modelId: "model-3",
-      angle: 0,
-      autoRotate: false,
-      autoRotateRafId: null,
-      selectedColorFilter: "none",
-      selectedColorName: "Blanco Perla Multicapa",
-      isDragging: false,
-      startX: 0,
-      startAngle: 0
+      annualInterestRate: 14.5, // Tasa EA anual orientativa en Colombia (aprox 1.13% mensual)
+      monthlyIncome: 15000000 // Ingreso mensual sugerido para cálculo de presupuesto
     }
   };
 
@@ -62,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     navLoginLink: document.getElementById("navLoginLink"),
     navMobileAccountBtn: document.getElementById("navMobileAccountBtn"),
     mobileAccountBtnText: document.getElementById("mobileAccountBtnText"),
-    themeToggleBtn: document.getElementById("themeToggleBtn"),
     favCountBadge: document.getElementById("favBadgeCount"),
     favTriggerBtn: document.getElementById("favTriggerBtn"),
 
@@ -162,7 +166,8 @@ document.addEventListener("DOMContentLoaded", () => {
     sendOrderWhatsAppBtn: document.getElementById("sendOrderWhatsAppBtn"),
     purchaseStatusAlert: document.getElementById("purchaseStatusAlert"),
 
-    // Widget Flotante de WhatsApp
+    // Widget Flotante y Botón Header de WhatsApp
+    headerWhatsappBtn: document.getElementById("headerWhatsappBtn"),
     whatsappFloatWidget: document.getElementById("whatsappFloatWidget"),
     whatsappBubbleBtn: document.getElementById("whatsappBubbleBtn"),
     whatsappPopover: document.getElementById("whatsappPopover"),
@@ -190,12 +195,20 @@ document.addEventListener("DOMContentLoaded", () => {
     favDrawerList: document.getElementById("favDrawerList"),
     favDrawerTotal: document.getElementById("favDrawerTotal"),
 
-    // Simulador
+    // Simulador y Presupuesto
+    simGuestLockState: document.getElementById("simGuestLockState"),
+    simAuthenticatedContent: document.getElementById("simAuthenticatedContent"),
+    simUnlockRegisterBtn: document.getElementById("simUnlockRegisterBtn"),
+    simUnlockLoginBtn: document.getElementById("simUnlockLoginBtn"),
+    simUserBadge: document.getElementById("simUserBadge"),
     simVehicleSelect: document.getElementById("simVehicleSelect"),
     simPriceInput: document.getElementById("simPriceInput"),
     simDownPercentRange: document.getElementById("simDownPercentRange"),
     simDownPercentLabel: document.getElementById("simDownPercentLabel"),
     simDownAmountLabel: document.getElementById("simDownAmountLabel"),
+    simTermSelect: document.getElementById("simTermSelect"),
+    simTermBadge: document.getElementById("simTermBadge"),
+    simResultTermText: document.getElementById("simResultTermText"),
     simInterestRange: document.getElementById("simInterestRange"),
     simInterestLabel: document.getElementById("simInterestLabel"),
     simTermsContainer: document.getElementById("simTermsContainer"),
@@ -203,7 +216,14 @@ document.addEventListener("DOMContentLoaded", () => {
     simFinancedAmount: document.getElementById("simFinancedAmount"),
     simTotalInterest: document.getElementById("simTotalInterest"),
     simTotalCredit: document.getElementById("simTotalCredit"),
+    simIncomeInput: document.getElementById("simIncomeInput"),
+    simBudgetHealthIndicator: document.getElementById("simBudgetHealthIndicator"),
+    simIncomeRatioVal: document.getElementById("simIncomeRatioVal"),
+    simTargetPaymentInput: document.getElementById("simTargetPaymentInput"),
+    simAutoFitBtn: document.getElementById("simAutoFitBtn"),
+    simAutoFitResult: document.getElementById("simAutoFitResult"),
     simApplyBtn: document.getElementById("simApplyBtn"),
+    navLinkFinancing: document.getElementById("navLinkFinancing"),
 
     // Comparador
     compareSelectA: document.getElementById("compareSelectA"),
@@ -216,56 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formStatusAlert: document.getElementById("formStatusAlert"),
 
     // Modales informativos / Toasts
-    toastContainer: document.getElementById("toastContainer"),
-
-    // Tesla 360° Estudio & Garaje
-    garageModelPills: document.getElementById("garageModelPills"),
-    tab360ExteriorBtn: document.getElementById("tab360ExteriorBtn"),
-    tab360WheelsBtn: document.getElementById("tab360WheelsBtn"),
-    tab360InteriorBtn: document.getElementById("tab360InteriorBtn"),
-    garageExteriorPanel: document.getElementById("garageExteriorPanel"),
-    garageWheelsPanel: document.getElementById("garageWheelsPanel"),
-    garageInteriorPanel: document.getElementById("garageInteriorPanel"),
-    garageTurntable: document.getElementById("garageTurntable"),
-    vehicle360Container: document.getElementById("vehicle360Container"),
-    garage360CarImage: document.getElementById("garage360CarImage"),
-    turntableLightRing: document.querySelector(".turntable-light-ring"),
-    turntableInnerDisc: document.querySelector(".turntable-inner-disc"),
-    turntableShadow: document.querySelector(".turntable-shadow"),
-    turntableReflection: document.querySelector(".turntable-reflection"),
-    dragHintBadge: document.getElementById("dragHintBadge"),
-    garageAngleValue: document.getElementById("garageAngleValue"),
-    garageRotationSlider: document.getElementById("garageRotationSlider"),
-    garageAutoRotateBtn: document.getElementById("garageAutoRotateBtn"),
-    autoRotateIcon: document.getElementById("autoRotateIcon"),
-    autoRotateText: document.getElementById("autoRotateText"),
-    presetAngleBtns: document.querySelectorAll(".btn-preset-angle"),
-    garageSwatchesList: document.getElementById("garageSwatchesList"),
-    garageColorName: document.getElementById("garageColorName"),
-    // Garaje - Llantas
-    spinWheelBtn: document.getElementById("spinWheelBtn"),
-    wheelRimGraphic: document.getElementById("wheelRimGraphic"),
-    wheelCarBadge: document.getElementById("wheelCarBadge"),
-    wheelModelTitle: document.getElementById("wheelModelTitle"),
-    wheelModelDesc: document.getElementById("wheelModelDesc"),
-    wheelOptionsRow: document.getElementById("wheelOptionsRow"),
-    wheelSpecDiameter: document.getElementById("wheelSpecDiameter"),
-    wheelSpecTire: document.getElementById("wheelSpecTire"),
-    wheelSpecBrakes: document.getElementById("wheelSpecBrakes"),
-    wheelSpecAero: document.getElementById("wheelSpecAero"),
-    // Garaje - Interior
-    interiorViewerContainer: document.getElementById("interiorViewerContainer"),
-    interiorPanCanvas: document.getElementById("interiorPanCanvas"),
-    interiorPanSlider: document.getElementById("interiorPanSlider"),
-    interiorHotspots: document.querySelectorAll(".interior-hotspot"),
-    // Garaje - Barra inferior
-    garageCarCategory: document.getElementById("garageCarCategory"),
-    garageCarTitle: document.getElementById("garageCarTitle"),
-    garageCarAccel: document.getElementById("garageCarAccel"),
-    garageCarRange: document.getElementById("garageCarRange"),
-    garageCarPrice: document.getElementById("garageCarPrice"),
-    garageBuyWithPapersBtn: document.getElementById("garageBuyWithPapersBtn"),
-    garageAskWaBtn: document.getElementById("garageAskWaBtn")
+    toastContainer: document.getElementById("toastContainer")
   };
 
   // =========================================================================
@@ -282,8 +253,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }).format(amount);
   }
 
-  // Notificación tipo Toast
-  function showToast(message, type = "info") {
+  // Notificación tipo Toast (desactivada en botones generales, solo activa para confirmación de solicitudes)
+  function showToast(message, type = "info", isSubmission = false) {
+    if (!isSubmission) return;
     if (!elements.toastContainer) return;
     const toast = document.createElement("div");
     toast.className = `toast toast-${type}`;
@@ -302,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       toast.classList.remove("show");
       setTimeout(() => toast.remove(), 300);
-    }, 4000);
+    }, 4500);
   }
 
   // Sanitizador robusto contra inyecciones XSS, backtick y entity evasion
@@ -318,15 +290,17 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/\//g, "&#x2F;");
   }
 
+  let _secureIdCounter = 0;
   // Generador criptográficamente seguro de radicados y órdenes (CSPRNG)
   function generateSecureId(prefix = "TSL") {
+    _secureIdCounter = (_secureIdCounter + 1) % 900000;
     if (window.crypto && window.crypto.getRandomValues) {
       const buf = new Uint32Array(1);
       window.crypto.getRandomValues(buf);
-      const randNum = 100000 + (buf[0] % 900000);
+      const randNum = 100000 + ((buf[0] + _secureIdCounter) % 900000);
       return `${prefix}-${randNum}`;
     }
-    return `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
+    return `${prefix}-${100000 + ((Math.floor(Math.random() * 900000) + _secureIdCounter) % 900000)}`;
   }
 
   // Rate Limiter preventivo contra abusos, flood y ataques de fuerza bruta en formularios
@@ -389,28 +363,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function loadTheme() {
-    if (!isLocalStorageAvailable()) return "dark";
-    return localStorage.getItem("tesla_theme") || "dark";
-  }
-
-  function applyTheme(theme) {
-    state.theme = theme;
-    if (theme === "light") {
-      document.documentElement.setAttribute("data-theme", "light");
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-    }
+  // Modo oscuro permanente en la plataforma de showroom
+  try {
     if (isLocalStorageAvailable()) {
-      localStorage.setItem("tesla_theme", theme);
+      localStorage.removeItem("tesla_theme");
     }
-  }
-
-  function toggleTheme() {
-    const nextTheme = state.theme === "light" ? "dark" : "light";
-    applyTheme(nextTheme);
-    showToast(nextTheme === "light" ? "Modo Claro activado" : "Modo Oscuro activado", "info");
-  }
+    document.documentElement.removeAttribute("data-theme");
+  } catch (e) {}
 
   function loadAuthUser() {
     if (!isLocalStorageAvailable()) return null;
@@ -437,6 +396,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     updateAuthUI();
+
+    // Si el usuario intentaba comprar un vehículo antes de identificarse, continuar compra automáticamente
+    if (user && state.pendingPurchaseVehicleId) {
+      const vIdToBuy = state.pendingPurchaseVehicleId;
+      state.pendingPurchaseVehicleId = null;
+      setTimeout(() => {
+        closeLoginModal();
+        openPurchaseModal(vIdToBuy);
+      }, 350);
+    }
   }
 
   function toggleFavorite(vehicleId) {
@@ -682,12 +651,22 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.vehicleModalContent.innerHTML = `
       <div class="configurator-view">
         <div class="config-preview-container">
-          <div class="config-preview-img-wrap">
-            <img id="modalVehicleImage" src="${escapeHTML(vehicle.image)}" alt="${escapeHTML(vehicle.name)}" style="filter: ${currentColor ? currentColor.filter : 'none'};">
+          <!-- Vista de Carrocería con Shader de Pintura Real (sin teñir la foto completa) -->
+          <div class="config-preview-img-wrap" style="position: relative; overflow: hidden; border-radius: var(--radius-md); background: #0a0a0c;">
+            <img id="modalVehicleImage" src="${escapeHTML(vehicle.image)}" alt="${escapeHTML(vehicle.name)}" style="width: 100%; display: block; transition: all 0.25s ease;">
+            <!-- Capas de pintura realista y reflejo especular sobre la carrocería -->
+            <div id="modalCarPaintOverlay" style="position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: 0; transition: opacity 0.25s ease, background-color 0.25s ease;"></div>
+            <div id="modalCarSpecularOverlay" style="position: absolute; inset: 0; pointer-events: none; mix-blend-mode: color; opacity: 0; transition: opacity 0.25s ease, background-color 0.25s ease;"></div>
           </div>
-          <div style="margin-bottom: var(--space-16);">
-            <div style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 6px;">
-              Acabado de Pintura: <strong id="modalColorName" style="color: var(--color-white);">${escapeHTML(currentColor ? currentColor.name : 'Estándar')}</strong>
+          <div style="margin-bottom: var(--space-16); margin-top: 14px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <div style="font-size: 0.8125rem; color: var(--color-silver);">
+                Pintura de Carrocería: <strong id="modalColorName" style="color: var(--color-silver-light, #fff); font-weight: 700;">${escapeHTML(currentColor ? currentColor.name : 'Blanco Perla')}</strong>
+              </div>
+              <label style="font-size: 0.78rem; color: var(--color-accent-red); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-weight: 700; background: rgba(232, 33, 39, 0.1); border: 1px solid rgba(232, 33, 39, 0.3); padding: 4px 10px; border-radius: 6px; user-select: none;">
+                <span>🎨 Color que desees</span>
+                <input type="color" id="modalCustomColorPicker" value="${currentColor && currentColor.hex ? currentColor.hex : '#e82127'}" style="position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;">
+              </label>
             </div>
             <div class="color-swatch-list">
               ${(vehicle.colors || []).map((c, idx) => `
@@ -696,7 +675,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   style="background-color: ${c.hex};" 
                   data-color-id="${c.id}" 
                   data-color-name="${c.name}"
-                  data-color-filter="${c.filter}"
+                  data-color-hex="${c.hex}"
                   title="${c.name}"
                   aria-label="Seleccionar color ${c.name}">
                 </button>
@@ -765,19 +744,76 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
-    // Asignar eventos de los swatches de color
+    // Sistema de acabado de pintura realista en carrocería (sin alterar fondos)
+    const paintOverlay = document.getElementById("modalCarPaintOverlay");
+    const specOverlay = document.getElementById("modalCarSpecularOverlay");
     const modalImg = document.getElementById("modalVehicleImage");
     const colorLabel = document.getElementById("modalColorName");
+
+    function applyCarPaint(hex, name) {
+      if (colorLabel && name) colorLabel.textContent = name;
+      if (!paintOverlay || !modalImg) return;
+
+      const cleanHex = (hex || "").toLowerCase();
+      // Blanco Perla / Original
+      if (!cleanHex || cleanHex === "#e8e9eb" || cleanHex === "#ffffff") {
+        paintOverlay.style.opacity = "0";
+        if (specOverlay) specOverlay.style.opacity = "0";
+        modalImg.style.filter = "none";
+        return;
+      }
+
+      // Negro Sólido
+      if (cleanHex === "#111112" || cleanHex === "#000000" || cleanHex === "#08080a") {
+        paintOverlay.style.backgroundColor = "#09090b";
+        paintOverlay.style.opacity = "0.92";
+        if (specOverlay) specOverlay.style.opacity = "0";
+        modalImg.style.filter = "contrast(1.2) brightness(0.88)";
+        return;
+      }
+
+      // Gris Sigilo
+      if (cleanHex === "#4b4e53" || cleanHex === "#4b4f54") {
+        paintOverlay.style.backgroundColor = "#373a3f";
+        paintOverlay.style.opacity = "0.78";
+        if (specOverlay) specOverlay.style.opacity = "0";
+        modalImg.style.filter = "contrast(1.1) brightness(0.95)";
+        return;
+      }
+
+      // Colores de alta gama y personalizados (Rojo, Azul, o elección del usuario)
+      paintOverlay.style.backgroundColor = hex;
+      paintOverlay.style.opacity = "0.8";
+      if (specOverlay) {
+        specOverlay.style.backgroundColor = hex;
+        specOverlay.style.opacity = "0.85";
+      }
+      modalImg.style.filter = "contrast(1.08) brightness(1.02)";
+    }
+
+    // Inicializar pintura según el color predeterminado
+    if (currentColor) {
+      applyCarPaint(currentColor.hex, currentColor.name);
+    }
+
     elements.vehicleModalContent.querySelectorAll(".swatch-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         elements.vehicleModalContent.querySelectorAll(".swatch-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         const colorName = btn.dataset.colorName;
-        const colorFilter = btn.dataset.colorFilter;
-        if (modalImg) modalImg.style.filter = colorFilter;
-        if (colorLabel) colorLabel.textContent = colorName;
+        const colorHex = btn.dataset.colorHex;
+        applyCarPaint(colorHex, colorName);
       });
     });
+
+    const customColorInput = document.getElementById("modalCustomColorPicker");
+    if (customColorInput) {
+      customColorInput.addEventListener("input", (e) => {
+        const customHex = e.target.value;
+        elements.vehicleModalContent.querySelectorAll(".swatch-btn").forEach(b => b.classList.remove("active"));
+        applyCarPaint(customHex, `Tono Personalizado (${customHex.toUpperCase()})`);
+      });
+    }
 
     // Botones de acción dentro del modal
     const simBtn = document.getElementById("modalSimulateBtn");
@@ -913,7 +949,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const totalCreditCost = principal + totalInterest + downPaymentAmount;
 
-    // Actualizar UI
+    // Actualizar UI estándar
     if (elements.simDownPercentLabel) {
       elements.simDownPercentLabel.textContent = `${downPercent}%`;
     }
@@ -934,6 +970,62 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (elements.simTotalCredit) {
       elements.simTotalCredit.textContent = formatCurrencyCOP(totalCreditCost);
+    }
+
+    // Sincronizar Plazo Extendible en Cuotas
+    if (elements.simTermSelect && Number(elements.simTermSelect.value) !== termMonths) {
+      elements.simTermSelect.value = termMonths;
+    }
+    if (elements.simTermBadge) {
+      const years = (termMonths / 12).toFixed(termMonths % 12 === 0 ? 0 : 1);
+      elements.simTermBadge.textContent = `${termMonths} cuotas (${years} ${termMonths === 12 ? 'año' : 'años'})`;
+    }
+    if (elements.simResultTermText) {
+      elements.simResultTermText.textContent = `${termMonths} cuotas`;
+    }
+
+    if (elements.simTermsContainer) {
+      elements.simTermsContainer.querySelectorAll(".term-btn").forEach(btn => {
+        if (Number(btn.dataset.term) === termMonths) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+    }
+
+    // MÓDULO DE AJUSTE A TU PRESUPUESTO & INGRESOS
+    const monthlyIncome = (elements.simIncomeInput ? Number(elements.simIncomeInput.value) : state.simulator.monthlyIncome) || 15000000;
+    state.simulator.monthlyIncome = monthlyIncome;
+    const ratio = monthlyIncome > 0 ? (monthlyPayment / monthlyIncome) * 100 : 0;
+
+    if (elements.simIncomeRatioVal) {
+      elements.simIncomeRatioVal.textContent = `${ratio.toFixed(1)}% de tus ingresos`;
+    }
+
+    if (elements.simBudgetHealthIndicator) {
+      if (ratio <= 30) {
+        if (elements.simIncomeRatioVal) elements.simIncomeRatioVal.style.color = '#10b981';
+        elements.simBudgetHealthIndicator.innerHTML = `
+          <div class="budget-pill pill-healthy">
+            <strong>✅ Presupuesto Óptimo:</strong> La cuota mensual estimada representa el <strong>${ratio.toFixed(1)}%</strong> de tus ingresos (recomendado bancario ≤ 30%). Tienes un perfil ideal para aprobación crediticia inmediata sin codeudor.
+          </div>
+        `;
+      } else if (ratio <= 45) {
+        if (elements.simIncomeRatioVal) elements.simIncomeRatioVal.style.color = '#f59e0b';
+        elements.simBudgetHealthIndicator.innerHTML = `
+          <div class="budget-pill pill-moderate">
+            <strong>⚠️ Presupuesto Moderado:</strong> La cuota representa el <strong>${ratio.toFixed(1)}%</strong> de tus ingresos. Para mayor holgura financiera, te sugerimos seleccionar un plazo extendido (72 u 84 cuotas) o aportar un 5% a 10% adicional de cuota inicial.
+          </div>
+        `;
+      } else {
+        if (elements.simIncomeRatioVal) elements.simIncomeRatioVal.style.color = '#ef4444';
+        elements.simBudgetHealthIndicator.innerHTML = `
+          <div class="budget-pill pill-high">
+            <strong>ℹ️ Cuota Elevada para tu Ingreso:</strong> La cuota representa el <strong>${ratio.toFixed(1)}%</strong> de tus ingresos mensuales (supera el 45% sugerido). Te sugerimos un plazo extendido (72 u 84 cuotas) o explorar otro modelo Tesla de nuestro catálogo para mantener tus finanzas saludables.
+          </div>
+        `;
+      }
     }
   }
 
@@ -1002,14 +1094,106 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // Selector extendible desplegable de cuotas
+    if (elements.simTermSelect) {
+      elements.simTermSelect.addEventListener("change", (e) => {
+        state.simulator.termMonths = Number(e.target.value);
+        updateSimulatorCalculations();
+      });
+    }
+
+    // Botones rápidos de cuotas
     if (elements.simTermsContainer) {
       elements.simTermsContainer.querySelectorAll(".term-btn").forEach(btn => {
         btn.addEventListener("click", () => {
-          elements.simTermsContainer.querySelectorAll(".term-btn").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
           state.simulator.termMonths = Number(btn.dataset.term);
           updateSimulatorCalculations();
         });
+      });
+    }
+
+    // Ajuste por Ingresos Mensuales
+    if (elements.simIncomeInput) {
+      elements.simIncomeInput.addEventListener("input", (e) => {
+        state.simulator.monthlyIncome = Number(e.target.value) || 0;
+        updateSimulatorCalculations();
+      });
+    }
+
+    // Botones de Desbloqueo en Estado Guest
+    if (elements.simUnlockRegisterBtn) {
+      elements.simUnlockRegisterBtn.addEventListener("click", () => {
+        openLoginModal("register");
+      });
+    }
+    if (elements.simUnlockLoginBtn) {
+      elements.simUnlockLoginBtn.addEventListener("click", () => {
+        openLoginModal("login");
+      });
+    }
+
+    // Calculadora Inversa: Ajustar auto a la cuota mensual disponible
+    if (elements.simAutoFitBtn && elements.simTargetPaymentInput) {
+      elements.simAutoFitBtn.addEventListener("click", () => {
+        const targetMonthly = Number(elements.simTargetPaymentInput.value);
+        if (!targetMonthly || targetMonthly < 500000) {
+          showToast("Ingresa un monto de cuota mensual válido (ej: 3.500.000 COP)", "warning");
+          return;
+        }
+
+        const term = state.simulator.termMonths || 48;
+        const annualRate = state.simulator.annualInterestRate || 14.5;
+        const mRate = annualRate > 0 ? (Math.pow(1 + annualRate / 100, 1 / 12) - 1) : 0;
+        let principalMax = 0;
+        if (mRate === 0) {
+          principalMax = targetMonthly * term;
+        } else {
+          const factor = Math.pow(1 + mRate, term);
+          principalMax = Math.round(targetMonthly * ((factor - 1) / (mRate * factor)));
+        }
+        const downPct = state.simulator.downPaymentPercent || 20;
+        const maxVehiclePrice = Math.round(principalMax / (1 - downPct / 100));
+
+        const viableVehicles = state.vehicles.filter(v => v.price <= maxVehiclePrice * 1.08);
+        const resBox = elements.simAutoFitResult;
+        if (resBox) {
+          resBox.style.display = "block";
+          if (viableVehicles.length > 0) {
+            const best = viableVehicles[viableVehicles.length - 1];
+            resBox.innerHTML = `
+              <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; padding: 10px; color: #ffffff; margin-top: 8px;">
+                <div style="font-weight: 700; color: #10b981; margin-bottom: 4px;">🎯 Modelo Recomendado: ${escapeHTML(best.name)}</div>
+                <div style="font-size: 0.8rem; color: var(--color-silver-light); margin-bottom: 8px;">
+                  Con una cuota de <strong>${formatCurrencyCOP(targetMonthly)}/mes</strong> a ${term} cuotas, tu presupuesto alcanza para vehículos de hasta <strong>${formatCurrencyCOP(maxVehiclePrice)}</strong>.
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" id="btnApplyAutoFitModel" style="padding: 5px 12px; font-size: 0.75rem;">
+                  Cargar ${escapeHTML(best.name)} en el Simulador
+                </button>
+              </div>
+            `;
+            const btnApply = document.getElementById("btnApplyAutoFitModel");
+            if (btnApply) {
+              btnApply.addEventListener("click", () => {
+                prefillSimulator(best.id);
+              });
+            }
+          } else {
+            resBox.innerHTML = `
+              <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 10px; color: #ffffff; margin-top: 8px; font-size: 0.8rem;">
+                Para una cuota de ${formatCurrencyCOP(targetMonthly)}, te sugerimos seleccionar un plazo extendido de <strong>72 u 84 cuotas</strong> o aportar una cuota inicial más alta.
+              </div>
+            `;
+          }
+        }
+      });
+    }
+
+    // Enlace del Menú Superior: Navegación guiada
+    if (elements.navLinkFinancing) {
+      elements.navLinkFinancing.addEventListener("click", (e) => {
+        if (!state.currentUser) {
+          showToast("Crea tu cuenta o inicia sesión para usar el simulador de cuotas y crédito.", "info");
+        }
       });
     }
 
@@ -1107,8 +1291,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Rate Limiter: Máximo 3 envíos cada 30 segundos por sesión
-      if (!securityRateLimiter.check("contact_submit", 3, 30000)) {
+      // Rate Limiter: Permite envíos sucesivos de prueba (hasta 10 cada 30 segundos)
+      if (!securityRateLimiter.check("contact_submit", 10, 30000)) {
         showToast("Por seguridad, espera unos segundos antes de enviar otra solicitud.", "warning");
         return;
       }
@@ -1164,37 +1348,509 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Generación criptográfica segura de radicado
-      const radicadoNum = generateSecureId("TSL");
+      // Generación oficial de radicado para experiencia de manejo
+      const radicadoNum = `RAD-2026-${Math.floor(10000 + Math.random() * 90000)}`;
       const selectedModelObj = state.vehicles.find(v => v.id === modelSelect.value);
       const modelName = selectedModelObj ? selectedModelObj.name : "Tesla";
+      const requestTypeVal = form.querySelector("#requestTypeSelect")?.value || "test-drive";
+      const requestTypeLabels = {
+        "test-drive": "Prueba de Manejo",
+        "quote": "Cotización de Compra",
+        "financing": "Asesoría Financiera",
+        "corporate": "Flota Corporativa"
+      };
+      const requestTypeLabel = requestTypeLabels[requestTypeVal] || "Experiencia de Manejo";
+      const clientCityVal = form.querySelector("#clientCity")?.value || "bogota";
+      const clientCityLabels = {
+        "bogota": "Bogotá D.C. — Zona Rosa",
+        "medellin": "Medellín — El Poblado",
+        "cali": "Cali — Ciudad Jardín",
+        "barranquilla": "Barranquilla — Zona Norte",
+        "otra": "Atención Virtual"
+      };
+      const clientCityLabel = clientCityLabels[clientCityVal] || "Bogotá D.C.";
+      const clientCommentsVal = form.querySelector("#clientComments")?.value.trim() || "Solicitud de experiencia de manejo";
 
-      // Mensaje claro demostrativo (sin prometer transacciones reales o conexión de servidor)
+      const newLead = {
+        id: radicadoNum,
+        radicado: radicadoNum,
+        name: nameInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        email: emailInput.value.trim(),
+        vehicle_name: modelName,
+        vehicle_id: modelSelect.value,
+        request_type: requestTypeLabel,
+        city: clientCityLabel,
+        comments: clientCommentsVal,
+        status: "pending",
+        source: "Agenda tu Experiencia de Manejo",
+        created_at: new Date().toISOString()
+      };
+
+      // 1. Guardar de inmediato en localStorage (garantía total de persistencia)
+      try {
+        let currentLeads = [];
+        const storedLeads = localStorage.getItem(STORAGE_KEY_LEADS);
+        if (storedLeads) {
+          const parsed = JSON.parse(storedLeads);
+          if (Array.isArray(parsed)) currentLeads = parsed;
+        }
+        currentLeads.unshift(newLead);
+        localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(currentLeads));
+      } catch (err) {
+        console.warn("Error guardando lead en localStorage:", err);
+      }
+
+      // 2. Transmisión en tiempo real a la plataforma del administrador (BroadcastChannel)
+      try {
+        if (typeof BroadcastChannel !== "undefined") {
+          const syncChan = new BroadcastChannel(SYNC_CHANNEL_NAME);
+          syncChan.postMessage({ type: "NEW_LEAD", lead: newLead });
+          syncChan.close();
+        }
+      } catch (err) {}
+
+      // 3. Envío al servidor backend / PostgreSQL si está activo
+      fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newLead)
+      }).catch(err => console.info("Registro de lead en servidor:", err));
+
+      // 4. Mostrar confirmación en pantalla con número de radicado y datos presentes
       if (elements.formStatusAlert) {
         elements.formStatusAlert.style.display = "block";
         elements.formStatusAlert.innerHTML = `
-          <div style="background-color: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: var(--radius-md); padding: var(--space-20); margin-top: var(--space-20);">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              <h4 style="color: #10b981; font-size: 1.125rem;">¡Solicitud Registrada Exitosamente!</h4>
+          <!-- Indicador y casilla de verificación para visualizar el registro cerrado posteriormente -->
+          <div id="solicitudClosedIndicator_${radicadoNum}" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: var(--radius-md); padding: 14px 18px; margin-top: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
+              <span style="font-size: 0.88rem; color: var(--color-silver-light, #fff); font-weight: 600;">
+                Solicitud activa [Radicado: <span style="color: #e82127; font-weight: 700;">${radicadoNum}</span>] — Registro cerrado
+              </span>
             </div>
-            <p style="font-size: 0.875rem; color: var(--color-silver-light); margin-bottom: 8px;">
-              Estimado(a) <strong>${escapeHTML(nameInput.value)}</strong>, tu solicitud para el <strong>${escapeHTML(modelName)}</strong> ha sido generada localmente en la interfaz con número de radicado referencial: <strong style="color: var(--color-white);">${radicadoNum}</strong>.
+            <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 0.85rem; color: var(--color-silver-light, #e4e4e7); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); padding: 7px 14px; border-radius: 6px; transition: all 0.2s;">
+              <input type="checkbox" id="chkToggleClosedRecord_${radicadoNum}" style="accent-color: #10b981; width: 16px; height: 16px; cursor: pointer;">
+              <span>Visualizar registro cerrado</span>
+            </label>
+          </div>
+
+          <!-- Ventana de confirmación principal -->
+          <div id="solicitudConfirmCard_${radicadoNum}" style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; border-radius: var(--radius-md); padding: 22px; margin-top: 24px; box-shadow: 0 8px 30px rgba(0,0,0,0.4);">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; border-bottom: 1px solid rgba(16, 185, 129, 0.25); padding-bottom: 12px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="width: 32px; height: 32px; border-radius: 50%; background: #10b981; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;">✓</span>
+                <div>
+                  <h4 style="color: #10b981; font-size: 1.15rem; font-weight: 700; margin: 0;">¡Tu Solicitud ha sido Enviada con Éxito!</h4>
+                  <span style="font-size: 0.88rem; color: var(--color-silver-light, #a1a1aa); font-weight: 600; display: block; margin-top: 2px;">Un especialista oficial de Tesla Colombia revisará tu radicado y se comunicará contigo a la brevedad</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <span style="font-size: 0.72rem; color: var(--color-silver, #a1a1aa); display: block; text-transform: uppercase;">Número de Radicado</span>
+                <span style="font-size: 1.15rem; font-weight: 800; color: #ffffff; letter-spacing: 0.05em; background: rgba(232, 33, 39, 0.2); border: 1px solid #e82127; padding: 4px 10px; border-radius: 6px; display: inline-block;">${radicadoNum}</span>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.85rem; color: var(--color-silver-light, #d1d5db); margin-bottom: 14px;">
+              <div><strong style="color: var(--color-silver-light, #fff);">Cliente:</strong> ${escapeHTML(newLead.name)}</div>
+              <div><strong style="color: var(--color-silver-light, #fff);">Teléfono:</strong> ${escapeHTML(newLead.phone)}</div>
+              <div><strong style="color: var(--color-silver-light, #fff);">Correo:</strong> ${escapeHTML(newLead.email)}</div>
+              <div><strong style="color: var(--color-silver-light, #fff);">Modelo de Interés:</strong> <span style="color: #e82127; font-weight: 700;">${escapeHTML(newLead.vehicle_name)}</span></div>
+              <div><strong style="color: var(--color-silver-light, #fff);">Tipo de Solicitud:</strong> ${escapeHTML(newLead.request_type)}</div>
+              <div><strong style="color: var(--color-silver-light, #fff);">Sede Asignada:</strong> ${escapeHTML(newLead.city)}</div>
+            </div>
+
+            <div style="font-size: 0.82rem; color: var(--color-silver-light, #d1d5db); background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px;">
+              <strong>Detalle de tu solicitud:</strong> "${escapeHTML(newLead.comments)}"
+            </div>
+
+            <p style="font-size: 0.78rem; color: var(--color-silver, #9ca3af); margin: 0 0 16px 0;">
+              Guarda tu número de radicado <strong>${radicadoNum}</strong>. Un asesor oficial se comunicará contigo al teléfono suministrado para confirmar día y hora de tu prueba.
             </p>
-            <div style="font-size: 0.75rem; color: var(--color-silver); border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 8px;">
-              <em>Aviso técnico de alcance:</em> Este entorno frontend es una exhibición demostrativa. No se han transmitido credenciales ni datos bancarios a ningún servidor externo.
+
+            <!-- Alerta advirtiendo sobre eliminación con confirmación adicional -->
+            <div id="deleteWarningAlert_${radicadoNum}" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <span style="font-size: 1.3rem; line-height: 1;">⚠️</span>
+                <div style="flex: 1;">
+                  <div style="color: #f87171; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Alerta de Supresión</div>
+                  <p style="color: #fca5a5; font-size: 0.88rem; margin: 0 0 12px 0; font-weight: 600;">
+                    Si elimina esta solicitud, no será respondida en el tiempo establecido.
+                  </p>
+                  <p style="font-size: 0.8rem; color: #fecaca; margin: 0 0 14px 0;">
+                    Esta acción suprimirá definitivamente el registro del centro administrativo. ¿Deseas proceder?
+                  </p>
+                  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" id="btnConfirmDelete_${radicadoNum}" class="btn" style="background: #ef4444; color: #ffffff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+                      Confirmar supresión definitiva
+                    </button>
+                    <button type="button" id="btnCancelDelete_${radicadoNum}" class="btn" style="background: rgba(255, 255, 255, 0.1); color: var(--color-silver-light, #e4e4e7); border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; cursor: pointer;">
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Opciones inferiores requeridas: Cerrar ventana y Eliminar solicitud -->
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid rgba(16, 185, 129, 0.25); padding-top: 14px; flex-wrap: wrap;">
+              <button type="button" id="btnDeleteSolicitud_${radicadoNum}" class="btn" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                Eliminar solicitud
+              </button>
+              <button type="button" id="btnCloseSolicitud_${radicadoNum}" class="btn" style="background: rgba(255, 255, 255, 0.08); color: var(--color-silver-light, #ffffff); border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                Cerrar ventana
+              </button>
             </div>
           </div>
         `;
+
+        // Lógica interactiva de las opciones
+        const confirmCard = document.getElementById(`solicitudConfirmCard_${radicadoNum}`);
+        const closedIndicator = document.getElementById(`solicitudClosedIndicator_${radicadoNum}`);
+        const chkToggle = document.getElementById(`chkToggleClosedRecord_${radicadoNum}`);
+        const btnClose = document.getElementById(`btnCloseSolicitud_${radicadoNum}`);
+        const btnDelete = document.getElementById(`btnDeleteSolicitud_${radicadoNum}`);
+        const deleteWarningAlert = document.getElementById(`deleteWarningAlert_${radicadoNum}`);
+        const btnConfirmDelete = document.getElementById(`btnConfirmDelete_${radicadoNum}`);
+        const btnCancelDelete = document.getElementById(`btnCancelDelete_${radicadoNum}`);
+
+        // 1. Cerrar ventana: deja la solicitud activa y genera/muestra el indicador con casilla de verificación
+        if (btnClose) {
+          btnClose.addEventListener("click", () => {
+            if (confirmCard) confirmCard.style.display = "none";
+            if (closedIndicator) closedIndicator.style.display = "flex";
+            if (chkToggle) chkToggle.checked = false;
+            showToast("Ventana cerrada. La solicitud permanece activa.", "info");
+          });
+        }
+
+        // Casilla de verificación para visualizar el registro cerrado posteriormente
+        if (chkToggle) {
+          chkToggle.addEventListener("change", (e) => {
+            if (confirmCard) {
+              confirmCard.style.display = e.target.checked ? "block" : "none";
+            }
+          });
+        }
+
+        // 2. Eliminar solicitud: despliega la alerta advirtiendo que "Si elimina esta solicitud, no será respondida en el tiempo establecido"
+        if (btnDelete) {
+          btnDelete.addEventListener("click", () => {
+            if (deleteWarningAlert) {
+              deleteWarningAlert.style.display = "block";
+              deleteWarningAlert.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+          });
+        }
+
+        if (btnCancelDelete) {
+          btnCancelDelete.addEventListener("click", () => {
+            if (deleteWarningAlert) deleteWarningAlert.style.display = "none";
+          });
+        }
+
+        // Confirmación adicional para proceder con la supresión definitiva del registro
+        if (btnConfirmDelete) {
+          btnConfirmDelete.addEventListener("click", () => {
+            // Eliminar de localStorage
+            try {
+              const storedLeads = localStorage.getItem(STORAGE_KEY_LEADS);
+              if (storedLeads) {
+                const parsed = JSON.parse(storedLeads);
+                if (Array.isArray(parsed)) {
+                  const filtered = parsed.filter(l => l.id !== radicadoNum && l.radicado !== radicadoNum);
+                  localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(filtered));
+                }
+              }
+            } catch (err) {
+              console.warn("Error eliminando lead en localStorage:", err);
+            }
+
+            // Sincronizar con el canal en tiempo real
+            try {
+              if (typeof BroadcastChannel !== "undefined") {
+                const syncChan = new BroadcastChannel(SYNC_CHANNEL_NAME);
+                syncChan.postMessage({ type: "DELETE_LEAD", leadId: radicadoNum });
+                syncChan.close();
+              }
+            } catch (err) {}
+
+            // Eliminar en backend si está activo
+            fetch(`/api/leads/${radicadoNum}`, { method: 'DELETE' }).catch(() => {});
+
+            // Retirar la confirmación e indicador
+            if (confirmCard) confirmCard.remove();
+            if (closedIndicator) closedIndicator.remove();
+
+            // Mensaje informativo final
+            elements.formStatusAlert.innerHTML = `
+              <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: var(--radius-md); padding: 16px 20px; color: #fca5a5; font-size: 0.88rem; margin-top: 20px; display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 1.25rem;">🗑️</span>
+                <div>
+                  <strong>Solicitud eliminada:</strong> El registro con radicado <strong>${radicadoNum}</strong> ha sido suprimido definitivamente y no será respondido en el centro administrativo.
+                </div>
+              </div>
+            `;
+
+            showToast(`Solicitud ${radicadoNum} eliminada definitivamente.`, "info");
+            if (typeof window.refreshRadicadosQuickList === "function") {
+              window.refreshRadicadosQuickList();
+            }
+          });
+        }
+
         elements.formStatusAlert.scrollIntoView({ behavior: "smooth" });
       }
 
-      showToast("Solicitud generada con éxito (Modo Demostrativo)", "success");
+      showToast(`Tu solicitud ha sido enviada con éxito. Radicado oficial: ${radicadoNum}`, "success", true);
       form.reset();
+      if (typeof window.refreshRadicadosQuickList === "function") {
+        window.refreshRadicadosQuickList();
+      }
     });
+
+    // Inicializar panel de consulta y gestión de radicados
+    initRadicadoLookup();
+  }
+
+  // =========================================================================
+  // CONSULTA Y GESTIÓN DE RADICADOS (BÚSQUEDA, VISUALIZACIÓN Y ELIMINACIÓN)
+  // =========================================================================
+  function initRadicadoLookup() {
+    const inputSearch = document.getElementById("inputRadicadoSearch");
+    const btnSearch = document.getElementById("btnSearchRadicado");
+    const quickList = document.getElementById("radicadosQuickList");
+    const chipsContainer = document.getElementById("radicadosChipsContainer");
+    const searchResult = document.getElementById("radicadoSearchResult");
+
+    if (!inputSearch || !btnSearch || !searchResult) return;
+
+    function getLocalLeads() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY_LEADS);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {}
+      return [];
+    }
+
+    function renderQuickChips() {
+      const leads = getLocalLeads();
+      if (!quickList || !chipsContainer) return;
+
+      if (leads.length === 0) {
+        quickList.style.display = "none";
+        chipsContainer.innerHTML = "";
+        return;
+      }
+
+      quickList.style.display = "block";
+      chipsContainer.innerHTML = leads.map(l => {
+        const radId = l.id || l.radicado;
+        return `
+          <button type="button" class="radicado-chip-btn" data-radicado="${escapeHTML(radId)}" style="background: rgba(232, 33, 39, 0.12); color: #f87171; border: 1px solid rgba(232, 33, 39, 0.35); padding: 5px 11px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;">
+            <span style="opacity: 0.7;">#</span>${escapeHTML(radId)}
+          </button>
+        `;
+      }).join("");
+
+      chipsContainer.querySelectorAll(".radicado-chip-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const targetRad = btn.getAttribute("data-radicado");
+          inputSearch.value = targetRad;
+          performSearch(targetRad);
+        });
+      });
+    }
+
+    function performSearch(query) {
+      const cleanQuery = (query || inputSearch.value || "").trim().toUpperCase();
+      if (!cleanQuery) {
+        showToast("Ingresa un número de radicado para buscar.", "warning");
+        inputSearch.focus();
+        return;
+      }
+
+      const leads = getLocalLeads();
+      const found = leads.find(l => {
+        const id = String(l.id || l.radicado || "").toUpperCase();
+        return id === cleanQuery || id.includes(cleanQuery);
+      });
+
+      searchResult.style.display = "block";
+
+      if (!found) {
+        searchResult.innerHTML = `
+          <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 14px 16px; color: #fca5a5; font-size: 0.85rem;">
+            <div style="font-weight: 700; margin-bottom: 4px;">No se encontró la solicitud</div>
+            No existe un registro activo con el radicado <strong>"${escapeHTML(cleanQuery)}"</strong>. Verifica el número o radica una nueva solicitud en el formulario contiguo.
+          </div>
+        `;
+        return;
+      }
+
+      const radNum = found.id || found.radicado;
+      const dateFormatted = found.created_at ? new Date(found.created_at).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "Fecha reciente";
+
+      searchResult.innerHTML = `
+        <div id="lookupCard_${radNum}" style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; border-radius: 8px; padding: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 10px;">
+            <div>
+              <span style="font-size: 0.7rem; color: var(--color-silver, #a1a1aa); text-transform: uppercase; display: block;">Radicado Encontrado</span>
+              <strong style="font-size: 1.05rem; color: #fff; font-family: monospace; letter-spacing: 0.04em;">${escapeHTML(radNum)}</strong>
+            </div>
+            <div style="text-align: right;">
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #10b981; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 8px; border-radius: 20px; font-weight: 600;">
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981;"></span>
+                En Centro Administrativo
+              </span>
+            </div>
+          </div>
+
+          <!-- Datos Principales -->
+          <div style="font-size: 0.82rem; color: var(--color-silver-light, #d1d5db); display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 12px;">
+            <div><strong style="color: var(--color-silver-light, #fff);">Cliente:</strong> ${escapeHTML(found.name || 'Sin nombre')}</div>
+            <div><strong style="color: var(--color-silver-light, #fff);">Vehículo:</strong> <span style="color: #e82127; font-weight: 700;">${escapeHTML(found.vehicle_name || 'Tesla')}</span></div>
+            <div><strong style="color: var(--color-silver-light, #fff);">Tipo:</strong> ${escapeHTML(found.request_type || 'Experiencia de Manejo')}</div>
+            <div><strong style="color: var(--color-silver-light, #fff);">Sede:</strong> ${escapeHTML(found.city || 'Bogotá D.C.')}</div>
+            <div><strong style="color: var(--color-silver, #9ca3af);">Fecha:</strong> ${escapeHTML(dateFormatted)}</div>
+          </div>
+
+          <!-- Detalles Extendidos (Mirar Solicitud) -->
+          <div id="lookupExtendedDetails_${radNum}" style="display: none; font-size: 0.8rem; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 10px; margin-bottom: 12px; color: var(--color-silver-light, #e4e4e7);">
+            <div style="margin-bottom: 4px;"><strong>Teléfono:</strong> ${escapeHTML(found.phone || 'No registrado')}</div>
+            <div style="margin-bottom: 4px;"><strong>Correo:</strong> ${escapeHTML(found.email || 'No registrado')}</div>
+            <div><strong>Comentarios del cliente:</strong> "${escapeHTML(found.comments || 'Sin comentarios')}"</div>
+          </div>
+
+          <!-- Alerta de Advertencia de Eliminación con Confirmación Adicional -->
+          <div id="lookupDeleteWarning_${radNum}" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: flex-start; gap: 10px;">
+              <span style="font-size: 1.2rem; line-height: 1;">⚠️</span>
+              <div style="flex: 1;">
+                <div style="color: #f87171; font-weight: 700; font-size: 0.88rem; margin-bottom: 3px;">Advertencia de Eliminación</div>
+                <p style="color: #fca5a5; font-size: 0.82rem; margin: 0 0 10px 0; font-weight: 600;">
+                  Si elimina esta solicitud, no será respondida en el tiempo establecido.
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <button type="button" id="btnLookupConfirmDelete_${radNum}" class="btn" style="background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 5px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+                    Confirmar supresión definitiva
+                  </button>
+                  <button type="button" id="btnLookupCancelDelete_${radNum}" class="btn" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 5px; font-size: 0.78rem; cursor: pointer;">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Opciones: Mirar (Ver Detalles) y Eliminar Solicitud -->
+          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid rgba(16, 185, 129, 0.2); padding-top: 10px; flex-wrap: wrap;">
+            <button type="button" id="btnLookupDelete_${radNum}" class="btn" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Eliminar solicitud
+            </button>
+            <button type="button" id="btnLookupToggleDetails_${radNum}" class="btn" style="background: rgba(255, 255, 255, 0.08); color: var(--color-silver-light, #fff); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <span id="btnLookupDetailsText_${radNum}">Mirar detalles</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Handlers para mirar detalles y eliminar
+      const extDetails = document.getElementById(`lookupExtendedDetails_${radNum}`);
+      const btnToggleDetails = document.getElementById(`btnLookupToggleDetails_${radNum}`);
+      const btnToggleText = document.getElementById(`btnLookupDetailsText_${radNum}`);
+      const btnDelete = document.getElementById(`btnLookupDelete_${radNum}`);
+      const deleteWarning = document.getElementById(`lookupDeleteWarning_${radNum}`);
+      const btnConfirmDelete = document.getElementById(`btnLookupConfirmDelete_${radNum}`);
+      const btnCancelDelete = document.getElementById(`btnLookupCancelDelete_${radNum}`);
+
+      if (btnToggleDetails && extDetails) {
+        btnToggleDetails.addEventListener("click", () => {
+          const isOpen = extDetails.style.display === "block";
+          extDetails.style.display = isOpen ? "none" : "block";
+          if (btnToggleText) {
+            btnToggleText.textContent = isOpen ? "Mirar detalles" : "Ocultar detalles";
+          }
+        });
+      }
+
+      if (btnDelete && deleteWarning) {
+        btnDelete.addEventListener("click", () => {
+          deleteWarning.style.display = "block";
+        });
+      }
+
+      if (btnCancelDelete && deleteWarning) {
+        btnCancelDelete.addEventListener("click", () => {
+          deleteWarning.style.display = "none";
+        });
+      }
+
+      if (btnConfirmDelete) {
+        btnConfirmDelete.addEventListener("click", () => {
+          // 1. Eliminar de localStorage
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY_LEADS);
+            if (stored) {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed)) {
+                const filtered = parsed.filter(l => l.id !== radNum && l.radicado !== radNum);
+                localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(filtered));
+              }
+            }
+          } catch (e) {}
+
+          // 2. Notificar por BroadcastChannel
+          try {
+            if (typeof BroadcastChannel !== "undefined") {
+              const syncChan = new BroadcastChannel(SYNC_CHANNEL_NAME);
+              syncChan.postMessage({ type: "DELETE_LEAD", leadId: radNum });
+              syncChan.close();
+            }
+          } catch (e) {}
+
+          // 3. Backend
+          fetch(`/api/leads/${radNum}`, { method: 'DELETE' }).catch(() => {});
+
+          // 4. Actualizar interfaz
+          searchResult.innerHTML = `
+            <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 14px 16px; color: #fca5a5; font-size: 0.85rem; display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.15rem;">🗑️</span>
+              <div>
+                <strong>Solicitud eliminada:</strong> El radicado <strong>${escapeHTML(radNum)}</strong> ha sido suprimido definitivamente del centro administrativo.
+              </div>
+            </div>
+          `;
+
+          // Limpiar ventana principal si correspondía a esta solicitud
+          const mainConfirmCard = document.getElementById(`solicitudConfirmCard_${radNum}`);
+          const mainClosedIndicator = document.getElementById(`solicitudClosedIndicator_${radNum}`);
+          if (mainConfirmCard) mainConfirmCard.remove();
+          if (mainClosedIndicator) mainClosedIndicator.remove();
+
+          renderQuickChips();
+          showToast(`Solicitud ${radNum} eliminada definitivamente.`, "info");
+        });
+      }
+    }
+
+    btnSearch.addEventListener("click", () => performSearch());
+    inputSearch.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        performSearch();
+      }
+    });
+
+    renderQuickChips();
+    window.refreshRadicadosQuickList = renderQuickChips;
   }
 
   function scrollToContactAndSelect(vehicleId, extraComment = "") {
@@ -1305,10 +1961,43 @@ document.addEventListener("DOMContentLoaded", () => {
         isOpen ? closeNavDrawer() : openNavDrawer();
       });
 
-      // Cerrar al pulsar cualquier enlace dentro del drawer
-      elements.mainNavList.querySelectorAll(".nav-link").forEach(link => {
-        link.addEventListener("click", () => closeNavDrawer());
+      // Gestión interactiva de funciones activas (rotación de colores rojo y blanco) y cierre de drawer
+      const navLinks = elements.mainNavList.querySelectorAll(".nav-link");
+      navLinks.forEach(link => {
+        link.addEventListener("click", () => {
+          navLinks.forEach(l => l.classList.remove("active"));
+          link.classList.add("active");
+          closeNavDrawer();
+        });
       });
+
+      // ScrollSpy: Sincroniza automáticamente la función seleccionada al desplazarse
+      const trackedSections = [
+        { id: "catalogo", href: "#catalogo" },
+        { id: "experiencia", href: "#experiencia" },
+        { id: "financiacion", href: "#financiacion" },
+        { id: "comparador", href: "#comparador" },
+        { id: "contacto", href: "#contacto" },
+        { id: "faqs", href: "#faqs" }
+      ];
+
+      window.addEventListener("scroll", () => {
+        const scrollPos = window.scrollY + 180;
+        for (let i = trackedSections.length - 1; i >= 0; i--) {
+          const sec = document.getElementById(trackedSections[i].id);
+          if (sec && scrollPos >= sec.offsetTop) {
+            const targetHref = trackedSections[i].href;
+            navLinks.forEach(l => {
+              if (l.getAttribute("href") === targetHref) {
+                l.classList.add("active");
+              } else {
+                l.classList.remove("active");
+              }
+            });
+            break;
+          }
+        }
+      }, { passive: true });
     }
 
     // Cerrar drawer al hacer clic en overlay
@@ -1458,6 +2147,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (elements.dropdownFavCount) {
       elements.dropdownFavCount.textContent = state.favorites.length;
+    }
+
+    // Sincronizar visibilidad del Simulador de Financiación y Crédito
+    const simGuestLock = elements.simGuestLockState || document.getElementById("simGuestLockState");
+    const simAuthContent = elements.simAuthenticatedContent || document.getElementById("simAuthenticatedContent");
+    const simUserBadge = elements.simUserBadge || document.getElementById("simUserBadge");
+
+    if (simGuestLock && simAuthContent) {
+      if (isLogged) {
+        simGuestLock.style.display = "none";
+        simAuthContent.style.display = "block";
+        if (simUserBadge && user) {
+          const firstName = user.name.trim().split(" ")[0] || "Cliente";
+          simUserBadge.textContent = `👤 Plan para ${firstName}`;
+        }
+        updateSimulatorCalculations();
+      } else {
+        simGuestLock.style.display = "block";
+        simAuthContent.style.display = "none";
+      }
     }
 
     // Si el modal está abierto actualmente y hay usuario, sincronizar dashboard
@@ -1721,6 +2430,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // Botón Móvil directo "Crear Cuenta Nueva"
+    const navMobileRegisterBtn = document.getElementById("navMobileRegisterBtn");
+    if (navMobileRegisterBtn) {
+      navMobileRegisterBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeNavDrawer();
+        openLoginModal("register");
+      });
+    }
+
     // Enlace en menú de navegación (si existe)
     if (elements.navLoginLink) {
       elements.navLoginLink.addEventListener("click", (e) => {
@@ -1915,12 +2634,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!valid) return;
 
+        const cleanEmail = emailInput.value.trim().toLowerCase();
+        let userProfile = null;
+        try {
+          const registered = JSON.parse(localStorage.getItem("tesla_registered_users") || "[]");
+          userProfile = registered.find(u => (u.email || "").toLowerCase() === cleanEmail);
+        } catch (e) {}
+
         const userNameFromEmail = emailInput.value.split("@")[0].replace(/[._-]/g, " ");
         const formattedName = userNameFromEmail.charAt(0).toUpperCase() + userNameFromEmail.slice(1);
 
-        const authenticatedUser = {
+        const authenticatedUser = userProfile ? { ...userProfile } : {
           name: formattedName || "Cliente Tesla",
-          email: emailInput.value.trim(),
+          email: cleanEmail,
           phone: "+57 300 000 0000",
           city: "Bogotá D.C.",
           preferredModel: "model-3",
@@ -1978,9 +2704,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!valid) return;
 
+        const cleanEmail = emailInput.value.trim().toLowerCase();
+        const pwd = passInput.value.trim();
         const newUser = {
           name: nameInput.value.trim(),
-          email: emailInput.value.trim(),
+          email: cleanEmail,
+          password: pwd,
           phone: phoneInput ? phoneInput.value.trim() : "",
           city: citySelect ? citySelect.value : "Bogotá D.C.",
           preferredModel: modelSelect ? modelSelect.value : "model-3",
@@ -1988,10 +2717,50 @@ document.addEventListener("DOMContentLoaded", () => {
           orders: []
         };
 
+        // Guardar de forma persistente en lista de usuarios registrados
+        try {
+          const registered = JSON.parse(localStorage.getItem("tesla_registered_users") || "[]");
+          const existingIdx = registered.findIndex(u => (u.email || "").toLowerCase() === cleanEmail);
+          if (existingIdx >= 0) {
+            registered[existingIdx] = { ...registered[existingIdx], ...newUser };
+          } else {
+            registered.push(newUser);
+          }
+          localStorage.setItem("tesla_registered_users", JSON.stringify(registered));
+
+          // Si el usuario es Julian Ospina o admin, sincronizar inmediatamente con la plataforma de administración
+          if (cleanEmail === "juli123@gmail.com" || cleanEmail.includes("julian") || cleanEmail.includes("admin")) {
+            const adminAccs = JSON.parse(localStorage.getItem("tesla_admin_accounts") || "[]");
+            const aIdx = adminAccs.findIndex(a => (a.email || "").toLowerCase() === cleanEmail);
+            if (aIdx >= 0) {
+              adminAccs[aIdx].password = pwd;
+              adminAccs[aIdx].name = newUser.name;
+            } else {
+              adminAccs.push({
+                id: "admin_" + Date.now(),
+                name: newUser.name,
+                email: cleanEmail,
+                password: pwd,
+                role: "Super Administrador",
+                createdAt: new Date().toISOString()
+              });
+            }
+            localStorage.setItem("tesla_admin_accounts", JSON.stringify(adminAccs));
+          }
+        } catch (e) {}
+
         saveAuthUser(newUser);
-        openLoginModal("login", "profile");
+        closeLoginModal();
         elements.authRegisterForm.reset();
-        showToast(`¡Cuenta creada con éxito! Bienvenido, ${newUser.name}.`, "success");
+        showToast(`¡Cuenta creada con éxito! Bienvenido, ${newUser.name}. Se ha desbloqueado el Simulador de Financiación y Crédito.`, "success");
+        
+        // Desplazar suavemente al simulador de crédito recién desbloqueado
+        const simSection = document.getElementById("financiacion");
+        if (simSection) {
+          setTimeout(() => {
+            simSection.scrollIntoView({ behavior: "smooth" });
+          }, 350);
+        }
       });
     }
 
@@ -2052,9 +2821,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================================================
 
   function openPurchaseModal(vehicleId) {
-    if (!elements.purchaseModal) return;
-    const vId = vehicleId || state.selectedVehicleForPurchase || state.vehicles[0].id;
+    const vId = vehicleId || state.selectedVehicleForPurchase || (state.vehicles[0] ? state.vehicles[0].id : "model-3");
     state.selectedVehicleForPurchase = vId;
+
+    // VALIDACIÓN OBLIGATORIA: Para comprar o reservar se debe crear cuenta o iniciar sesión
+    if (!state.currentUser) {
+      state.pendingPurchaseVehicleId = vId;
+      showToast("🔒 Para comprar o cotizar un vehículo Tesla es obligatorio iniciar sesión o crear tu cuenta.", "warning");
+      openLoginModal("login");
+
+      const authSub = document.querySelector(".auth-subtitle");
+      if (authSub) {
+        authSub.innerHTML = `<span style="color: #e82127; font-weight: 700;">🔒 Obligatorio para Comprar:</span> Inicia sesión o crea tu cuenta para formalizar la reserva con papeles al día de tu Tesla.`;
+      }
+      return;
+    }
+
+    if (!elements.purchaseModal) return;
 
     if (elements.purchaseModelSelect) {
       elements.purchaseModelSelect.value = vId;
@@ -2161,6 +2944,13 @@ document.addEventListener("DOMContentLoaded", () => {
       elements.purchaseOrderForm.addEventListener("submit", (e) => {
         e.preventDefault();
 
+        if (!state.currentUser) {
+          showToast("Debes iniciar sesión o registrar tu cuenta para completar la compra.", "warning");
+          closePurchaseModal();
+          openLoginModal("login");
+          return;
+        }
+
         let valid = true;
         const nameInp = elements.buyerName;
         const docInp = elements.buyerIdDoc;
@@ -2251,7 +3041,7 @@ document.addEventListener("DOMContentLoaded", () => {
           saveAuthUser(state.currentUser);
         }
 
-        showToast(`Orden ${orderNum} registrada con éxito`, "success");
+        showToast(`Tu solicitud de orden ha sido enviada con éxito. Radicado: ${orderNum}`, "success", true);
       });
     }
 
@@ -2284,6 +3074,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================================================
 
   function initWhatsAppWidget() {
+    if (elements.headerWhatsappBtn) {
+      elements.headerWhatsappBtn.addEventListener("click", () => {
+        if (elements.whatsappPopover) {
+          elements.whatsappPopover.style.display = "block";
+        }
+      });
+    }
+
     if (elements.whatsappBubbleBtn) {
       elements.whatsappBubbleBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -2320,458 +3118,102 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================================================
-  // TESLA 360° · GARAJE ESTUDIO INTERACTIVO (EXTERIOR, LLANTAS E INTERIOR)
+  // SINCRONIZACIÓN AUTOMÁTICA CON EL BACKEND Y CONSOLA ADMIN
   // =========================================================================
 
-  function initGarage360() {
-    if (!elements.garageExteriorPanel) return;
+  function applyCatalogData(list, persistLocally = true) {
+    if (!Array.isArray(list) || list.length === 0) return;
 
-    let activeAngle = 0;
-    let autoRotateId = null;
-    let isAutoRotating = false;
-
-    // Helper: Ocultar el badge indicador de arrastre
-    function hideDragHint() {
-      if (elements.dragHintBadge) {
-        elements.dragHintBadge.style.opacity = "0";
-        elements.dragHintBadge.style.pointerEvents = "none";
-      }
-    }
-
-    // Helper: Describir el ángulo de giro para accesibilidad y visualización
-    function getAngleDescription(angle) {
-      if (angle > 22 && angle <= 67) return "Tres Cuartos Frontal";
-      if (angle > 67 && angle <= 112) return "Perfil Lateral Derecho";
-      if (angle > 112 && angle <= 157) return "Tres Cuartos Posterior";
-      if (angle > 157 && angle <= 202) return "Vista Trasera";
-      if (angle > 202 && angle <= 247) return "Tres Cuartos Trasera Izq.";
-      if (angle > 247 && angle <= 292) return "Perfil Lateral Izquierdo";
-      if (angle > 292 && angle <= 337) return "Tres Cuartos Frontal Izq.";
-      return "Frontal";
-    }
-
-    // Actualizar el ángulo de giro 360°
-    function setGarageAngle(rawAngle, syncSlider = true) {
-      const norm = ((rawAngle % 360) + 360) % 360;
-      activeAngle = norm;
-      state.garage360.angle = norm;
-
-      // 1. Sincronizar control deslizante
-      if (syncSlider && elements.garageRotationSlider) {
-        elements.garageRotationSlider.value = Math.round(norm);
-      }
-
-      // 2. Actualizar píldora de texto de ángulo
-      if (elements.garageAngleValue) {
-        elements.garageAngleValue.textContent = `${Math.round(norm)}° · ${getAngleDescription(norm)}`;
-      }
-
-      // 3. Actualizar botones de ángulos preestablecidos
-      if (elements.presetAngleBtns) {
-        elements.presetAngleBtns.forEach(btn => {
-          const btnAngle = parseFloat(btn.dataset.angle || 0);
-          if (Math.abs(norm - btnAngle) <= 6) {
-            btn.classList.add("active");
-          } else {
-            btn.classList.remove("active");
-          }
-        });
-      }
-
-      // 4. Transformación 3D de la plataforma giratoria
-      if (elements.turntableLightRing) {
-        elements.turntableLightRing.style.transform = `translateX(-50%) rotateX(74deg) rotateZ(${norm}deg)`;
-      }
-      if (elements.turntableInnerDisc) {
-        elements.turntableInnerDisc.style.transform = `translateX(-50%) rotateX(74deg) rotateZ(${norm}deg)`;
-      }
-
-      // 5. Transformación y física 3D del vehículo sobre la plataforma
-      const rad = (norm * Math.PI) / 180;
-      let yaw = 0;
-      let scaleX = 1;
-      let shiftX = 0;
-
-      if (norm <= 90) {
-        yaw = (norm / 90) * -38;
-        scaleX = 1;
-        shiftX = (norm / 90) * -18;
-      } else if (norm <= 180) {
-        yaw = ((180 - norm) / 90) * 38;
-        scaleX = -1;
-        shiftX = ((norm - 90) / 90) * 18;
-      } else if (norm <= 270) {
-        yaw = ((norm - 180) / 90) * -38;
-        scaleX = -1;
-        shiftX = ((270 - norm) / 90) * 18;
-      } else {
-        yaw = ((360 - norm) / 90) * 38;
-        scaleX = 1;
-        shiftX = ((norm - 270) / 90) * -18;
-      }
-
-      const pitch = -Math.cos(rad) * 4;
-      const scale = 1 + (Math.cos(rad) * 0.04);
-
-      if (elements.garage360CarImage) {
-        elements.garage360CarImage.style.transform = `perspective(1100px) translateX(${shiftX}px) rotateY(${yaw}deg) rotateX(${pitch}deg) scaleX(${scaleX}) scale(${scale})`;
-      }
-
-      // 6. Dinámica de sombra y reflejo del piso
-      if (elements.turntableShadow) {
-        const shadowScaleX = 1 + Math.sin(rad) * 0.12;
-        const shadowShiftX = Math.sin(rad) * 14;
-        elements.turntableShadow.style.transform = `scale(${shadowScaleX}, 1) translateX(${shadowShiftX}px)`;
-      }
-
-      if (elements.turntableReflection) {
-        const reflShiftX = Math.sin(rad) * -14;
-        const reflOpacity = Math.max(0.3, 0.75 + Math.cos(rad) * 0.25);
-        elements.turntableReflection.style.transform = `translateX(${reflShiftX}px)`;
-        elements.turntableReflection.style.opacity = reflOpacity;
-      }
-    }
-
-    // Animación suave hacia un ángulo destino
-    function animateToAngle(targetAngle) {
-      const startAngle = activeAngle;
-      let diff = targetAngle - startAngle;
-      if (diff > 180) diff -= 360;
-      if (diff < -180) diff += 360;
-
-      const duration = 320;
-      const startTime = performance.now();
-
-      function step(now) {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3);
-        const current = startAngle + (diff * ease);
-        setGarageAngle(current, true);
-
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        }
-      }
-
-      requestAnimationFrame(step);
-    }
-
-    // Giro Automático
-    function startAutoRotate() {
-      if (isAutoRotating) return;
-      isAutoRotating = true;
-      state.garage360.autoRotate = true;
-      if (elements.autoRotateText) elements.autoRotateText.textContent = "Pausar Giro";
-      if (elements.autoRotateIcon) {
-        elements.autoRotateIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
-      }
-
-      function loop() {
-        if (!isAutoRotating) return;
-        setGarageAngle(activeAngle + 0.65, true);
-        autoRotateId = requestAnimationFrame(loop);
-      }
-      autoRotateId = requestAnimationFrame(loop);
-    }
-
-    function stopAutoRotate() {
-      if (!isAutoRotating) return;
-      isAutoRotating = false;
-      state.garage360.autoRotate = false;
-      if (autoRotateId) {
-        cancelAnimationFrame(autoRotateId);
-        autoRotateId = null;
-      }
-      if (elements.autoRotateText) elements.autoRotateText.textContent = "Giro Automático";
-      if (elements.autoRotateIcon) {
-        elements.autoRotateIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
-      }
-    }
-
-    function toggleAutoRotate() {
-      if (isAutoRotating) {
-        stopAutoRotate();
-        showToast("Giro automático pausado", "info");
-      } else {
-        startAutoRotate();
-        hideDragHint();
-        showToast("Giro 360° automático activado", "info");
-      }
-    }
-
-    // Interacción con el slider de rotación
-    if (elements.garageRotationSlider) {
-      elements.garageRotationSlider.addEventListener("input", (e) => {
-        stopAutoRotate();
-        hideDragHint();
-        setGarageAngle(parseFloat(e.target.value), false);
-      });
-    }
-
-    // Interacción con botones de ángulos preestablecidos
-    if (elements.presetAngleBtns) {
-      elements.presetAngleBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-          stopAutoRotate();
-          hideDragHint();
-          const target = parseFloat(btn.dataset.angle || 0);
-          animateToAngle(target);
-        });
-      });
-    }
-
-    // Interacción con botón de Giro Automático
-    if (elements.garageAutoRotateBtn) {
-      elements.garageAutoRotateBtn.addEventListener("click", toggleAutoRotate);
-    }
-
-    // Gesto de Arrastre Táctil y Ratón (Pointer Events con captura)
-    const turntable = elements.garageTurntable;
-    if (turntable) {
-      let isDragging = false;
-      let startX = 0;
-      let startAngle = 0;
-
-      turntable.addEventListener("pointerdown", (e) => {
-        if (e.button !== undefined && e.button !== 0) return;
-        isDragging = true;
-        startX = e.clientX;
-        startAngle = activeAngle;
-        turntable.style.cursor = "grabbing";
-        stopAutoRotate();
-        hideDragHint();
-
-        if (turntable.setPointerCapture) {
-          try { turntable.setPointerCapture(e.pointerId); } catch (_) {}
-        }
-      });
-
-      turntable.addEventListener("pointermove", (e) => {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        // Factor de sensibilidad: 0.6 grados por píxel
-        const newAngle = startAngle - (dx * 0.6);
-        setGarageAngle(newAngle, true);
-      });
-
-      const endDrag = (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        turntable.style.cursor = "grab";
-        if (turntable.releasePointerCapture && e.pointerId) {
-          try { turntable.releasePointerCapture(e.pointerId); } catch (_) {}
-        }
+    // Enlazar datos del backend o admin preservando swatches y colores
+    state.vehicles = list.map(v => {
+      const original = (typeof VEHICLES_DATA !== "undefined" && VEHICLES_DATA.find(o => o.id === v.id)) || {};
+      return {
+        ...original,
+        ...v,
+        id: String(v.id),
+        name: v.name,
+        version: v.version || original.version || "",
+        category: v.category || original.category || "Sedán",
+        badge: v.badge || original.badge || "",
+        price: Number(v.price ?? original.price ?? 0),
+        rangeKm: Number(v.rangeKm ?? v.range_km ?? original.rangeKm ?? 500),
+        accelerationSeconds: Number(v.accelerationSeconds ?? v.acceleration_seconds ?? original.accelerationSeconds ?? 3.5),
+        topSpeedKm: Number(v.topSpeedKm ?? v.top_speed_kmh ?? original.topSpeedKm ?? 220),
+        powerHp: Number(v.powerHp ?? v.power_hp ?? original.powerHp ?? 450),
+        cargoVolume: v.cargoVolume || v.cargo_volume || original.cargoVolume || "600 L",
+        chargingTime: v.chargingTime || v.charging_time || original.chargingTime || "Hasta 250 km en 15 min",
+        availability: v.availability || original.availability || "Disponible para entrega",
+        image: v.image || original.image || "assets/images/model-3.jpg",
+        description: v.description || original.description || "",
+        colors: (Array.isArray(v.colors) && v.colors.length > 0) ? v.colors : (original.colors || [
+          { id: "pearl-white", name: "Blanco Perla Multicapa", hex: "#E8E9EB", filter: "none" },
+          { id: "solid-black", name: "Negro Sólido", hex: "#111112", filter: "brightness(0.7) contrast(1.2)" },
+          { id: "ultra-red", name: "Rojo Ultra Multicapa", hex: "#A81017", filter: "sepia(0.5) hue-rotate(320deg) saturate(2)" }
+        ]),
+        featured: v.featured !== undefined ? Boolean(v.featured) : (original.featured !== undefined ? original.featured : true)
       };
-
-      turntable.addEventListener("pointerup", endDrag);
-      turntable.addEventListener("pointercancel", endDrag);
-    }
-
-    // Selector de Modelo en el Garaje (Model 3, Model Y, Model S, Model X, Cybertruck)
-    function selectGarageModel(modelId) {
-      const vehicle = state.vehicles.find(v => v.id === modelId) || state.vehicles[0];
-      state.garage360.modelId = vehicle.id;
-
-      // 1. Actualizar imagen del vehículo
-      if (elements.garage360CarImage) {
-        elements.garage360CarImage.src = vehicle.image;
-        elements.garage360CarImage.alt = `Tesla ${vehicle.name} en Garaje 360`;
-      }
-
-      // 2. Actualizar barra de datos inferior
-      if (elements.garageCarTitle) elements.garageCarTitle.textContent = `Tesla ${vehicle.name}`;
-      if (elements.garageCarCategory) elements.garageCarCategory.textContent = `${vehicle.category} · ${vehicle.version}`;
-      if (elements.garageCarAccel) elements.garageCarAccel.textContent = `${vehicle.accelerationSeconds}s`;
-      if (elements.garageCarRange) elements.garageCarRange.textContent = `${vehicle.rangeKm} km`;
-      if (elements.garageCarPrice) elements.garageCarPrice.textContent = formatCurrencyCOP(vehicle.price);
-
-      // 3. Inyectar colores disponibles
-      renderGarageSwatches(vehicle);
-
-      // 4. Actualizar pestaña de Llantas para este modelo
-      updateGarageWheelsInfo(vehicle);
-
-      // Reiniciar ángulo con suavidad
-      setGarageAngle(0, true);
-    }
-
-    // Inyectar swatches de color dinámicos
-    function renderGarageSwatches(vehicle) {
-      if (!elements.garageSwatchesList) return;
-      elements.garageSwatchesList.innerHTML = "";
-
-      const colors = vehicle.colors || [
-        { id: "white", name: "Blanco Perla Multicapa", hex: "#E8E9EB", filter: "none" }
-      ];
-
-      colors.forEach((color, idx) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = `dock-swatch-btn ${idx === 0 ? "active" : ""}`;
-        btn.style.backgroundColor = color.hex;
-        btn.title = color.name;
-        btn.setAttribute("aria-label", `Color ${color.name}`);
-
-        btn.addEventListener("click", () => {
-          elements.garageSwatchesList.querySelectorAll(".dock-swatch-btn").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-
-          if (elements.garageColorName) {
-            elements.garageColorName.textContent = color.name;
-          }
-
-          if (elements.garage360CarImage) {
-            const baseShadow = "drop-shadow(0 15px 25px rgba(0, 0, 0, 0.65))";
-            elements.garage360CarImage.style.filter = color.filter === "none" ? baseShadow : `${color.filter} ${baseShadow}`;
-          }
-
-          // Reflejo acentuado del anillo de luz
-          if (elements.turntableLightRing && color.hex) {
-            elements.turntableLightRing.style.borderColor = `${color.hex}88`;
-            elements.turntableLightRing.style.boxShadow = `0 0 45px ${color.hex}66, inset 0 0 35px ${color.hex}44`;
-          }
-        });
-
-        elements.garageSwatchesList.appendChild(btn);
-      });
-
-      if (elements.garageColorName && colors[0]) {
-        elements.garageColorName.textContent = colors[0].name;
-      }
-      if (elements.garage360CarImage) {
-        elements.garage360CarImage.style.filter = "drop-shadow(0 15px 25px rgba(0, 0, 0, 0.65))";
-      }
-    }
-
-    // Configurar información de llantas
-    function updateGarageWheelsInfo(vehicle) {
-      if (elements.wheelCarBadge) elements.wheelCarBadge.textContent = `${vehicle.name} ${vehicle.version}`;
-      if (elements.wheelModelTitle && vehicle.wheels && vehicle.wheels[0]) {
-        elements.wheelModelTitle.textContent = vehicle.wheels[0];
-      }
-
-      if (elements.wheelOptionsRow && vehicle.wheels) {
-        elements.wheelOptionsRow.innerHTML = "";
-        vehicle.wheels.forEach((wheelName, idx) => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = `wheel-choice-btn ${idx === 0 ? "active" : ""}`;
-          btn.textContent = wheelName;
-          btn.addEventListener("click", () => {
-            elements.wheelOptionsRow.querySelectorAll(".wheel-choice-btn").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            if (elements.wheelModelTitle) elements.wheelModelTitle.textContent = wheelName;
-            showToast(`Ruedas actualizadas: ${wheelName}`, "info");
-          });
-          elements.wheelOptionsRow.appendChild(btn);
-        });
-      }
-    }
-
-    // Configuración de píldoras de modelos
-    if (elements.garageModelPills) {
-      elements.garageModelPills.querySelectorAll(".garage-pill-btn").forEach(pill => {
-        pill.addEventListener("click", () => {
-          elements.garageModelPills.querySelectorAll(".garage-pill-btn").forEach(p => p.classList.remove("active"));
-          pill.classList.add("active");
-          const modelId = pill.dataset.model;
-          if (modelId) selectGarageModel(modelId);
-        });
-      });
-    }
-
-    // Pestañas de Modos de Vista 360 (Exterior, Llantas, Interior)
-    const tabs = [
-      { btn: elements.tab360ExteriorBtn, panel: elements.garageExteriorPanel },
-      { btn: elements.tab360WheelsBtn, panel: elements.garageWheelsPanel },
-      { btn: elements.tab360InteriorBtn, panel: elements.garageInteriorPanel }
-    ];
-
-    tabs.forEach(({ btn, panel }) => {
-      if (!btn || !panel) return;
-      btn.addEventListener("click", () => {
-        tabs.forEach(t => {
-          if (t.btn) {
-            t.btn.classList.remove("active");
-            t.btn.setAttribute("aria-selected", "false");
-          }
-          if (t.panel) {
-            t.panel.style.display = "none";
-            t.panel.classList.remove("active");
-          }
-        });
-
-        btn.classList.add("active");
-        btn.setAttribute("aria-selected", "true");
-        panel.style.display = "block";
-        panel.classList.add("active");
-
-        if (btn !== elements.tab360ExteriorBtn) {
-          stopAutoRotate();
-        }
-      });
     });
 
-    // Giro de Rueda a Alta Velocidad (Llantas)
-    if (elements.spinWheelBtn && elements.wheelRimGraphic) {
-      elements.spinWheelBtn.addEventListener("click", () => {
-        elements.wheelRimGraphic.classList.add("is-spinning");
-        showToast("Probando giro de ruedas a alta velocidad (250 km/h simulados)", "info");
-        setTimeout(() => {
-          elements.wheelRimGraphic.classList.remove("is-spinning");
-        }, 3000);
-      });
+    state.filteredVehicles = [...state.vehicles];
+
+    if (persistLocally) {
+      try {
+        localStorage.setItem(STORAGE_KEY_VEHICLES, JSON.stringify(state.vehicles));
+      } catch (e) {}
     }
 
-    // Exploración Panorámica Interior (Cabina)
-    if (elements.interiorPanSlider && elements.interiorPanCanvas) {
-      elements.interiorPanSlider.addEventListener("input", (e) => {
-        const val = parseFloat(e.target.value);
-        const shiftPercent = (50 - val) * 0.7;
-        elements.interiorPanCanvas.style.transform = `translateX(${shiftPercent}%)`;
-      });
+    // Actualizar vistas del showroom en tiempo real
+    renderFeaturedVehicles();
+    renderCatalog();
+    initSimulator();
+    renderVehicleComparator();
+
+    // Actualizar select del formulario comercial
+    if (elements.formModelSelect) {
+      const currentVal = elements.formModelSelect.value;
+      elements.formModelSelect.innerHTML = `
+        <option value="">Selecciona un modelo de interés...</option>
+        ${state.vehicles.map(v => `
+          <option value="${escapeHTML(v.id)}" ${v.id === currentVal ? 'selected' : ''}>${escapeHTML(v.name)} — (${escapeHTML(v.category)})</option>
+        `).join("")}
+      `;
     }
 
-    // Hotspots interactivos de cabina
-    if (elements.interiorHotspots) {
-      elements.interiorHotspots.forEach(spot => {
-        const pin = spot.querySelector(".hotspot-pin");
-        if (pin) {
-          pin.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const isOpen = spot.classList.contains("is-open");
-            elements.interiorHotspots.forEach(s => s.classList.remove("is-open"));
-            if (!isOpen) spot.classList.add("is-open");
-          });
+    // Actualizar select del simulador
+    if (elements.simVehicleSelect) {
+      const currentSimVal = elements.simVehicleSelect.value;
+      elements.simVehicleSelect.innerHTML = state.vehicles.map(v => `
+        <option value="${escapeHTML(v.id)}" ${v.id === currentSimVal ? 'selected' : ''}>
+          ${escapeHTML(v.name)} — ${formatCurrencyCOP(v.price)}
+        </option>
+      `).join("");
+    }
+
+    // Actualizar modal de compra si está en pantalla
+    if (typeof updatePurchaseModalView === "function") {
+      updatePurchaseModalView();
+    }
+  }
+
+  async function syncVehiclesFromBackend() {
+    try {
+      const response = await fetch("/api/vehicles").catch(() => null);
+      if (response && response.ok) {
+        const apiVehicles = await response.json();
+        if (Array.isArray(apiVehicles) && apiVehicles.length > 0) {
+          applyCatalogData(apiVehicles, true);
+          return;
         }
-      });
-
-      document.addEventListener("click", () => {
-        elements.interiorHotspots.forEach(s => s.classList.remove("is-open"));
-      });
+      }
+    } catch (error) {
+      console.info("Showroom funcionando con catálogo local:", error);
     }
 
-    // Botones de acción en la barra inferior del garaje
-    if (elements.garageBuyWithPapersBtn) {
-      elements.garageBuyWithPapersBtn.addEventListener("click", () => {
-        openPurchaseModal(state.garage360.modelId);
-      });
+    // Si la API no está disponible, asegurar lectura desde localStorage
+    const localData = loadInitialVehicles();
+    if (localData && localData.length > 0) {
+      applyCatalogData(localData, false);
     }
-
-    if (elements.garageAskWaBtn) {
-      elements.garageAskWaBtn.addEventListener("click", () => {
-        const vehicle = state.vehicles.find(v => v.id === state.garage360.modelId) || state.vehicles[0];
-        const msg = encodeURIComponent(
-          `Hola, estoy explorando el Garaje 360° en su showroom y me interesa el Tesla ${vehicle.name} (${vehicle.version}) con precio orientativo de ${formatCurrencyCOP(vehicle.price)}. ¿Tienen disponibilidad para asesorarme?`
-        );
-        window.open(`https://wa.me/573105550199?text=${msg}`, "_blank", "noopener,noreferrer");
-      });
-    }
-
-    // Inicializar con el Model 3 por defecto
-    selectGarageModel("model-3");
-    setGarageAngle(0, true);
   }
 
   // =========================================================================
@@ -2779,16 +3221,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================================================
 
   function init() {
-    applyTheme(state.theme);
-    if (elements.themeToggleBtn) {
-      elements.themeToggleBtn.addEventListener("click", toggleTheme);
-    }
     updateFavoritesBadge();
     initNavigation();
     initAuth();
     initPurchaseModal();
     initWhatsAppWidget();
-    initGarage360();
     renderFeaturedVehicles();
     initCatalogEvents();
     renderCatalog();
@@ -2796,6 +3233,44 @@ document.addEventListener("DOMContentLoaded", () => {
     renderVehicleComparator();
     initContactForm();
     initFAQs();
+
+    // Sincronizar catálogo con las modificaciones hechas en la consola administrativa
+    syncVehiclesFromBackend();
+
+    // Sintonizar canal de difusión en tiempo real desde la consola admin (instantáneo)
+    try {
+      if (typeof BroadcastChannel !== "undefined") {
+        const syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
+        syncChannel.onmessage = (event) => {
+          if (event.data && event.data.type === "CATALOG_UPDATED" && Array.isArray(event.data.vehicles)) {
+            applyCatalogData(event.data.vehicles, true);
+          }
+        };
+      }
+    } catch (e) {}
+
+    // Sintonizar cambios de localStorage entre diferentes pestañas o ventanas
+    window.addEventListener("storage", (e) => {
+      if (e.key === STORAGE_KEY_VEHICLES && e.newValue) {
+        try {
+          const updated = JSON.parse(e.newValue);
+          if (Array.isArray(updated) && updated.length > 0) {
+            applyCatalogData(updated, false);
+          }
+        } catch (err) {}
+      }
+    });
+
+    window.addEventListener("tesla_catalog_updated", (e) => {
+      if (e.detail && Array.isArray(e.detail)) {
+        applyCatalogData(e.detail, true);
+      }
+    });
+
+    // Cada vez que el usuario regrese a la pestaña del showroom, verificar actualización
+    window.addEventListener("focus", () => {
+      syncVehiclesFromBackend();
+    });
   }
 
   init();

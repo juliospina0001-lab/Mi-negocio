@@ -1,0 +1,38 @@
+[
+  {
+    "id": "TSL-88219",
+    "name": "Carlos Mendoza",
+    "phone": "+57 310 445 9922",
+    "email": "carlos.mendoza@inversiones.com",
+    "vehicle_name": "Model Y",
+    "request_type": "quote",
+    "city": "bogota",
+    "comments": "Interesado en cotización con plan de financiamiento a 48 meses para dos unidades.",
+    "status": "pending",
+    "created_at": "2026-10-25T22:52:14.033Z"
+  },
+  {
+    "id": "TSL-74910",
+    "name": "Valentina Restrepo",
+    "phone": "+57 315 889 0012",
+    "email": "v.restrepo@luxurygroup.co",
+    "vehicle_name": "Model 3",
+    "request_type": "test-drive",
+    "city": "medellin",
+    "comments": "Solicito agendar prueba de manejo este sábado en la sede de El Poblado.",
+    "status": "contacted",
+    "created_at": "2026-10-25T08:52:14.036Z"
+  },
+  {
+    "id": "TSL-65123",
+    "name": "Dr. Alejandro Morales",
+    "phone": "+57 320 771 4433",
+    "email": "amorales@clinicamoderna.com",
+    "vehicle_name": "Cybertruck",
+    "request_type": "corporate",
+    "city": "cali",
+    "comments": "Consulta sobre tiempos de entrega y exenciones arancelarias para vehículos 100% eléctricos.",
+    "status": "completed",
+    "created_at": "2026-10-24T02:52:14.036Z"
+  }
+]

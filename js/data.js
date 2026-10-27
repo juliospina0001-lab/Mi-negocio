@@ -368,3 +368,21 @@ const WHEELS_DETAILED_DATA = {
   ]
 };
 
+// Exportación universal segura para navegador (window), Node.js (global) y CommonJS
+if (typeof window !== "undefined") {
+  window.VEHICLES_DATA = VEHICLES_DATA;
+  if (typeof WHEELS_DETAILED_DATA !== "undefined") window.WHEELS_DETAILED_DATA = WHEELS_DETAILED_DATA;
+  if (typeof FAQS_DATA !== "undefined") window.FAQS_DATA = FAQS_DATA;
+}
+if (typeof global !== "undefined") {
+  global.VEHICLES_DATA = VEHICLES_DATA;
+  if (typeof WHEELS_DETAILED_DATA !== "undefined") global.WHEELS_DETAILED_DATA = WHEELS_DETAILED_DATA;
+  if (typeof FAQS_DATA !== "undefined") global.FAQS_DATA = FAQS_DATA;
+}
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { 
+    VEHICLES_DATA, 
+    WHEELS_DETAILED_DATA: typeof WHEELS_DETAILED_DATA !== "undefined" ? WHEELS_DETAILED_DATA : {},
+    FAQS_DATA: typeof FAQS_DATA !== "undefined" ? FAQS_DATA : []
+  };
+}

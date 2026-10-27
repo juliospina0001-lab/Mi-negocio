@@ -11,10 +11,21 @@ if (typeof performance === "undefined") {
   global.performance = { now: () => Date.now() };
 }
 
+// Polyfill de crypto si es requerido en Node
+if (typeof crypto === "undefined" || !global.crypto) {
+  try {
+    const nodeCrypto = require("crypto");
+    global.crypto = nodeCrypto.webcrypto || nodeCrypto;
+  } catch (e) {}
+}
+
 // 1. Cargar datos del catálogo (js/data.js)
 const dataPath = path.join(__dirname, "../js/data.js");
 const dataCode = fs.readFileSync(dataPath, "utf-8");
 eval(dataCode);
+if (typeof VEHICLES_DATA !== "undefined") {
+  global.VEHICLES_DATA = VEHICLES_DATA;
+}
 
 // 2. Cargar suite de pruebas (tests/test-suite.js)
 const suitePath = path.join(__dirname, "test-suite.js");
