@@ -2864,6 +2864,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // Botón de cerrar dropdown en móvil
+    const closeUserDropdownBtn = document.getElementById("closeUserDropdownBtn");
+    if (closeUserDropdownBtn) {
+      closeUserDropdownBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeUserDropdown();
+      });
+    }
+
     // Botones del dropdown rápido
     if (elements.dropdownOpenFullProfileBtn) {
       elements.dropdownOpenFullProfileBtn.addEventListener("click", () => {

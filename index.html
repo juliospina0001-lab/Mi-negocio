@@ -868,6 +868,12 @@
                   <div class="dropdown-user-name" id="dropdownUserName">Usuario</div>
                   <div class="dropdown-user-email" id="dropdownUserEmail">correo@ejemplo.com</div>
                 </div>
+                <button type="button" class="dropdown-close-mobile-btn" id="closeUserDropdownBtn" aria-label="Cerrar menú de usuario">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
               </div>
               <span class="dropdown-user-badge">Cliente Premium VIP</span>
             </div>
@@ -1966,7 +1972,7 @@
         <!-- Pestaña 2: Crear Cuenta -->
         <div class="auth-panel" id="registerTabPanel" role="tabpanel" style="display: none;">
           <form id="authRegisterForm" novalidate>
-            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-row auth-form-row">
               <div class="form-group">
                 <label for="regName" class="form-label">Nombre Completo</label>
                 <input type="text" id="regName" class="form-control" placeholder="Ej: Julian Ospina" required
@@ -2013,7 +2019,7 @@
               <div class="field-error-msg">La contraseña debe tener al menos 6 caracteres.</div>
             </div>
 
-            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-row auth-form-row">
               <div class="form-group">
                 <label for="regCity" class="form-label">Ciudad / Showroom</label>
                 <select id="regCity" class="select-custom">
@@ -2203,7 +2209,7 @@
           <!-- Panel 1: Mis Datos -->
           <div class="dash-panel-content active" id="dashProfilePanel">
             <form id="dashEditProfileForm">
-              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-row auth-form-row">
                 <div class="form-group">
                   <label for="dashEditName" class="form-label">Nombre y Apellidos</label>
                   <input type="text" id="dashEditName" class="form-control" required>
@@ -2215,7 +2221,7 @@
                 </div>
               </div>
 
-              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-row auth-form-row">
                 <div class="form-group">
                   <label for="dashEditPhone" class="form-label">Teléfono de Contacto</label>
                   <input type="tel" id="dashEditPhone" class="form-control" placeholder="+57 310 123 4567">

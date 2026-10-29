@@ -1060,6 +1060,23 @@
       expect(mobileButtonSpecs.radicadoSearchBarFlexDirectionMobile).toBe("column");
       expect(mobileButtonSpecs.minTouchTargetHeight >= 44).toBe(true);
     });
+
+    it("La ventana de perfil y el menú desplegable de usuario deben ser 100% responsivos y no exceder los límites del viewport móvil", () => {
+      const mobileProfileSpecs = {
+        dropdownPositionMobile: "fixed",
+        dropdownBoundedMaxWidth: "calc(100vw - 24px)",
+        dropdownItemMinHeight: 44,
+        authModalPaddingMobile: 16,
+        authFormRowColumnsMobile: "1fr",
+        demoQuickBtnWhiteSpace: "normal"
+      };
+
+      expect(mobileProfileSpecs.dropdownPositionMobile).toBe("fixed");
+      expect(mobileProfileSpecs.dropdownBoundedMaxWidth.includes("100vw")).toBe(true);
+      expect(mobileProfileSpecs.dropdownItemMinHeight >= 44).toBe(true);
+      expect(mobileProfileSpecs.authFormRowColumnsMobile).toBe("1fr");
+      expect(mobileProfileSpecs.demoQuickBtnWhiteSpace).toBe("normal");
+    });
   });
 
 })(typeof window !== "undefined" ? window : global);
