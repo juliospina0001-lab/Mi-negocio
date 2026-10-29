@@ -1667,6 +1667,107 @@ h4 {
 }
 
 @media (max-width: 768px) {
+  /* === AGENDA TU EXPERIENCIA DE MANEJO: RESPONSIVE COMPLETO EN MÓVILES === */
+  .contact-form-card {
+    padding: 20px 16px !important;
+  }
+
+  .radicado-lookup-card {
+    padding: 18px 16px !important;
+  }
+
+  .solicitud-confirm-window {
+    padding: 16px 14px !important;
+    margin-top: 18px !important;
+  }
+
+  .solicitud-confirm-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .solicitud-radicado-box {
+    text-align: left !important;
+    width: 100% !important;
+  }
+
+  .solicitud-radicado-badge {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    font-size: 1.1rem !important;
+    padding: 8px 10px !important;
+  }
+
+  .solicitud-confirm-grid {
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+  }
+
+  .solicitud-confirm-actions {
+    flex-direction: column-reverse !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .btn-solicitud-close,
+  .btn-solicitud-delete {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+  }
+
+  .solicitud-delete-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .btn-confirm-delete-full,
+  .btn-cancel-delete-full {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+    min-height: 42px !important;
+  }
+
+  .solicitud-closed-indicator {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    padding: 14px !important;
+  }
+
+  .solicitud-toggle-label {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 42px !important;
+  }
+
+  .radicado-search-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .btn-radicado-action-delete,
+  .btn-radicado-action-details {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+  }
+
+  /* Drawer de Favoritos Adaptado en Móvil */
+  .drawer-panel {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
   .sim-features-grid {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -2118,6 +2219,534 @@ h4 {
   color: var(--color-silver);
   line-height: 1.4;
 }
+
+/* ==========================================================================
+   VENTANA DE CONFIRMACIÓN Y GESTIÓN: AGENDA TU EXPERIENCIA DE MANEJO
+   ========================================================================== */
+
+.solicitud-confirm-window {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid #10b981;
+  border-radius: var(--radius-md);
+  padding: 22px;
+  margin-top: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.solicitud-confirm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+  padding-bottom: 14px;
+}
+
+.solicitud-confirm-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 240px;
+}
+
+.solicitud-check-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+}
+
+.solicitud-confirm-title {
+  color: #10b981;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.solicitud-confirm-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-silver-light, #a1a1aa);
+  font-weight: 500;
+  display: block;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.solicitud-radicado-box {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.solicitud-radicado-label {
+  font-size: 0.72rem;
+  color: var(--color-silver, #a1a1aa);
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 3px;
+}
+
+.solicitud-radicado-badge {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  background: rgba(232, 33, 39, 0.2);
+  border: 1px solid #e82127;
+  padding: 5px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  box-shadow: 0 0 10px rgba(232, 33, 39, 0.2);
+}
+
+.solicitud-confirm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--color-silver-light, #d1d5db);
+  margin-bottom: 14px;
+}
+
+.solicitud-grid-item {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.solicitud-grid-item strong {
+  color: var(--color-silver-light, #ffffff);
+}
+
+.solicitud-email-text {
+  word-break: break-all;
+  color: var(--color-silver-light, #e4e4e7);
+}
+
+.solicitud-model-highlight {
+  color: #e82127;
+  font-weight: 700;
+}
+
+.solicitud-confirm-details {
+  font-size: 0.82rem;
+  color: var(--color-silver-light, #d1d5db);
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.solicitud-confirm-note {
+  font-size: 0.8rem;
+  color: var(--color-silver, #9ca3af);
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.solicitud-delete-alert {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.solicitud-delete-warning-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.solicitud-warning-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.solicitud-delete-warning-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.solicitud-delete-warning-title {
+  color: #f87171;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.solicitud-delete-warning-p {
+  color: #fca5a5;
+  font-size: 0.88rem;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.solicitud-delete-warning-sub {
+  font-size: 0.8rem;
+  color: #fecaca;
+  margin: 0 0 14px 0;
+  line-height: 1.4;
+}
+
+.solicitud-delete-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-confirm-delete-full {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-confirm-delete-full:hover {
+  background: #dc2626;
+}
+
+.btn-cancel-delete-full {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-silver-light, #e4e4e7);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-delete-full:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.solicitud-confirm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid rgba(16, 185, 129, 0.25);
+  padding-top: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-solicitud-delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 9px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-solicitud-delete:hover {
+  background: rgba(239, 68, 68, 0.28);
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+.btn-solicitud-close {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-silver-light, #ffffff);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-solicitud-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+/* Indicador de Solicitud Cerrada con Casilla */
+.solicitud-closed-indicator {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid #10b981;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-top: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.solicitud-closed-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.solicitud-status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  flex-shrink: 0;
+}
+
+.solicitud-closed-title {
+  font-size: 0.88rem;
+  color: var(--color-silver-light, #ffffff);
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.solicitud-radicado-highlight {
+  color: #e82127;
+  font-weight: 700;
+}
+
+.solicitud-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.85rem;
+  color: var(--color-silver-light, #e4e4e7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 7px 14px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.solicitud-toggle-label:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.solicitud-toggle-input {
+  accent-color: #10b981;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Panel de Búsqueda y Resultados de Radicado */
+.radicado-search-window {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid #10b981;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+}
+
+.radicado-search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+  padding-bottom: 10px;
+}
+
+.radicado-search-subtitle {
+  font-size: 0.7rem;
+  color: var(--color-silver, #a1a1aa);
+  text-transform: uppercase;
+  display: block;
+}
+
+.radicado-search-code {
+  font-size: 1.05rem;
+  color: #ffffff;
+  font-family: monospace;
+  letter-spacing: 0.04em;
+}
+
+.radicado-search-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.radicado-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.radicado-search-grid {
+  font-size: 0.82rem;
+  color: var(--color-silver-light, #d1d5db);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
+  word-break: break-word;
+}
+
+.radicado-search-details {
+  font-size: 0.8rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
+  color: var(--color-silver-light, #e4e4e7);
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.radicado-delete-warning-box {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.radicado-delete-warning-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.radicado-delete-warning-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-radicado-confirm-delete {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-radicado-cancel-delete {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 7px 14px;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.radicado-search-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid rgba(16, 185, 129, 0.2);
+  padding-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-radicado-action-delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-radicado-action-details {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-silver-light, #ffffff);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mobile-fav-count-pill {
+  margin-left: auto;
+  background-color: var(--color-accent-red);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  min-width: 18px;
+  text-align: center;
+  box-shadow: 0 0 6px rgba(232, 33, 39, 0.4);
+}
+
 
 /* ==========================================================================
    08. FAQS Y AVISO LEGAL
@@ -3073,6 +3702,38 @@ h4 {
   }
 
   /* Sección secciones con menos padding */
+    /* Ajuste de formulario y ventana de experiencia en pantallas muy pequeñas */
+  .contact-form-card {
+    padding: 16px 12px !important;
+    border-radius: var(--radius-md) !important;
+  }
+
+  .radicado-lookup-card {
+    padding: 14px 12px !important;
+  }
+
+  .solicitud-confirm-window {
+    padding: 14px 12px !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  .solicitud-confirm-title {
+    font-size: 1.05rem !important;
+  }
+
+  .solicitud-confirm-subtitle {
+    font-size: 0.8rem !important;
+  }
+
+  .solicitud-grid-item {
+    font-size: 0.8125rem !important;
+  }
+
+  .solicitud-confirm-details {
+    font-size: 0.8rem !important;
+    padding: 8px 10px !important;
+  }
+
   .section-featured,
   .catalog-section,
   .experience-section,

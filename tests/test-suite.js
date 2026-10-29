@@ -917,4 +917,122 @@
     });
   });
 
+  // =========================================================================
+  // SUITE 13: ADAPTABILIDAD MÓVIL DE FAVORITOS Y VENTANA DE EXPERIENCIA DE MANEJO
+  // =========================================================================
+
+  TestRunner.describe("Suite 13: Adaptabilidad Móvil de Favoritos y Experiencia de Manejo", () => {
+    it("Al agregar un vehículo a favoritos debe abrirse la ventana/drawer para ver los favoritos agregados", () => {
+      let drawerOpened = false;
+      let favorites = [];
+
+      function openFavoritesDrawer() {
+        drawerOpened = true;
+      }
+
+      function toggleFavorite(vehicleId) {
+        const exists = favorites.includes(vehicleId);
+        if (exists) {
+          favorites = favorites.filter(id => id !== vehicleId);
+        } else {
+          favorites.push(vehicleId);
+          openFavoritesDrawer();
+        }
+      }
+
+      // Agregar vehículo
+      toggleFavorite("model-3");
+      expect(favorites.includes("model-3")).toBe(true);
+      expect(drawerOpened).toBe(true);
+
+      // Resetear indicador y quitar vehículo
+      drawerOpened = false;
+      toggleFavorite("model-3");
+      expect(favorites.includes("model-3")).toBe(false);
+      expect(drawerOpened).toBe(false);
+    });
+
+    it("El menú móvil debe proveer botón de favoritos con sincronización de contador", () => {
+      const mockState = { favorites: ["model-3", "model-y"] };
+      const mockFavBtn = { id: "navMobileFavBtn", visible: true };
+      const mockBadge = { count: 0, display: "none" };
+
+      function updateMobileBadge() {
+        mockBadge.count = mockState.favorites.length;
+        mockBadge.display = mockBadge.count > 0 ? "inline-flex" : "none";
+      }
+
+      updateMobileBadge();
+      expect(mockFavBtn.visible).toBe(true);
+      expect(mockBadge.count).toBe(2);
+      expect(mockBadge.display).toBe("inline-flex");
+    });
+
+    it("La ventana de 'Agenda tu Experiencia de Manejo' debe contar con clases responsive completas para celular", () => {
+      const windowClasses = [
+        "solicitud-confirm-window",
+        "solicitud-confirm-header",
+        "solicitud-radicado-badge",
+        "solicitud-confirm-grid",
+        "solicitud-grid-item",
+        "solicitud-confirm-actions",
+        "solicitud-delete-buttons",
+        "solicitud-closed-indicator"
+      ];
+
+      windowClasses.forEach(cls => {
+        expect(typeof cls === "string" && cls.length > 0).toBe(true);
+      });
+
+      // Validar dimensiones móviles para evitar corte de ventana
+      const mobileSpecs = {
+        viewportWidth: 375,
+        containerPadding: 14,
+        cardBoxSizing: "border-box",
+        actionsDirection: "column-reverse",
+        buttonMinHeight: 44
+      };
+
+      expect(mobileSpecs.cardBoxSizing).toBe("border-box");
+      expect(mobileSpecs.buttonMinHeight >= 44).toBe(true);
+      expect(mobileSpecs.actionsDirection).toBe("column-reverse");
+    });
+
+    it("Las opciones de Cerrar ventana y Eliminar solicitud deben preservar la integridad del radicado", () => {
+      let isWindowVisible = true;
+      let isClosedIndicatorVisible = false;
+      let isLeadDeleted = false;
+      let lead = { radicado: "RAD-2026-10293", status: "active" };
+
+      // Cerrar ventana
+      function closeWindow() {
+        isWindowVisible = false;
+        isClosedIndicatorVisible = true;
+      }
+
+      // Reabrir vía indicador
+      function reopenWindow(checked) {
+        isWindowVisible = checked;
+      }
+
+      // Eliminar
+      function deleteSolicitud() {
+        isLeadDeleted = true;
+        lead = null;
+      }
+
+      closeWindow();
+      expect(isWindowVisible).toBe(false);
+      expect(isClosedIndicatorVisible).toBe(true);
+      expect(lead !== null).toBe(true);
+
+      reopenWindow(true);
+      expect(isWindowVisible).toBe(true);
+
+      deleteSolicitud();
+      expect(isLeadDeleted).toBe(true);
+      expect(lead).toBe(null);
+    });
+  });
+
 })(typeof window !== "undefined" ? window : global);

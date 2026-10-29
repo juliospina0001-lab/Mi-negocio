@@ -18,7 +18,7 @@ La propuesta combina la estética minimalista del sitio oficial de Tesla con pat
 - Fotografías protagonistas.
 - Navegación sencilla.
 - Tipografía limpia.
-- Secciones que transmitan innovación.
+- Secciones que transmitan innovación.;
 
 Sitio: https://www.tesla.com/es_co
 

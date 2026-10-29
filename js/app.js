@@ -78,6 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
     navLoginLink: document.getElementById("navLoginLink"),
     navMobileAccountBtn: document.getElementById("navMobileAccountBtn"),
     mobileAccountBtnText: document.getElementById("mobileAccountBtnText"),
+    navMobileFavBtn: document.getElementById("navMobileFavBtn"),
+    navMobileFavCount: document.getElementById("navMobileFavCount"),
     favCountBadge: document.getElementById("favBadgeCount"),
     favTriggerBtn: document.getElementById("favTriggerBtn"),
 
@@ -441,15 +443,28 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       updated = [...state.favorites, vehicleId];
       showToast(`${vehicleName} guardado en tus favoritos`, "success");
+      // Abrir ventana lateral de favoritos inmediatamente para visualizar los modelos guardados
+      openFavoritesDrawer();
     }
     saveFavorites(updated);
   }
 
   function updateFavoritesBadge() {
-    if (!elements.favCountBadge) return;
     const count = state.favorites.length;
-    elements.favCountBadge.textContent = count;
-    elements.favCountBadge.style.display = count > 0 ? "flex" : "none";
+    if (elements.favCountBadge) {
+      elements.favCountBadge.textContent = count;
+      elements.favCountBadge.style.display = count > 0 ? "flex" : "none";
+    }
+    if (elements.navMobileFavCount) {
+      elements.navMobileFavCount.textContent = count;
+      elements.navMobileFavCount.style.display = count > 0 ? "inline-flex" : "none";
+    }
+    if (elements.dropdownFavCount) {
+      elements.dropdownFavCount.textContent = count;
+    }
+    if (elements.dashKpiFavsCount) {
+      elements.dashKpiFavsCount.textContent = count;
+    }
   }
 
   function updateFavoriteButtonsUI() {
@@ -922,6 +937,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openFavoritesDrawer() {
     if (!elements.favDrawer) return;
+    if (typeof closeNavDrawer === "function") {
+      closeNavDrawer();
+    }
     renderFavoritesDrawer();
     elements.favDrawer.classList.add("is-open");
     document.body.style.overflow = "hidden";
@@ -1518,69 +1536,69 @@ document.addEventListener("DOMContentLoaded", () => {
         elements.formStatusAlert.style.display = "block";
         elements.formStatusAlert.innerHTML = `
           <!-- Indicador y casilla de verificación para visualizar el registro cerrado posteriormente -->
-          <div id="solicitudClosedIndicator_${radicadoNum}" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: var(--radius-md); padding: 14px 18px; margin-top: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
-              <span style="font-size: 0.88rem; color: var(--color-silver-light, #fff); font-weight: 600;">
-                Solicitud activa [Radicado: <span style="color: #e82127; font-weight: 700;">${radicadoNum}</span>] — Registro cerrado
+          <div id="solicitudClosedIndicator_${radicadoNum}" class="solicitud-closed-indicator" style="display: none;">
+            <div class="solicitud-closed-text">
+              <span class="solicitud-status-dot"></span>
+              <span class="solicitud-closed-title">
+                Solicitud activa [Radicado: <span class="solicitud-radicado-highlight">${radicadoNum}</span>] — Registro cerrado
               </span>
             </div>
-            <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 0.85rem; color: var(--color-silver-light, #e4e4e7); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); padding: 7px 14px; border-radius: 6px; transition: all 0.2s;">
-              <input type="checkbox" id="chkToggleClosedRecord_${radicadoNum}" style="accent-color: #10b981; width: 16px; height: 16px; cursor: pointer;">
+            <label class="solicitud-toggle-label">
+              <input type="checkbox" id="chkToggleClosedRecord_${radicadoNum}" class="solicitud-toggle-input">
               <span>Visualizar registro cerrado</span>
             </label>
           </div>
 
           <!-- Ventana de confirmación principal -->
-          <div id="solicitudConfirmCard_${radicadoNum}" style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; border-radius: var(--radius-md); padding: 22px; margin-top: 24px; box-shadow: 0 8px 30px rgba(0,0,0,0.4);">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; border-bottom: 1px solid rgba(16, 185, 129, 0.25); padding-bottom: 12px;">
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="width: 32px; height: 32px; border-radius: 50%; background: #10b981; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;">✓</span>
+          <div id="solicitudConfirmCard_${radicadoNum}" class="solicitud-confirm-window">
+            <div class="solicitud-confirm-header">
+              <div class="solicitud-confirm-title-wrap">
+                <span class="solicitud-check-badge">✓</span>
                 <div>
-                  <h4 style="color: #10b981; font-size: 1.15rem; font-weight: 700; margin: 0;">¡Tu Solicitud ha sido Enviada con Éxito!</h4>
-                  <span style="font-size: 0.88rem; color: var(--color-silver-light, #a1a1aa); font-weight: 600; display: block; margin-top: 2px;">Un especialista oficial de Tesla Colombia revisará tu radicado y se comunicará contigo a la brevedad</span>
+                  <h4 class="solicitud-confirm-title">¡Tu Solicitud ha sido Enviada con Éxito!</h4>
+                  <span class="solicitud-confirm-subtitle">Un especialista oficial de Tesla Colombia revisará tu radicado y se comunicará contigo a la brevedad</span>
                 </div>
               </div>
-              <div style="text-align: right;">
-                <span style="font-size: 0.72rem; color: var(--color-silver, #a1a1aa); display: block; text-transform: uppercase;">Número de Radicado</span>
-                <span style="font-size: 1.15rem; font-weight: 800; color: #ffffff; letter-spacing: 0.05em; background: rgba(232, 33, 39, 0.2); border: 1px solid #e82127; padding: 4px 10px; border-radius: 6px; display: inline-block;">${radicadoNum}</span>
+              <div class="solicitud-radicado-box">
+                <span class="solicitud-radicado-label">Número de Radicado</span>
+                <span class="solicitud-radicado-badge">${radicadoNum}</span>
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.85rem; color: var(--color-silver-light, #d1d5db); margin-bottom: 14px;">
-              <div><strong style="color: var(--color-silver-light, #fff);">Cliente:</strong> ${escapeHTML(newLead.name)}</div>
-              <div><strong style="color: var(--color-silver-light, #fff);">Teléfono:</strong> ${escapeHTML(newLead.phone)}</div>
-              <div><strong style="color: var(--color-silver-light, #fff);">Correo:</strong> ${escapeHTML(newLead.email)}</div>
-              <div><strong style="color: var(--color-silver-light, #fff);">Modelo de Interés:</strong> <span style="color: #e82127; font-weight: 700;">${escapeHTML(newLead.vehicle_name)}</span></div>
-              <div><strong style="color: var(--color-silver-light, #fff);">Tipo de Solicitud:</strong> ${escapeHTML(newLead.request_type)}</div>
-              <div><strong style="color: var(--color-silver-light, #fff);">Sede Asignada:</strong> ${escapeHTML(newLead.city)}</div>
+            <div class="solicitud-confirm-grid">
+              <div class="solicitud-grid-item"><strong>Cliente:</strong> <span>${escapeHTML(newLead.name)}</span></div>
+              <div class="solicitud-grid-item"><strong>Teléfono:</strong> <span>${escapeHTML(newLead.phone)}</span></div>
+              <div class="solicitud-grid-item"><strong>Correo:</strong> <span class="solicitud-email-text">${escapeHTML(newLead.email)}</span></div>
+              <div class="solicitud-grid-item"><strong>Modelo de Interés:</strong> <span class="solicitud-model-highlight">${escapeHTML(newLead.vehicle_name)}</span></div>
+              <div class="solicitud-grid-item"><strong>Tipo de Solicitud:</strong> <span>${escapeHTML(newLead.request_type)}</span></div>
+              <div class="solicitud-grid-item"><strong>Sede Asignada:</strong> <span>${escapeHTML(newLead.city)}</span></div>
             </div>
 
-            <div style="font-size: 0.82rem; color: var(--color-silver-light, #d1d5db); background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px;">
+            <div class="solicitud-confirm-details">
               <strong>Detalle de tu solicitud:</strong> "${escapeHTML(newLead.comments)}"
             </div>
 
-            <p style="font-size: 0.78rem; color: var(--color-silver, #9ca3af); margin: 0 0 16px 0;">
+            <p class="solicitud-confirm-note">
               Guarda tu número de radicado <strong>${radicadoNum}</strong>. Un asesor oficial se comunicará contigo al teléfono suministrado para confirmar día y hora de tu prueba.
             </p>
 
             <!-- Alerta advirtiendo sobre eliminación con confirmación adicional -->
-            <div id="deleteWarningAlert_${radicadoNum}" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-              <div style="display: flex; align-items: flex-start; gap: 12px;">
-                <span style="font-size: 1.3rem; line-height: 1;">⚠️</span>
-                <div style="flex: 1;">
-                  <div style="color: #f87171; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Alerta de Supresión</div>
-                  <p style="color: #fca5a5; font-size: 0.88rem; margin: 0 0 12px 0; font-weight: 600;">
+            <div id="deleteWarningAlert_${radicadoNum}" class="solicitud-delete-alert" style="display: none;">
+              <div class="solicitud-delete-warning-content">
+                <span class="solicitud-warning-icon">⚠️</span>
+                <div class="solicitud-delete-warning-body">
+                  <div class="solicitud-delete-warning-title">Alerta de Supresión</div>
+                  <p class="solicitud-delete-warning-p">
                     Si elimina esta solicitud, no será respondida en el tiempo establecido.
                   </p>
-                  <p style="font-size: 0.8rem; color: #fecaca; margin: 0 0 14px 0;">
+                  <p class="solicitud-delete-warning-sub">
                     Esta acción suprimirá definitivamente el registro del centro administrativo. ¿Deseas proceder?
                   </p>
-                  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                    <button type="button" id="btnConfirmDelete_${radicadoNum}" class="btn" style="background: #ef4444; color: #ffffff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+                  <div class="solicitud-delete-buttons">
+                    <button type="button" id="btnConfirmDelete_${radicadoNum}" class="btn btn-confirm-delete-full">
                       Confirmar supresión definitiva
                     </button>
-                    <button type="button" id="btnCancelDelete_${radicadoNum}" class="btn" style="background: rgba(255, 255, 255, 0.1); color: var(--color-silver-light, #e4e4e7); border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; cursor: pointer;">
+                    <button type="button" id="btnCancelDelete_${radicadoNum}" class="btn btn-cancel-delete-full">
                       Cancelar
                     </button>
                   </div>
@@ -1589,14 +1607,14 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <!-- Opciones inferiores requeridas: Cerrar ventana y Eliminar solicitud -->
-            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid rgba(16, 185, 129, 0.25); padding-top: 14px; flex-wrap: wrap;">
-              <button type="button" id="btnDeleteSolicitud_${radicadoNum}" class="btn" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;">
+            <div class="solicitud-confirm-actions">
+              <button type="button" id="btnDeleteSolicitud_${radicadoNum}" class="btn btn-solicitud-delete">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                Eliminar solicitud
+                <span>Eliminar solicitud</span>
               </button>
-              <button type="button" id="btnCloseSolicitud_${radicadoNum}" class="btn" style="background: rgba(255, 255, 255, 0.08); color: var(--color-silver-light, #ffffff); border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;">
+              <button type="button" id="btnCloseSolicitud_${radicadoNum}" class="btn btn-solicitud-close">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                Cerrar ventana
+                <span>Cerrar ventana</span>
               </button>
             </div>
           </div>
@@ -1793,50 +1811,50 @@ document.addEventListener("DOMContentLoaded", () => {
       const dateFormatted = found.created_at ? new Date(found.created_at).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "Fecha reciente";
 
       searchResult.innerHTML = `
-        <div id="lookupCard_${radNum}" style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; border-radius: 8px; padding: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 10px;">
+        <div id="lookupCard_${radNum}" class="radicado-search-window">
+          <div class="radicado-search-header">
             <div>
-              <span style="font-size: 0.7rem; color: var(--color-silver, #a1a1aa); text-transform: uppercase; display: block;">Radicado Encontrado</span>
-              <strong style="font-size: 1.05rem; color: #fff; font-family: monospace; letter-spacing: 0.04em;">${escapeHTML(radNum)}</strong>
+              <span class="radicado-search-subtitle">Radicado Encontrado</span>
+              <strong class="radicado-search-code">${escapeHTML(radNum)}</strong>
             </div>
-            <div style="text-align: right;">
-              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #10b981; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 8px; border-radius: 20px; font-weight: 600;">
-                <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981;"></span>
+            <div>
+              <span class="radicado-search-badge">
+                <span class="radicado-badge-dot"></span>
                 En Centro Administrativo
               </span>
             </div>
           </div>
 
           <!-- Datos Principales -->
-          <div style="font-size: 0.82rem; color: var(--color-silver-light, #d1d5db); display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 12px;">
-            <div><strong style="color: var(--color-silver-light, #fff);">Cliente:</strong> ${escapeHTML(found.name || 'Sin nombre')}</div>
-            <div><strong style="color: var(--color-silver-light, #fff);">Vehículo:</strong> <span style="color: #e82127; font-weight: 700;">${escapeHTML(found.vehicle_name || 'Tesla')}</span></div>
-            <div><strong style="color: var(--color-silver-light, #fff);">Tipo:</strong> ${escapeHTML(found.request_type || 'Experiencia de Manejo')}</div>
-            <div><strong style="color: var(--color-silver-light, #fff);">Sede:</strong> ${escapeHTML(found.city || 'Bogotá D.C.')}</div>
-            <div><strong style="color: var(--color-silver, #9ca3af);">Fecha:</strong> ${escapeHTML(dateFormatted)}</div>
+          <div class="radicado-search-grid">
+            <div><strong>Cliente:</strong> <span>${escapeHTML(found.name || 'Sin nombre')}</span></div>
+            <div><strong>Vehículo:</strong> <span class="solicitud-model-highlight">${escapeHTML(found.vehicle_name || 'Tesla')}</span></div>
+            <div><strong>Tipo:</strong> <span>${escapeHTML(found.request_type || 'Experiencia de Manejo')}</span></div>
+            <div><strong>Sede:</strong> <span>${escapeHTML(found.city || 'Bogotá D.C.')}</span></div>
+            <div><strong>Fecha:</strong> <span>${escapeHTML(dateFormatted)}</span></div>
           </div>
 
           <!-- Detalles Extendidos (Mirar Solicitud) -->
-          <div id="lookupExtendedDetails_${radNum}" style="display: none; font-size: 0.8rem; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 10px; margin-bottom: 12px; color: var(--color-silver-light, #e4e4e7);">
-            <div style="margin-bottom: 4px;"><strong>Teléfono:</strong> ${escapeHTML(found.phone || 'No registrado')}</div>
-            <div style="margin-bottom: 4px;"><strong>Correo:</strong> ${escapeHTML(found.email || 'No registrado')}</div>
+          <div id="lookupExtendedDetails_${radNum}" class="radicado-search-details" style="display: none;">
+            <div><strong>Teléfono:</strong> <span>${escapeHTML(found.phone || 'No registrado')}</span></div>
+            <div><strong>Correo:</strong> <span>${escapeHTML(found.email || 'No registrado')}</span></div>
             <div><strong>Comentarios del cliente:</strong> "${escapeHTML(found.comments || 'Sin comentarios')}"</div>
           </div>
 
           <!-- Alerta de Advertencia de Eliminación con Confirmación Adicional -->
-          <div id="lookupDeleteWarning_${radNum}" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;">
-            <div style="display: flex; align-items: flex-start; gap: 10px;">
-              <span style="font-size: 1.2rem; line-height: 1;">⚠️</span>
-              <div style="flex: 1;">
-                <div style="color: #f87171; font-weight: 700; font-size: 0.88rem; margin-bottom: 3px;">Advertencia de Eliminación</div>
-                <p style="color: #fca5a5; font-size: 0.82rem; margin: 0 0 10px 0; font-weight: 600;">
+          <div id="lookupDeleteWarning_${radNum}" class="radicado-delete-warning-box" style="display: none;">
+            <div class="radicado-delete-warning-wrap">
+              <span class="solicitud-warning-icon">⚠️</span>
+              <div class="radicado-delete-warning-body">
+                <div class="solicitud-warning-title">Advertencia de Eliminación</div>
+                <p class="solicitud-warning-p">
                   Si elimina esta solicitud, no será respondida en el tiempo establecido.
                 </p>
-                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                  <button type="button" id="btnLookupConfirmDelete_${radNum}" class="btn" style="background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 5px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+                <div class="solicitud-delete-buttons">
+                  <button type="button" id="btnLookupConfirmDelete_${radNum}" class="btn btn-radicado-confirm-delete">
                     Confirmar supresión definitiva
                   </button>
-                  <button type="button" id="btnLookupCancelDelete_${radNum}" class="btn" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 5px; font-size: 0.78rem; cursor: pointer;">
+                  <button type="button" id="btnLookupCancelDelete_${radNum}" class="btn btn-radicado-cancel-delete">
                     Cancelar
                   </button>
                 </div>
@@ -1845,12 +1863,12 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
 
           <!-- Opciones: Mirar (Ver Detalles) y Eliminar Solicitud -->
-          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid rgba(16, 185, 129, 0.2); padding-top: 10px; flex-wrap: wrap;">
-            <button type="button" id="btnLookupDelete_${radNum}" class="btn" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+          <div class="radicado-search-actions">
+            <button type="button" id="btnLookupDelete_${radNum}" class="btn btn-radicado-action-delete">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-              Eliminar solicitud
+              <span>Eliminar solicitud</span>
             </button>
-            <button type="button" id="btnLookupToggleDetails_${radNum}" class="btn" style="background: rgba(255, 255, 255, 0.08); color: var(--color-silver-light, #fff); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+            <button type="button" id="btnLookupToggleDetails_${radNum}" class="btn btn-radicado-action-details">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               <span id="btnLookupDetailsText_${radNum}">Mirar detalles</span>
             </button>
@@ -2156,6 +2174,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Trigger de Favoritos
     if (elements.favTriggerBtn) {
       elements.favTriggerBtn.addEventListener("click", openFavoritesDrawer);
+    }
+    if (elements.navMobileFavBtn) {
+      elements.navMobileFavBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeNavDrawer();
+        openFavoritesDrawer();
+      });
     }
     if (elements.favDrawerCloseBtn) {
       elements.favDrawerCloseBtn.addEventListener("click", closeFavoritesDrawer);
