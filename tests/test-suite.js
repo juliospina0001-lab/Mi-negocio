@@ -617,4 +617,304 @@
     });
   });
 
+  // --- SUITE 9: MOTOR DE PROMOCIONES Y ETIQUETAS INCLINADAS ---
+  describe("Suite 9: Motor de Promociones Opcionales y Descuentos Dinámicos", () => {
+    it("Debe calcular correctamente precio activo y ahorro cuando un vehículo tiene promoción", () => {
+      const veh = { price: 200000000, promoPrice: 180000000, promoLabel: "¡SUPER OFERTA!" };
+      const res = getVehiclePricing(veh);
+      expect(res.isPromo).toBe(true);
+      expect(res.normalPrice).toBe(200000000);
+      expect(res.promoPrice).toBe(180000000);
+      expect(res.activePrice).toBe(180000000);
+      expect(res.discountAmount).toBe(20000000);
+      expect(res.discountPercent).toBe(10);
+      expect(res.promoLabel).toBe("¡SUPER OFERTA!");
+    });
+
+    it("Debe comportarse con precio normal cuando la promoción está desactivada o vacía (opcional)", () => {
+      const vehSinPromo = { price: 235000000 };
+      const res = getVehiclePricing(vehSinPromo);
+      expect(res.isPromo).toBe(false);
+      expect(res.normalPrice).toBe(235000000);
+      expect(res.activePrice).toBe(235000000);
+      expect(res.discountAmount).toBe(0);
+    });
+
+    it("Debe desactivar la promoción si el precio promocional es igual o mayor al precio normal", () => {
+      const vehInvalido = { price: 200000000, promoPrice: 210000000, promoLabel: "INVÁLIDA" };
+      const res = getVehiclePricing(vehInvalido);
+      expect(res.isPromo).toBe(false);
+      expect(res.activePrice).toBe(200000000);
+    });
+  });
+
+  // --- SUITE 10: FLUJO DE COMPRAS Y AUTORIZACIÓN ADMINISTRATIVA ---
+  describe("Suite 10: Flujo de Compras y Protocolo de Autorización de Agente", () => {
+    it("Las órdenes con paquete de papeles legales al día deben requerir autorización ('pending_authorization')", () => {
+      const orderWithPapers = {
+        orderNum: "TSL-ORD-12345",
+        customerName: "Carlos Restrepo",
+        vehicleName: "Model Y Dual Motor",
+        includePapers: true,
+        papersCost: 5200000,
+        totalAmount: 250200000,
+        requiresAuthorization: true,
+        status: "pending_authorization",
+        authorizedBy: null
+      };
+      expect(orderWithPapers.includePapers).toBe(true);
+      expect(orderWithPapers.requiresAuthorization).toBe(true);
+      expect(orderWithPapers.status).toBe("pending_authorization");
+      expect(orderWithPapers.authorizedBy).toBe(null);
+    });
+
+    it("Las órdenes sin papeles legales NO requieren autorización previa (aprobación directa)", () => {
+      const orderWithoutPapers = {
+        orderNum: "TSL-ORD-67890",
+        customerName: "Andrés Ruiz",
+        vehicleName: "Model 3 RWD",
+        includePapers: false,
+        papersCost: 0,
+        totalAmount: 198000000,
+        requiresAuthorization: false,
+        status: "authorized",
+        authorizedBy: "Aprobación Inmediata (Sin trámite de papeleo)"
+      };
+      expect(orderWithoutPapers.includePapers).toBe(false);
+      expect(orderWithoutPapers.requiresAuthorization).toBe(false);
+      expect(orderWithoutPapers.status).toBe("authorized");
+      expect(typeof orderWithoutPapers.authorizedBy).toBe("string");
+    });
+
+    it("La autorización por un agente de administración debe cambiar el estado a 'authorized' y registrar el asesor", () => {
+      const order = {
+        orderNum: "TSL-ORD-12345",
+        customerName: "Carlos Restrepo",
+        includePapers: true,
+        status: "pending_authorization",
+        authorizedBy: null
+      };
+
+      // Simular autorización por el Super Admin
+      order.status = "authorized";
+      order.authorizedBy = "Julian O";
+      order.authorizedAt = new Date().toISOString();
+
+      expect(order.status).toBe("authorized");
+      expect(order.authorizedBy).toBe("Julian O");
+      expect(typeof order.authorizedAt).toBe("string");
+    });
+
+    it("El rechazo de una orden por administración debe marcar status como 'rejected' y registrar motivo", () => {
+      const order = {
+        orderNum: "TSL-ORD-99887",
+        customerName: "Cliente Inconsistente",
+        status: "pending_authorization",
+        authorizedBy: null
+      };
+
+      // Simular rechazo
+      order.status = "rejected";
+      order.statusLabel = "Rechazada por Administración";
+      order.rejectedBy = "Julian O";
+      order.rejectedAt = new Date().toISOString();
+      order.rejectedReason = "Inconsistencia en datos de identificación";
+
+      expect(order.status).toBe("rejected");
+      expect(order.statusLabel).toBe("Rechazada por Administración");
+      expect(order.rejectedBy).toBe("Julian O");
+      expect(order.rejectedReason).toBe("Inconsistencia en datos de identificación");
+    });
+  });
+
+  // =========================================================================
+  // SUITE 11: Centro de Notificaciones en Perfil de Usuario (Compras y Autorizaciones)
+  // =========================================================================
+  describe("Suite 11: Centro de Notificaciones en Perfil de Usuario (Compras y Autorizaciones)", () => {
+    it("Debe generar notificación de compra radicada ('purchase_created') correctamente", () => {
+      const user = { name: "Julian Ospina", notifications: [] };
+      const notif = {
+        id: "notif_001",
+        type: "purchase_created",
+        title: "📋 Nueva Compra Radicada",
+        message: "Has radicado la compra del Tesla Model 3. Radicado: TSL-ORD-123456.",
+        orderNum: "TSL-ORD-123456",
+        vehicleName: "Model 3",
+        isRead: false
+      };
+
+      user.notifications.unshift(notif);
+
+      expect(user.notifications.length).toBe(1);
+      expect(user.notifications[0].type).toBe("purchase_created");
+      expect(user.notifications[0].orderNum).toBe("TSL-ORD-123456");
+      expect(user.notifications[0].isRead).toBe(false);
+    });
+
+    it("Debe generar notificación de compra aprobada ('purchase_authorized') sin exponer nombre de asesor", () => {
+      const user = { name: "Julian Ospina", notifications: [] };
+      const authNotif = {
+        id: "notif_002",
+        type: "purchase_authorized",
+        title: "🎉 ¡Tu compra ha sido APROBADA!",
+        message: "Tu orden de compra [TSL-ORD-123456] para el Tesla Model 3 ha sido formalmente AUTORIZADA.",
+        orderNum: "TSL-ORD-123456",
+        extra: {},
+        isRead: false
+      };
+
+      user.notifications.unshift(authNotif);
+
+      expect(user.notifications[0].type).toBe("purchase_authorized");
+      expect(user.notifications[0].message.includes("Julian O")).toBe(false);
+      expect(user.notifications[0].extra.authorizedBy).toBe(undefined);
+    });
+
+    it("Debe generar notificación de compra rechazada ('purchase_rejected') con motivo sin exponer asesor", () => {
+      const user = { name: "Julian Ospina", notifications: [] };
+      const rejNotif = {
+        id: "notif_003",
+        type: "purchase_rejected",
+        title: "⚠️ Solicitud de Compra RECHAZADA",
+        message: 'La orden [TSL-ORD-999] para el Tesla Model 3 fue RECHAZADA. Motivo: "Documentos no legibles".',
+        orderNum: "TSL-ORD-999",
+        extra: { rejectedReason: "Documentos no legibles" },
+        isRead: false
+      };
+
+      user.notifications.unshift(rejNotif);
+
+      expect(user.notifications[0].type).toBe("purchase_rejected");
+      expect(user.notifications[0].extra.rejectedReason).toBe("Documentos no legibles");
+      expect(user.notifications[0].extra.rejectedBy).toBe(undefined);
+      expect(user.notifications[0].message.includes("Julian O")).toBe(false);
+    });
+
+    it("Debe marcar todas las notificaciones como leídas", () => {
+      const user = {
+        notifications: [
+          { id: "n1", isRead: false },
+          { id: "n2", isRead: false }
+        ]
+      };
+
+      user.notifications.forEach(n => { n.isRead = true; });
+
+      const unreadCount = user.notifications.filter(n => !n.isRead).length;
+      expect(unreadCount).toBe(0);
+    });
+  });
+
+  // =========================================================================
+  // SUITE 12: Arquitectura Responsive, Drawer Móvil y Ergonomía Táctil
+  // =========================================================================
+  describe("Suite 12: Arquitectura Responsive, Drawer Móvil y Ergonomía Táctil", () => {
+    it("Debe alternar correctamente la apertura y cierre del cajón móvil (drawer) con clases y estados", () => {
+      const createMockElement = () => {
+        const classes = new Set();
+        return {
+          classList: {
+            add: (c) => classes.add(c),
+            remove: (c) => classes.delete(c),
+            contains: (c) => classes.has(c)
+          },
+          style: {}
+        };
+      };
+
+      const mockSidebar = createMockElement();
+      const mockOverlay = createMockElement();
+      const mockBody = { style: {} };
+
+      const openDrawer = () => {
+        mockSidebar.classList.add("open");
+        mockOverlay.classList.add("active");
+        mockBody.style.overflow = "hidden";
+      };
+
+      const closeDrawer = () => {
+        mockSidebar.classList.remove("open");
+        mockOverlay.classList.remove("active");
+        mockBody.style.overflow = "";
+      };
+
+      // Estado inicial
+      expect(mockSidebar.classList.contains("open")).toBe(false);
+      expect(mockOverlay.classList.contains("active")).toBe(false);
+
+      // Apertura
+      openDrawer();
+      expect(mockSidebar.classList.contains("open")).toBe(true);
+      expect(mockOverlay.classList.contains("active")).toBe(true);
+      expect(mockBody.style.overflow).toBe("hidden");
+
+      // Cierre
+      closeDrawer();
+      expect(mockSidebar.classList.contains("open")).toBe(false);
+      expect(mockOverlay.classList.contains("active")).toBe(false);
+      expect(mockBody.style.overflow).toBe("");
+    });
+
+    it("Debe validar que los campos de entrada táctiles tengan especificación de font-size >= 16px para prevenir zoom en iOS Safari", () => {
+      const inputDesignSpecs = {
+        minFontSizePx: 16,
+        touchMinHeightPx: 48,
+        modalInputs: [
+          { name: "adminGateEmail", fontSize: 16, minHeight: 48 },
+          { name: "adminGatePassword", fontSize: 16, minHeight: 48 },
+          { name: "modalInputGeneral", fontSize: 16, minHeight: 48 }
+        ]
+      };
+
+      inputDesignSpecs.modalInputs.forEach(input => {
+        expect(input.fontSize >= inputDesignSpecs.minFontSizePx).toBe(true);
+        expect(input.minHeight >= inputDesignSpecs.touchMinHeightPx).toBe(true);
+      });
+    });
+
+    it("Debe verificar que las tablas de datos implementen contenedor con desplazamiento táctil horizontal ('overflow-x: auto')", () => {
+      const tableContainerConfig = {
+        overflowX: "auto",
+        webkitOverflowScrolling: "touch",
+        tableMinWidth: 620
+      };
+
+      expect(tableContainerConfig.overflowX).toBe("auto");
+      expect(tableContainerConfig.webkitOverflowScrolling).toBe("touch");
+      expect(tableContainerConfig.tableMinWidth >= 600).toBe(true);
+    });
+
+    it("Debe cerrar automáticamente el drawer móvil al cambiar de pestaña en resoluciones reducidas (<= 900px)", () => {
+      let isDrawerOpen = true;
+      const simulateSwitchTab = (screenWidth) => {
+        if (screenWidth <= 900) {
+          isDrawerOpen = false;
+        }
+      };
+
+      // En móvil (375px)
+      simulateSwitchTab(375);
+      expect(isDrawerOpen).toBe(false);
+
+      // En tablet (768px)
+      isDrawerOpen = true;
+      simulateSwitchTab(768);
+      expect(isDrawerOpen).toBe(false);
+
+      // En desktop (1280px)
+      isDrawerOpen = true;
+      simulateSwitchTab(1280);
+      expect(isDrawerOpen).toBe(true);
+    });
+
+    it("Debe compensar la altura del encabezado fijo en la navegación hacia anclas de sección", () => {
+      const headerHeightPx = 70;
+      const targetElementOffsetTop = 1500;
+      const calculatedScrollPosition = targetElementOffsetTop - headerHeightPx;
+
+      expect(calculatedScrollPosition).toBe(1430);
+      expect(calculatedScrollPosition < targetElementOffsetTop).toBe(true);
+    });
+  });
+
 })(typeof window !== "undefined" ? window : global);

@@ -758,6 +758,24 @@
       <!-- Menú de Navegación Organizado (Individuales, sin espacios excesivos) -->
       <nav aria-label="Navegación principal">
         <ul class="main-nav-list" id="mainNavList">
+          <!-- Cabecera exclusiva para móviles dentro del drawer -->
+          <li class="drawer-header-item">
+            <div class="drawer-header-inner">
+              <div class="drawer-brand-badge">
+                <svg class="brand-icon-t" width="18" height="18" viewBox="0 0 342 35" fill="currentColor">
+                  <path
+                    d="M0 .1a9.7 9.7 0 0 0 7 7h11l-4.4 22h8.6l4.4-22h11a9.7 9.7 0 0 0 7-7H0zm68.6 0h8.6v29h-8.6V.1zm31.3 0h28.1v6.9h-19.5v4.2h18.2v6.9h-18.2v4.1h19.5v6.9H99.9V.1zm59.2 0h8.6v22.1h18.2v6.9h-26.8V.1zm59.6 0h8.6l10.8 29h-9.1l-2.1-5.7h-9.9l-2.1 5.7h-9.1L218.7.1zm4.1 7.2l-3.3 9.3h6.6l-3.3-9.3zm47.5-7.2h8.6v29h-8.6V.1zm31.4 0h28v6.9h-19.4v4.2h18.1v6.9h-18.1v4.1h19.4v6.9h-28V.1z" />
+                </svg>
+                <span>MENÚ PRINCIPAL</span>
+              </div>
+              <button type="button" class="drawer-close-btn" id="drawerCloseBtn" aria-label="Cerrar menú de navegación">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </li>
           <li><a href="#catalogo" class="nav-link active">Modelos</a></li>
           <li><a href="#experiencia" class="nav-link">Experiencia</a></li>
           <li><a href="#financiacion" class="nav-link" id="navLinkFinancing">Financiación</a></li>
@@ -775,7 +793,7 @@
               <span id="mobileAccountBtnText">Mi Cuenta / Iniciar Sesión</span>
             </button>
           </li>
-          <li class="mobile-only-nav-item">
+          <li class="mobile-only-nav-item" id="navMobileRegisterItem">
             <button type="button" class="nav-link mobile-account-nav-btn" id="navMobileRegisterBtn" style="color: var(--color-accent-red); font-weight: 700; border-color: rgba(232, 33, 39, 0.4);">
               <span style="margin-right: 6px;">✨</span>
               <span>Crear Cuenta Nueva</span>
@@ -783,7 +801,7 @@
           </li>
 
           <!-- CTAs de alta conversión al pie del drawer -->
-          <li class="mobile-only-nav-item" style="border-top: none; margin-top: auto; padding-top: 20px;">
+          <li class="mobile-only-nav-item drawer-footer-item" style="border-top: none; margin-top: auto; padding-top: 20px;">
             <div class="drawer-footer-actions">
               <a href="https://wa.me/573110000000?text=Hola!%20Quiero%20información%20sobre%20vehículos%20Tesla"
                 target="_blank" rel="noopener noreferrer" class="drawer-cta-whatsapp">
@@ -793,7 +811,7 @@
                 </svg>
                 WhatsApp · Consultar Ahora
               </a>
-              <a href="#contacto" class="drawer-cta-testdrive nav-link">
+              <a href="#contacto" class="drawer-cta-testdrive nav-link" id="navDrawerTestDriveBtn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
@@ -807,6 +825,15 @@
 
       <!-- Acciones de Encabezado -->
       <div class="header-actions">
+        <!-- Botón Campanita de Notificaciones Rápida en Header -->
+        <button type="button" class="header-notif-btn" id="headerNotifBtn" style="display: none;" title="Centro de Notificaciones" aria-label="Notificaciones de usuario">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="header-notif-badge" id="headerNotifBadge" style="display: none;">0</span>
+        </button>
+
         <!-- Pestaña y Menú de Cuenta Unificada (Completa) -->
         <div class="account-menu-container" id="accountMenuContainer">
           <button type="button" class="btn-account-trigger" id="accountTriggerBtn" aria-label="Abrir Mi Cuenta Tesla"
@@ -841,6 +868,19 @@
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
                   <strong>Ver Mi Cuenta Completa</strong>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="dropdown-item" id="dropdownOpenNotifsBtn">
+                  <div style="position: relative; display: inline-flex; align-items: center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="dropdown-notif-dot" id="dropdownNotifDot" style="display: none;"></span>
+                  </div>
+                  <span>Notificaciones</span>
+                  <span class="dropdown-notif-badge" id="dropdownNotifBadge" style="display: none;">0</span>
                 </button>
               </li>
               <li>
@@ -1240,10 +1280,7 @@
         <!-- ESTADO 2: SIMULADOR INTERACTIVO COMPLETO (HABILITADO AL CREAR CUENTA O INICIAR SESIÓN) -->
         <div id="simAuthenticatedContent" style="display: none;">
           <div class="text-center">
-            <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; justify-content: center;">
-              <span class="section-tag">Calculadora Financiera & Presupuesto</span>
-              <span class="sim-user-badge" id="simUserBadge">👤 Cuenta Activa</span>
-            </div>
+            <span class="section-tag" style="margin-bottom: 8px;">Calculadora Financiera &amp; Presupuesto</span>
             <h2 class="section-title" id="simHeading">Simulador de Crédito & Financiación</h2>
             <p class="section-subtitle center-block">
               Estima tu cuota fija mensual, selecciona tu plazo extendido en cuotas y ajusta el financiamiento de acuerdo a tu presupuesto e ingresos mensuales.
@@ -2071,6 +2108,16 @@
                 <span class="dash-kpi-label">Reservas / Radicados</span>
               </div>
             </div>
+            <div class="dash-kpi-card" id="dashKpiNotifsCard" style="cursor: pointer;" title="Ver Centro de Notificaciones">
+              <div class="dash-kpi-icon" style="position: relative;">
+                🔔
+                <span class="dash-kpi-pulse-dot" id="dashKpiPulseDot" style="display: none;"></span>
+              </div>
+              <div class="dash-kpi-content">
+                <span class="dash-kpi-value" id="dashKpiNotificationsCount">0</span>
+                <span class="dash-kpi-label">Notificaciones</span>
+              </div>
+            </div>
             <div class="dash-kpi-card">
               <div class="dash-kpi-icon">⚡</div>
               <div class="dash-kpi-content">
@@ -2090,6 +2137,18 @@
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
             Mis Datos
+          </button>
+          <button type="button" class="account-dash-tab" id="tabDashNotificationsBtn" role="tab" aria-selected="false"
+            data-tab="notifications">
+            <span style="position: relative; display: inline-flex; align-items: center;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="dash-tab-notif-dot" id="dashTabNotifDot" style="display: none;"></span>
+            </span>
+            <span>Notificaciones</span>
+            <span class="account-tab-badge" id="dashNotificationsBadge" style="display: none;">0</span>
           </button>
           <button type="button" class="account-dash-tab" id="tabDashOrdersBtn" role="tab" aria-selected="false"
             data-tab="orders">
@@ -2249,6 +2308,42 @@
                   Cerrar Sesión Segura
                 </button>
               </div>
+            </div>
+          </div>
+
+          <!-- Panel 6: Centro de Notificaciones (Compras, Autorizaciones y Rechazos) -->
+          <div class="dash-panel-content" id="dashNotificationsPanel" style="display: none;">
+            <div class="dash-notifs-header">
+              <div class="dash-notifs-header-text">
+                <h3 class="dash-notifs-title">
+                  <span class="notifs-bell-icon">🔔</span>
+                  <span>Notificaciones</span>
+                  <span class="notifs-unread-pill" id="notifsUnreadPill" style="display: none;">0 Nuevas</span>
+                </h3>
+                <p class="dash-notifs-subtitle">
+                  Historial de compras, solicitudes, aprobaciones y rechazos de administración en tiempo real.
+                </p>
+              </div>
+              <div class="dash-notifs-actions">
+                <button type="button" class="btn btn-secondary btn-sm" id="btnMarkAllNotifsRead" title="Marcar todas como leídas">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Marcar Leídas</span>
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm btn-clear-notifs" id="btnClearAllNotifs" title="Limpiar historial">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  <span>Limpiar</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Lista Dinámica de Notificaciones -->
+            <div class="dash-notifications-list" id="dashNotificationsListContainer">
+              <!-- Se inyecta dinámicamente -->
             </div>
           </div>
         </div>
@@ -2461,68 +2556,7 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       BOTÓN FLOTANTE INTERACTIVO DE WHATSAPP
-       ========================================================================= -->
-  <aside class="whatsapp-float-widget" id="whatsappFloatWidget" aria-label="Contacto por WhatsApp">
-    <!-- Popover rápido de WhatsApp -->
-    <div class="whatsapp-chat-popover" id="whatsappPopover" style="display: none;">
-      <div class="wa-popover-header">
-        <div class="wa-avatar-box">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffffff">
-            <path
-              d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z" />
-          </svg>
-        </div>
-        <div>
-          <div class="wa-agent-name">Asesor Comercial Tesla</div>
-          <div class="wa-agent-status"><span class="wa-status-dot"></span> En línea ahora</div>
-        </div>
-        <button type="button" class="wa-close-popover" id="closeWaPopoverBtn"
-          aria-label="Cerrar chat flotante">✕</button>
-      </div>
-
-      <div class="wa-popover-body">
-        <p class="wa-welcome-bubble">
-          ¡Hola! 👋 Bienvenido a Tesla Premium Showroom. ¿En qué vehículo estás interesado o deseas cotizar con papeles
-          al día?
-        </p>
-        <div class="wa-quick-options">
-          <button type="button" class="wa-chip-btn" data-msg="Hola, deseo cotizar el Model 3 con papeles al día">
-            🚗 Cotizar Model 3 con papeles
-          </button>
-          <button type="button" class="wa-chip-btn"
-            data-msg="Hola, quiero información sobre disponibilidad y entrega de Model Y">
-            ⚡ Disponibilidad Model Y
-          </button>
-          <button type="button" class="wa-chip-btn" data-msg="Hola, quiero agendar una prueba de manejo">
-            📅 Agendar Prueba de Manejo
-          </button>
-        </div>
-      </div>
-
-      <div class="wa-popover-footer">
-        <a href="https://wa.me/573105550199?text=Hola%2C%20deseo%20asesor%C3%ADa%20personalizada%20sobre%20los%20veh%C3%ADculos%20Tesla"
-          target="_blank" rel="noopener noreferrer" class="btn btn-wa-direct" id="startWaChatBtn">
-          Iniciar Chat en WhatsApp
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- Botón Flotante Circular -->
-    <button type="button" class="btn-whatsapp-bubble" id="whatsappBubbleBtn" aria-label="Chatear por WhatsApp">
-      <span class="wa-pulse-ring"></span>
-      <span class="wa-online-indicator"></span>
-      <svg class="wa-icon-svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
-        <path
-          d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm5.79 14.07c-.24.68-1.4 1.25-1.93 1.33-.51.08-1.18.11-1.91-.12-.44-.14-1.01-.33-1.74-.65-3.08-1.33-5.09-4.44-5.24-4.65-.15-.2-1.25-1.66-1.25-3.17 0-1.51.79-2.25 1.07-2.55.28-.3.62-.37.83-.37.21 0 .41.01.59.02.19.01.44-.07.69.53.25.6.86 2.1.94 2.25.07.16.12.35.02.55-.1.21-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.32-.13.63.17.31.78 1.28 1.67 2.07 1.15 1.02 2.11 1.34 2.42 1.49.3.15.48.13.66-.08.18-.21.77-.9 0.98-1.21.2-.31.41-.26.69-.15.28.1.1.77.89 2.08 1.05.3.15.51.23.59.36.08.13.08.75-.16 1.43z" />
-      </svg>
-      <span class="wa-tooltip">Asesor en WhatsApp</span>
-    </button>
-  </aside>
+  <!-- WhatsApp disponible en la barra de navegación superior -->
 
   <!-- =========================================================================
        CONTENEDOR DE NOTIFICACIONES TOAST

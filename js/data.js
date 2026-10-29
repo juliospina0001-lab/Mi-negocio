@@ -14,6 +14,8 @@ const VEHICLES_DATA = [
     tagline: "El sedán eléctrico redefinido para el máximo dinamismo y confort silencioso.",
     description: "Diseñado para ofrecer la máxima eficiencia aerodinámica, una aceleración electrizante y un habitáculo refinado con vidrio acústico de 360 grados y pantalla de 15.4 pulgadas.",
     price: 198000000,
+    promoPrice: 184900000,
+    promoLabel: "¡OFERTA ESPECIAL!",
     currency: "COP",
     rangeKm: 629,
     accelerationSeconds: 4.4,
@@ -368,20 +370,52 @@ const WHEELS_DETAILED_DATA = {
   ]
 };
 
+// Función auxiliar para cálculo seguro y unificado de promociones y precios
+function getVehiclePricing(vehicle) {
+  if (!vehicle) {
+    return {
+      isPromo: false,
+      normalPrice: 0,
+      promoPrice: 0,
+      activePrice: 0,
+      discountAmount: 0,
+      discountPercent: 0,
+      promoLabel: ""
+    };
+  }
+  const normalPrice = Number(vehicle.price) || 0;
+  const promoPrice = Number(vehicle.promoPrice ?? vehicle.promo_price ?? 0);
+  const promoLabel = (vehicle.promoLabel ?? vehicle.promo_label ?? "").trim();
+  const isPromo = Boolean(promoPrice > 0 && promoPrice < normalPrice && promoLabel);
+
+  return {
+    isPromo,
+    normalPrice,
+    promoPrice,
+    activePrice: isPromo ? promoPrice : normalPrice,
+    discountAmount: isPromo ? (normalPrice - promoPrice) : 0,
+    discountPercent: isPromo ? Math.round(((normalPrice - promoPrice) / normalPrice) * 100) : 0,
+    promoLabel: promoLabel || (isPromo ? "¡OFERTA!" : "")
+  };
+}
+
 // Exportación universal segura para navegador (window), Node.js (global) y CommonJS
 if (typeof window !== "undefined") {
   window.VEHICLES_DATA = VEHICLES_DATA;
+  window.getVehiclePricing = getVehiclePricing;
   if (typeof WHEELS_DETAILED_DATA !== "undefined") window.WHEELS_DETAILED_DATA = WHEELS_DETAILED_DATA;
   if (typeof FAQS_DATA !== "undefined") window.FAQS_DATA = FAQS_DATA;
 }
 if (typeof global !== "undefined") {
   global.VEHICLES_DATA = VEHICLES_DATA;
+  global.getVehiclePricing = getVehiclePricing;
   if (typeof WHEELS_DETAILED_DATA !== "undefined") global.WHEELS_DETAILED_DATA = WHEELS_DETAILED_DATA;
   if (typeof FAQS_DATA !== "undefined") global.FAQS_DATA = FAQS_DATA;
 }
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { 
     VEHICLES_DATA, 
+    getVehiclePricing,
     WHEELS_DETAILED_DATA: typeof WHEELS_DETAILED_DATA !== "undefined" ? WHEELS_DETAILED_DATA : {},
     FAQS_DATA: typeof FAQS_DATA !== "undefined" ? FAQS_DATA : []
   };

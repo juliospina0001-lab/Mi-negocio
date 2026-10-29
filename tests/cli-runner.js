@@ -26,6 +26,9 @@ eval(dataCode);
 if (typeof VEHICLES_DATA !== "undefined") {
   global.VEHICLES_DATA = VEHICLES_DATA;
 }
+if (typeof getVehiclePricing !== "undefined") {
+  global.getVehiclePricing = getVehiclePricing;
+}
 
 // 2. Cargar suite de pruebas (tests/test-suite.js)
 const suitePath = path.join(__dirname, "test-suite.js");

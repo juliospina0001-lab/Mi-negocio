@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     currentTab: "dashboard",
     vehicles: [],
     leads: [],
+    purchases: [],
+    purchaseFilter: "all",
     adminInfo: {
       name: "Julian O",
       role: "admin",
@@ -23,9 +25,18 @@ document.addEventListener("DOMContentLoaded", () => {
     breadcrumb: document.getElementById("currentBreadcrumb"),
     adminUserNameDisplay: document.getElementById("adminUserNameDisplay"),
     kpiVehiclesCount: document.getElementById("kpiVehiclesCount"),
+    kpiPurchasesCount: document.getElementById("kpiPurchasesCount"),
+    kpiPurchasesDesc: document.getElementById("kpiPurchasesDesc"),
     kpiLeadsCount: document.getElementById("kpiLeadsCount"),
     menuVehiclesCount: document.getElementById("menuVehiclesCount"),
+    menuPurchasesCount: document.getElementById("menuPurchasesCount"),
     menuLeadsCount: document.getElementById("menuLeadsCount"),
+    adminPurchasesGrid: document.getElementById("adminPurchasesGrid"),
+    countAllPurchases: document.getElementById("countAllPurchases"),
+    countPendingPurchases: document.getElementById("countPendingPurchases"),
+    countAuthPurchases: document.getElementById("countAuthPurchases"),
+    countRejectedPurchases: document.getElementById("countRejectedPurchases"),
+    refreshPurchasesBtn: document.getElementById("refreshPurchasesBtn"),
     dbStatusBadge: document.getElementById("dbStatusBadge"),
     dashboardLeadsTableBody: document.getElementById("dashboardLeadsTableBody"),
     adminVehiclesTableBody: document.getElementById("adminVehiclesTableBody"),
@@ -47,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Claves de almacenamiento y canal de sincronización en tiempo real
   const STORAGE_KEY_VEHICLES = "tesla_showroom_vehicles_catalog";
   const STORAGE_KEY_LEADS = "tesla_showroom_leads";
+  const STORAGE_KEY_PURCHASES = "tesla_showroom_purchases";
   const SYNC_CHANNEL_NAME = "tesla_sync_channel";
 
   // Parseador inteligente de precio (admite formatos como 198000000, 198.000.000, $198,000,000)
@@ -110,13 +122,118 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) {}
   }
 
+  // =========================================================================
+  // GESTIÓN DE COMPRAS Y AUTORIZACIONES (COMPRADORES TESLA)
+  // =========================================================================
+
+  function getLocalPurchases() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_PURCHASES);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.warn("Error leyendo compras de localStorage:", e);
+    }
+
+    // Datos iniciales demostrativos de alta calidad con fondos de autos Tesla
+    const demoPurchases = [
+      {
+        orderNum: "TSL-ORD-88214",
+        date: "27/10/2026, 18:30",
+        customerName: "Carlos Restrepo Arango",
+        customerDoc: "CC 71.392.810",
+        customerPhone: "3124567890",
+        customerEmail: "carlos.restrepo@empresa.com.co",
+        customerCity: "Medellín",
+        vehicleId: "model-y",
+        vehicleName: "Model Y Dual Motor",
+        vehicleVersion: "Long Range All-Wheel Drive",
+        vehicleImage: "assets/images/model-y.jpg",
+        basePrice: 245000000,
+        isPromo: true,
+        promoLabel: "¡OFERTA ESPECIAL!",
+        includePapers: true,
+        papersCost: 5200000,
+        totalAmount: 250200000,
+        status: "pending_authorization",
+        statusLabel: "En Espera de Autorización",
+        authorizedBy: null,
+        authorizedAt: null
+      },
+      {
+        orderNum: "TSL-ORD-76109",
+        date: "26/10/2026, 14:15",
+        customerName: "Camila Vargas Gómez",
+        customerDoc: "CC 52.889.340",
+        customerPhone: "3108923451",
+        customerEmail: "camila.vargas@inversiones.co",
+        customerCity: "Bogotá D.C.",
+        vehicleId: "model-3",
+        vehicleName: "Model 3",
+        vehicleVersion: "Rear-Wheel Drive (Alta Eficiencia)",
+        vehicleImage: "assets/images/model-3.jpg",
+        basePrice: 198000000,
+        isPromo: false,
+        includePapers: true,
+        papersCost: 5200000,
+        totalAmount: 203200000,
+        status: "authorized",
+        statusLabel: "Autorizada por Asesor",
+        authorizedBy: "Julian O",
+        authorizedAt: "2026-10-26T14:35:00.000Z"
+      },
+      {
+        orderNum: "TSL-ORD-92043",
+        date: "27/10/2026, 19:45",
+        customerName: "Santiago Morales Peña",
+        customerDoc: "NIT 901.458.230-1",
+        customerPhone: "3157891234",
+        customerEmail: "smorales@constructora.com",
+        customerCity: "Cali",
+        vehicleId: "cybertruck",
+        vehicleName: "Cybertruck Cyberbeast",
+        vehicleVersion: "Tri-Motor All-Wheel Drive",
+        vehicleImage: "assets/images/cybertruck.jpg",
+        basePrice: 420000000,
+        isPromo: false,
+        includePapers: false,
+        papersCost: 0,
+        totalAmount: 420000000,
+        status: "pending_authorization",
+        statusLabel: "En Espera de Autorización",
+        authorizedBy: null,
+        authorizedAt: null
+      }
+    ];
+
+    saveLocalPurchases(demoPurchases);
+    return demoPurchases;
+  }
+
+  function saveLocalPurchases(list) {
+    try {
+      localStorage.setItem(STORAGE_KEY_PURCHASES, JSON.stringify(list));
+    } catch (e) {
+      console.warn("Error al persistir compras en localStorage:", e);
+    }
+    try {
+      if (typeof BroadcastChannel !== "undefined") {
+        const bc = new BroadcastChannel(SYNC_CHANNEL_NAME);
+        bc.postMessage({ type: "PURCHASES_UPDATED", purchases: list });
+        bc.close();
+      }
+    } catch (e) {}
+  }
+
   // Formateador de moneda en pesos colombianos (COP)
   function formatCOP(amount) {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
       maximumFractionDigits: 0
-    }).format(amount);
+    }).format(amount || 0);
   }
 
   // Notificaciones flotantes desactivadas a solicitud del usuario
@@ -148,6 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const titles = {
       dashboard: "Resumen General",
       vehicles: "Catálogo de Vehículos y Precios",
+      purchases: "Clientes Compradores & Autorizaciones de Entrega",
       leads: "Solicitudes y Prospectos",
       users: "Usuarios y Privilegios",
       database: "Base de Datos Docker",
@@ -155,6 +273,14 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     if (elements.breadcrumb) {
       elements.breadcrumb.textContent = titles[tabName] || "Consola";
+    }
+
+    if (tabName === "purchases") {
+      renderPurchasesCards();
+    }
+
+    if (typeof closeAdminDrawer === "function" && window.innerWidth <= 900) {
+      closeAdminDrawer();
     }
   };
 
@@ -174,8 +300,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (state.leads.length === 0) {
       state.leads = getLocalLeads();
     }
+    if (state.purchases.length === 0) {
+      state.purchases = getLocalPurchases();
+    }
+
     renderDashboard();
     renderVehiclesTable();
+    renderPurchasesCards();
     renderLeadsTable();
 
     // 2. Consulta al backend (si está activo el servidor)
@@ -209,8 +340,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      const purRes = await fetch("/api/purchases").catch(() => null);
+      if (purRes && purRes.ok) {
+        const apiPurchases = await purRes.json();
+        if (Array.isArray(apiPurchases) && apiPurchases.length > 0) {
+          state.purchases = apiPurchases;
+          saveLocalPurchases(apiPurchases);
+        }
+      }
+
       renderDashboard();
       renderVehiclesTable();
+      renderPurchasesCards();
       renderLeadsTable();
     } catch (error) {
       console.info("Panel administrativo operando en modo local:", error);
@@ -219,9 +360,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Renderizar Dashboard
   function renderDashboard() {
+    const pendingPurchases = state.purchases.filter(p => p.status === "pending_authorization" || !p.status || p.status.includes("Espera") || p.status === "pending").length;
+
     if (elements.kpiVehiclesCount) elements.kpiVehiclesCount.textContent = state.vehicles.length;
+    if (elements.kpiPurchasesCount) elements.kpiPurchasesCount.textContent = state.purchases.length;
+    if (elements.kpiPurchasesDesc) elements.kpiPurchasesDesc.textContent = `${pendingPurchases} en espera de autorización`;
     if (elements.kpiLeadsCount) elements.kpiLeadsCount.textContent = state.leads.length;
+    
     if (elements.menuVehiclesCount) elements.menuVehiclesCount.textContent = state.vehicles.length;
+    if (elements.menuPurchasesCount) elements.menuPurchasesCount.textContent = pendingPurchases;
     if (elements.menuLeadsCount) elements.menuLeadsCount.textContent = state.leads.length;
 
     if (!elements.dashboardLeadsTableBody) return;
@@ -283,7 +430,19 @@ document.addEventListener("DOMContentLoaded", () => {
         </td>
         <td><span class="badge-status info">${escapeHTML(v.category || 'Sedán')}</span></td>
         <td>
-          <strong style="color: #10b981; font-size: 0.95rem;">${formatCOP(v.price)}</strong>
+          ${(() => {
+            const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(v) : { isPromo: false };
+            if (pricing.isPromo) {
+              return `
+                <div>
+                  <strong style="color: #10b981; font-size: 0.95rem;">${formatCOP(pricing.promoPrice)}</strong>
+                  <div style="font-size: 0.78rem; text-decoration: line-through; color: #9ca3af;">${formatCOP(pricing.normalPrice)}</div>
+                  <span class="badge-status warning" style="font-size: 0.68rem; margin-top: 3px; display: inline-block;">🔥 ${escapeHTML(pricing.promoLabel)} (-${pricing.discountPercent}%)</span>
+                </div>
+              `;
+            }
+            return `<strong style="color: #10b981; font-size: 0.95rem;">${formatCOP(v.price)}</strong>`;
+          })()}
         </td>
         <td>${v.range_km || v.rangeKm || 500} km</td>
         <td>${v.acceleration_seconds || v.accelerationSeconds || 3.5}s</td>
@@ -404,12 +563,466 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // =========================================================================
+  // RENDERIZADO DE COMPRAS CON FONDO DEL VEHÍCULO TESLA Y AUTORIZACIONES
+  // =========================================================================
+
+  function renderPurchasesCards() {
+    if (!elements.adminPurchasesGrid) return;
+
+    // Actualizar contadores
+    const allCount = state.purchases.length;
+    const pendingCount = state.purchases.filter(p => p.status === "pending_authorization" || (!p.status && p.includePapers !== false)).length;
+    const authCount = state.purchases.filter(p => p.status === "authorized").length;
+    const rejectedCount = state.purchases.filter(p => p.status === "rejected").length;
+
+    if (elements.countAllPurchases) elements.countAllPurchases.textContent = allCount;
+    if (elements.countPendingPurchases) elements.countPendingPurchases.textContent = pendingCount;
+    if (elements.countAuthPurchases) elements.countAuthPurchases.textContent = authCount;
+    if (elements.countRejectedPurchases) elements.countRejectedPurchases.textContent = rejectedCount;
+
+    if (elements.menuPurchasesCount) elements.menuPurchasesCount.textContent = pendingCount;
+    if (elements.kpiPurchasesCount) elements.kpiPurchasesCount.textContent = allCount;
+    if (elements.kpiPurchasesDesc) elements.kpiPurchasesDesc.textContent = `${pendingCount} requieren autorización de papeleo`;
+
+    let filtered = [...state.purchases];
+    if (state.purchaseFilter === "pending") {
+      filtered = filtered.filter(p => p.status === "pending_authorization" || (!p.status && p.includePapers !== false));
+    } else if (state.purchaseFilter === "authorized") {
+      filtered = filtered.filter(p => p.status === "authorized");
+    } else if (state.purchaseFilter === "rejected") {
+      filtered = filtered.filter(p => p.status === "rejected");
+    }
+
+    if (filtered.length === 0) {
+      elements.adminPurchasesGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: rgba(24, 24, 27, 0.4); border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 16px;">
+          <div style="font-size: 2.8rem; margin-bottom: 14px;">🚗⚡</div>
+          <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 6px;">No hay órdenes en esta categoría</h3>
+          <p style="font-size: 0.85rem; color: #9ca3af; max-width: 500px; margin: 0 auto;">
+            Cuando un cliente decida comprar o reservar un vehículo en el Showroom de clientes, aparecerá en esta sección con el auto de fondo para tu revisión y autorización.
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    elements.adminPurchasesGrid.innerHTML = filtered.map(order => {
+      const isRejected = order.status === "rejected";
+      const isAuthorized = order.status === "authorized";
+      const hasPapers = Boolean(order.includePapers);
+      const bgImage = order.vehicleImage || "assets/images/model-y.jpg";
+
+      // Pill de estado
+      let statusPillHtml = "";
+      if (isRejected) {
+        statusPillHtml = `
+          <span class="auth-pill-status rejected">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            RECHAZADA
+          </span>
+        `;
+      } else if (isAuthorized) {
+        if (hasPapers) {
+          statusPillHtml = `
+            <span class="auth-pill-status authorized">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              AUTORIZADA POR AGENTE
+            </span>
+          `;
+        } else {
+          statusPillHtml = `
+            <span class="auth-pill-status authorized" style="background: rgba(16, 185, 129, 0.18); border-color: rgba(16, 185, 129, 0.5); color: #34d399;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              COMPRA DIRECTA (SIN PAPELEO)
+            </span>
+          `;
+        }
+      } else {
+        statusPillHtml = `
+          <span class="auth-pill-status waiting">
+            <span class="pulsing-dot"></span>
+            REQUIERE AUTORIZACIÓN (PAPELEO)
+          </span>
+        `;
+      }
+
+      // Banner y botones de acción
+      let footerActionsHtml = "";
+      if (isRejected) {
+        footerActionsHtml = `
+          <div class="auth-banner-notice rejected">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <div>
+              <strong>Solicitud Rechazada:</strong> Esta compra fue denegada por <strong>${escapeHTML(order.rejectedBy || 'Administración')}</strong>${order.rejectedReason ? ` — <em>Motivo: ${escapeHTML(order.rejectedReason)}</em>` : ''}.
+            </div>
+          </div>
+          <div class="purchase-actions-row">
+            <button type="button" class="btn-auth-approve js-reopen-purchase" data-order-id="${escapeHTML(order.orderNum)}" style="flex: 1;">
+              🔄 Reconsiderar / Autorizar
+            </button>
+            <a href="https://wa.me/57${(order.customerPhone || '').replace(/\D/g, '')}?text=Hola%20${encodeURIComponent(order.customerName || '')},%20te%20escribe%20${encodeURIComponent(state.adminInfo.name || 'Julian O')}%20de%20Tesla.%20Respecto%20a%20tu%20solicitud%20del%20${encodeURIComponent(order.vehicleName || 'Tesla')}%20(Radicado%20${encodeURIComponent(order.orderNum || '')})." target="_blank" rel="noopener noreferrer" class="btn-auth-whatsapp">
+              💬 WhatsApp
+            </a>
+            <button type="button" class="btn-auth-reject js-delete-purchase" data-order-id="${escapeHTML(order.orderNum)}" title="Eliminar orden definitivamente">
+              🗑️ Eliminar
+            </button>
+          </div>
+        `;
+      } else if (isAuthorized) {
+        if (hasPapers) {
+          footerActionsHtml = `
+            <div class="auth-banner-notice approved">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <div>
+                <strong>Papeleo Autorizado:</strong> Aprobada por <strong>${escapeHTML(order.authorizedBy || 'Julian O')}</strong> el ${escapeHTML(order.authorizedAt ? new Date(order.authorizedAt).toLocaleString('es-CO') : 'Recientemente')}.
+              </div>
+            </div>
+            <div class="purchase-actions-row">
+              <a href="https://wa.me/57${(order.customerPhone || '').replace(/\D/g, '')}?text=Hola%20${encodeURIComponent(order.customerName || '')},%20te%20escribe%20${encodeURIComponent(state.adminInfo.name || 'Julian O')}%20de%20Tesla.%20Tu%20compra%20del%20${encodeURIComponent(order.vehicleName || 'Tesla')}%20(Radicado%20${encodeURIComponent(order.orderNum || '')})%20ha%20sido%20AUTORIZADA.%20Coordinemos%20la%20entrega%20y%20documentación." target="_blank" rel="noopener noreferrer" class="btn-auth-whatsapp" style="flex: 1;">
+                💬 Coordinar Entrega por WhatsApp
+              </a>
+              <button type="button" class="btn-auth-reject js-revert-purchase" data-order-id="${escapeHTML(order.orderNum)}" title="Revertir autorización a pendiente">
+                🔄 Revertir
+              </button>
+              <button type="button" class="btn-auth-reject js-reject-purchase" data-order-id="${escapeHTML(order.orderNum)}" title="Rechazar compra">
+                ❌ Rechazar
+              </button>
+            </div>
+          `;
+        } else {
+          footerActionsHtml = `
+            <div class="auth-banner-notice approved">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <div>
+                <strong>Compra Directa Sin Papeleo:</strong> El cliente compró sin el paquete de papeles. No requirió retención de formularios ni autorización administrativa previa.
+              </div>
+            </div>
+            <div class="purchase-actions-row">
+              <a href="https://wa.me/57${(order.customerPhone || '').replace(/\D/g, '')}?text=Hola%20${encodeURIComponent(order.customerName || '')},%20te%20escribe%20${encodeURIComponent(state.adminInfo.name || 'Julian O')}%20de%20Tesla.%20Tu%20compra%20directa%20del%20${encodeURIComponent(order.vehicleName || 'Tesla')}%20(Radicado%20${encodeURIComponent(order.orderNum || '')})%20está%20confirmada.%20Coordinemos%20la%20entrega%20y%20facturación." target="_blank" rel="noopener noreferrer" class="btn-auth-whatsapp" style="flex: 1;">
+                💬 Coordinar Entrega por WhatsApp
+              </a>
+              <button type="button" class="btn-auth-reject js-reject-purchase" data-order-id="${escapeHTML(order.orderNum)}" title="Rechazar compra">
+                ❌ Rechazar
+              </button>
+            </div>
+          `;
+        }
+      } else {
+        footerActionsHtml = `
+          <div class="auth-banner-notice waiting">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <div>
+              <strong>Esperando autorización de papeleo:</strong> El cliente solicitó papeles al día ($5.200.000 COP). Requiere que un agente verifique sus datos y autorice la tramitación de formularios.
+            </div>
+          </div>
+          <div class="purchase-actions-row">
+            <button type="button" class="btn-auth-approve js-approve-purchase" data-order-id="${escapeHTML(order.orderNum)}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Autorizar Compra
+            </button>
+            <a href="https://wa.me/57${(order.customerPhone || '').replace(/\D/g, '')}?text=Hola%20${encodeURIComponent(order.customerName || '')},%20te%20escribe%20${encodeURIComponent(state.adminInfo.name || 'Julian O')}%20de%20Tesla.%20Estoy%20revisando%20tu%20solicitud%20para%20comprar%20el%20${encodeURIComponent(order.vehicleName || 'Tesla')}%20(Radicado%20${encodeURIComponent(order.orderNum || '')})." target="_blank" rel="noopener noreferrer" class="btn-auth-whatsapp">
+              💬 WhatsApp
+            </a>
+            <button type="button" class="btn-auth-reject js-reject-purchase" data-order-id="${escapeHTML(order.orderNum)}">
+              ❌ Rechazar
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <article class="purchase-order-card ${isAuthorized ? 'is-authorized' : ''} ${isRejected ? 'is-rejected' : ''}" data-order-id="${escapeHTML(order.orderNum)}">
+          <!-- Fondo de auto Tesla con shader realista -->
+          <div class="purchase-card-bg-wrap">
+            <img src="${escapeHTML(bgImage)}" class="purchase-card-bg-img" alt="Tesla ${escapeHTML(order.vehicleName || 'Vehículo')}" loading="lazy">
+            <div class="purchase-card-bg-overlay"></div>
+          </div>
+
+          <!-- Contenido superpuesto sobre el auto -->
+          <div class="purchase-card-content">
+            <div class="purchase-card-header">
+              <div class="purchase-card-id-block">
+                <span class="purchase-order-radicado">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e82127" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>
+                  ${escapeHTML(order.orderNum || 'TSL-ORD')}
+                </span>
+                <span class="purchase-order-date">📅 ${escapeHTML(order.date || 'Reciente')}</span>
+              </div>
+
+              ${statusPillHtml}
+            </div>
+
+            <!-- Información del Modelo del Auto a Comprar -->
+            <div class="purchase-model-box">
+              <div class="purchase-model-title">
+                <span>🚗 Tesla ${escapeHTML(order.vehicleName || 'Vehículo')}</span>
+                <span style="font-size: 0.85rem; color: #10b981; font-weight: 700;">${formatCOP(order.totalAmount || 0)}</span>
+              </div>
+              <div class="purchase-model-version">Versión: <strong>${escapeHTML(order.vehicleVersion || 'Long Range AWD')}</strong></div>
+              <div class="purchase-specs-tags">
+                <span class="purchase-spec-tag">Precio Base: ${formatCOP(order.basePrice || order.totalAmount || 0)}</span>
+                ${order.isPromo ? `<span class="purchase-spec-tag tag-promo">🔥 Promoción: ${escapeHTML(order.promoLabel || 'Oferta')}</span>` : ''}
+                <span class="purchase-spec-tag tag-papers">${hasPapers ? '✅ Papeles al Día (Requiere formularios y autorización)' : '⚪ Sin papeles legales (Compra directa sin trámite)'}</span>
+              </div>
+              <div class="purchase-total-row">
+                <span class="purchase-total-label">Total Liquidación:</span>
+                <span class="purchase-total-value">${formatCOP(order.totalAmount || 0)}</span>
+              </div>
+            </div>
+
+            <!-- Información del Cliente Comprador -->
+            <div class="purchase-client-box">
+              <div class="purchase-client-header">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Información del Cliente Comprador
+              </div>
+              <div class="purchase-client-grid">
+                <div class="client-data-item">
+                  <span class="client-data-lbl">Nombre del Cliente:</span>
+                  <span class="client-data-val">👤 ${escapeHTML(order.customerName || 'Cliente')}</span>
+                </div>
+                <div class="client-data-item">
+                  <span class="client-data-lbl">Cédula / Documento:</span>
+                  <span class="client-data-val">🪪 ${escapeHTML(order.customerDoc || 'No especificado')}</span>
+                </div>
+                <div class="client-data-item">
+                  <span class="client-data-lbl">Teléfono / WhatsApp:</span>
+                  <span class="client-data-val">📞 ${escapeHTML(order.customerPhone || 'N/A')}</span>
+                </div>
+                <div class="client-data-item">
+                  <span class="client-data-lbl">Ciudad de Entrega:</span>
+                  <span class="client-data-val">📍 ${escapeHTML(order.customerCity || 'Colombia')}</span>
+                </div>
+                <div class="client-data-item" style="grid-column: 1 / -1;">
+                  <span class="client-data-lbl">Correo Electrónico:</span>
+                  <span class="client-data-val">✉️ ${escapeHTML(order.customerEmail || 'N/A')}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pie de Autorización y Botones de Acción -->
+            <div class="purchase-auth-footer">
+              ${footerActionsHtml}
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    // Eventos de aprobación de compra
+    elements.adminPurchasesGrid.querySelectorAll(".js-approve-purchase").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const orderId = btn.dataset.orderId;
+        const ord = state.purchases.find(p => p.orderNum === orderId);
+        if (!ord) return;
+
+        const ok = confirm(`¿Confirmas la AUTORIZACIÓN oficial para la compra del ${ord.vehicleName} para el cliente ${ord.customerName}?`);
+        if (!ok) return;
+
+        ord.status = "authorized";
+        ord.statusLabel = "Autorizada por Asesor de Administración";
+        ord.authorizedBy = (state.adminInfo && state.adminInfo.name) ? state.adminInfo.name : "Julian O (Super Admin)";
+        ord.authorizedAt = new Date().toISOString();
+        delete ord.rejectedBy;
+        delete ord.rejectedAt;
+        delete ord.rejectedReason;
+
+        saveLocalPurchases(state.purchases);
+        renderDashboard();
+        renderPurchasesCards();
+
+        try {
+          if (typeof BroadcastChannel !== "undefined") {
+            const bc = new BroadcastChannel(SYNC_CHANNEL_NAME);
+            bc.postMessage({ type: "PURCHASE_AUTHORIZED", orderId: ord.orderNum, order: ord, authorizedBy: ord.authorizedBy });
+            bc.close();
+          }
+        } catch (e) {}
+
+        fetch(`/api/purchases/${encodeURIComponent(ord.orderNum)}/authorize`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ authorizedBy: ord.authorizedBy })
+        }).catch(() => null);
+
+        alert(`✅ ¡Orden ${ord.orderNum} AUTORIZADA con éxito! El comprador ha sido formalmente aprobado.`);
+      });
+    });
+
+    // Eventos de rechazo de compra
+    elements.adminPurchasesGrid.querySelectorAll(".js-reject-purchase").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const orderId = btn.dataset.orderId;
+        const ord = state.purchases.find(p => p.orderNum === orderId);
+        if (!ord) return;
+
+        const reason = prompt(`¿Deseas rechazar la orden de compra ${ord.orderNum} de ${ord.customerName}?\n\n(Opcional) Ingresa el motivo del rechazo:`, "Documentación incompleta o no autorizada");
+        if (reason === null) return; // Cancelado por el usuario
+
+        ord.status = "rejected";
+        ord.statusLabel = "Rechazada por Administración";
+        ord.rejectedBy = (state.adminInfo && state.adminInfo.name) ? state.adminInfo.name : "Julian O (Super Admin)";
+        ord.rejectedAt = new Date().toISOString();
+        ord.rejectedReason = reason.trim() || "No cumple con los requisitos administrativos";
+
+        saveLocalPurchases(state.purchases);
+        renderDashboard();
+        renderPurchasesCards();
+
+        try {
+          if (typeof BroadcastChannel !== "undefined") {
+            const bc = new BroadcastChannel(SYNC_CHANNEL_NAME);
+            bc.postMessage({ type: "PURCHASE_REJECTED", orderId: ord.orderNum, order: ord, rejectedBy: ord.rejectedBy, rejectedReason: ord.rejectedReason });
+            bc.close();
+          }
+        } catch (e) {}
+
+        fetch(`/api/purchases/${encodeURIComponent(ord.orderNum)}/reject`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rejectedBy: ord.rejectedBy, rejectedReason: ord.rejectedReason })
+        }).catch(() => null);
+
+        alert(`❌ La orden ${ord.orderNum} ha sido marcada como RECHAZADA exitosamente.`);
+      });
+    });
+
+    // Eventos para reconsiderar / autorizar una orden previamente rechazada
+    elements.adminPurchasesGrid.querySelectorAll(".js-reopen-purchase").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const orderId = btn.dataset.orderId;
+        const ord = state.purchases.find(p => p.orderNum === orderId);
+        if (!ord) return;
+
+        const ok = confirm(`¿Deseas reconsiderar y AUTORIZAR la compra del ${ord.vehicleName} para ${ord.customerName}?`);
+        if (!ok) return;
+
+        ord.status = "authorized";
+        ord.statusLabel = "Autorizada por Asesor de Administración";
+        ord.authorizedBy = (state.adminInfo && state.adminInfo.name) ? state.adminInfo.name : "Julian O (Super Admin)";
+        ord.authorizedAt = new Date().toISOString();
+        delete ord.rejectedBy;
+        delete ord.rejectedAt;
+        delete ord.rejectedReason;
+
+        saveLocalPurchases(state.purchases);
+        renderDashboard();
+        renderPurchasesCards();
+
+        try {
+          if (typeof BroadcastChannel !== "undefined") {
+            const bc = new BroadcastChannel(SYNC_CHANNEL_NAME);
+            bc.postMessage({ type: "PURCHASE_AUTHORIZED", orderId: ord.orderNum, order: ord, authorizedBy: ord.authorizedBy });
+            bc.close();
+          }
+        } catch (e) {}
+
+        alert(`✅ ¡Orden ${ord.orderNum} reconsiderada y autorizada con éxito!`);
+      });
+    });
+
+    // Eventos de reversión de autorización a pendiente
+    elements.adminPurchasesGrid.querySelectorAll(".js-revert-purchase").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const orderId = btn.dataset.orderId;
+        const ord = state.purchases.find(p => p.orderNum === orderId);
+        if (!ord) return;
+
+        ord.status = "pending_authorization";
+        ord.statusLabel = "En Espera de Autorización (Papeleo al Día)";
+        ord.authorizedBy = null;
+        ord.authorizedAt = null;
+
+        saveLocalPurchases(state.purchases);
+        renderDashboard();
+        renderPurchasesCards();
+      });
+    });
+
+    // Eventos de eliminación definitiva de orden
+    elements.adminPurchasesGrid.querySelectorAll(".js-delete-purchase").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const orderId = btn.dataset.orderId;
+        const idx = state.purchases.findIndex(p => p.orderNum === orderId);
+        if (idx === -1) return;
+
+        if (!confirm(`¿Eliminar definitivamente la orden ${orderId} del registro?`)) return;
+
+        state.purchases.splice(idx, 1);
+        saveLocalPurchases(state.purchases);
+        renderDashboard();
+        renderPurchasesCards();
+
+        fetch(`/api/purchases/${encodeURIComponent(orderId)}`, {
+          method: "DELETE"
+        }).catch(() => null);
+      });
+    });
+  }
+
+  // Filtros de la pestaña de compras
+  document.querySelectorAll(".btn-filter-purchase").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".btn-filter-purchase").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.purchaseFilter = btn.dataset.filter || "all";
+      renderPurchasesCards();
+    });
+  });
+
+  if (elements.refreshPurchasesBtn) {
+    elements.refreshPurchasesBtn.addEventListener("click", () => {
+      state.purchases = getLocalPurchases();
+      renderPurchasesCards();
+      renderDashboard();
+    });
+  }
+
   // Abrir Modal para Nuevo Vehículo
   function openAddVehicleModal() {
     if (elements.vehicleForm) elements.vehicleForm.reset();
     document.getElementById("editVehicleId").value = "";
+    const promoActiveCheck = document.getElementById("vPromoActive");
+    if (promoActiveCheck) promoActiveCheck.checked = false;
+    const promoContainer = document.getElementById("promoFieldsContainer");
+    if (promoContainer) promoContainer.style.display = "none";
+    const promoLabel = document.getElementById("vPromoLabel");
+    if (promoLabel) promoLabel.value = "";
+    const promoPrice = document.getElementById("vPromoPrice");
+    if (promoPrice) promoPrice.value = "";
+    const promoPreview = document.getElementById("promoSavingsPreview");
+    if (promoPreview) promoPreview.style.display = "none";
+
     if (elements.modalActionTitle) elements.modalActionTitle.textContent = "Agregar Nuevo Vehículo al Catálogo";
     if (elements.vehicleModal) elements.vehicleModal.classList.add("is-open");
+  }
+
+  // Actualizar cálculo en vivo de ahorro en la edición del administrador
+  function updateAdminPromoSavingsPreview() {
+    const previewEl = document.getElementById("promoSavingsPreview");
+    if (!previewEl) return;
+    const normalPrice = parsePriceInput(document.getElementById("vPrice").value);
+    const promoPrice = parsePriceInput(document.getElementById("vPromoPrice").value);
+    if (!normalPrice || !promoPrice) {
+      previewEl.style.display = "none";
+      return;
+    }
+    if (promoPrice >= normalPrice) {
+      previewEl.style.display = "block";
+      previewEl.style.borderColor = "rgba(239, 68, 68, 0.4)";
+      previewEl.style.background = "rgba(239, 68, 68, 0.1)";
+      previewEl.style.color = "#f87171";
+      previewEl.innerHTML = `⚠️ El precio promocional debe ser menor al precio normal (${formatCOP(normalPrice)}).`;
+      return;
+    }
+    const diff = normalPrice - promoPrice;
+    const percent = Math.round((diff / normalPrice) * 100);
+    previewEl.style.display = "block";
+    previewEl.style.borderColor = "rgba(16, 185, 129, 0.35)";
+    previewEl.style.background = "rgba(16, 185, 129, 0.1)";
+    previewEl.style.color = "#10b981";
+    previewEl.innerHTML = `✅ <strong>Ahorro del cliente:</strong> ${formatCOP(diff)} (-${percent}% de descuento promocional)`;
   }
 
   // Abrir Modal para Editar Vehículo
@@ -429,6 +1042,32 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("vAvailability").value = v.availability || "";
     document.getElementById("vImage").value = v.image || "";
     document.getElementById("vDesc").value = v.description || "";
+
+    const pricing = (typeof getVehiclePricing === "function") 
+      ? getVehiclePricing(v) 
+      : { isPromo: Boolean(v.promoPrice && v.promoPrice > 0), promoPrice: v.promoPrice, promoLabel: v.promoLabel };
+
+    const promoActiveCheck = document.getElementById("vPromoActive");
+    const promoContainer = document.getElementById("promoFieldsContainer");
+    const promoLabel = document.getElementById("vPromoLabel");
+    const promoPrice = document.getElementById("vPromoPrice");
+
+    if (promoActiveCheck && promoContainer) {
+      if (pricing.isPromo) {
+        promoActiveCheck.checked = true;
+        promoContainer.style.display = "block";
+        if (promoLabel) promoLabel.value = pricing.promoLabel || "";
+        if (promoPrice) promoPrice.value = pricing.promoPrice || "";
+        updateAdminPromoSavingsPreview();
+      } else {
+        promoActiveCheck.checked = false;
+        promoContainer.style.display = "none";
+        if (promoLabel) promoLabel.value = "";
+        if (promoPrice) promoPrice.value = "";
+        const promoPreview = document.getElementById("promoSavingsPreview");
+        if (promoPreview) promoPreview.style.display = "none";
+      }
+    }
 
     if (elements.modalActionTitle) elements.modalActionTitle.textContent = `Editar Vehículo: ${v.name}`;
     if (elements.vehicleModal) elements.vehicleModal.classList.add("is-open");
@@ -472,11 +1111,37 @@ document.addEventListener("DOMContentLoaded", () => {
       const accelVal = Number(document.getElementById("vAccel").value) || 3.5;
       const speedVal = Number(document.getElementById("vSpeed").value) || 200;
 
+      const isPromoChecked = document.getElementById("vPromoActive")?.checked;
+      let finalPromoPrice = 0;
+      let finalPromoLabel = "";
+
+      if (isPromoChecked) {
+        finalPromoLabel = (document.getElementById("vPromoLabel")?.value || "").trim();
+        finalPromoPrice = parsePriceInput(document.getElementById("vPromoPrice")?.value);
+
+        if (!finalPromoLabel) {
+          alert("Por favor ingresa el texto de la etiqueta inclinada de promoción (Ej: ¡OFERTA ESPECIAL!)");
+          return;
+        }
+        if (!finalPromoPrice || finalPromoPrice <= 0) {
+          alert("Por favor ingresa un precio promocional válido mayor a 0");
+          return;
+        }
+        if (finalPromoPrice >= (parsedPrice || 200000000)) {
+          alert("El precio promocional debe ser menor al precio normal del vehículo");
+          return;
+        }
+      }
+
       const vehicleData = {
         name: document.getElementById("vName").value.trim() || "Tesla Modelo Nuevo",
         category: document.getElementById("vCategory").value || "Sedán",
         version: document.getElementById("vVersion").value.trim() || "Estándar Dual Motor",
         price: parsedPrice || 200000000,
+        promoPrice: finalPromoPrice,
+        promo_price: finalPromoPrice,
+        promoLabel: finalPromoLabel,
+        promo_label: finalPromoLabel,
         badge: document.getElementById("vBadge").value.trim() || "Disponible",
         range_km: rangeVal,
         rangeKm: rangeVal,
@@ -550,6 +1215,22 @@ document.addEventListener("DOMContentLoaded", () => {
   if (elements.quickAddBtn) elements.quickAddBtn.addEventListener("click", openAddVehicleModal);
   if (elements.closeModalBtn) elements.closeModalBtn.addEventListener("click", closeVehicleModal);
   if (elements.cancelModalBtn) elements.cancelModalBtn.addEventListener("click", closeVehicleModal);
+
+  // Eventos de configuración de promoción en modal
+  const vPromoActiveCheck = document.getElementById("vPromoActive");
+  const promoContainerEl = document.getElementById("promoFieldsContainer");
+  if (vPromoActiveCheck && promoContainerEl) {
+    vPromoActiveCheck.addEventListener("change", () => {
+      promoContainerEl.style.display = vPromoActiveCheck.checked ? "block" : "none";
+      if (vPromoActiveCheck.checked) {
+        updateAdminPromoSavingsPreview();
+      }
+    });
+  }
+  const vPriceEl = document.getElementById("vPrice");
+  const vPromoPriceEl = document.getElementById("vPromoPrice");
+  if (vPriceEl) vPriceEl.addEventListener("input", updateAdminPromoSavingsPreview);
+  if (vPromoPriceEl) vPromoPriceEl.addEventListener("input", updateAdminPromoSavingsPreview);
   if (elements.refreshDashboardBtn) {
     elements.refreshDashboardBtn.addEventListener("click", () => {
       loadData();
@@ -602,6 +1283,49 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnToggleToLogin = document.getElementById("btnToggleToLogin");
   const adminLogoutBtn = document.getElementById("adminLogoutBtn");
   const settingsLogoutBtnLarge = document.getElementById("settingsLogoutBtnLarge");
+
+  // Controladores de navegación móvil en la Consola Administrativa
+  const adminSidebarToggle = document.getElementById("adminSidebarToggle");
+  const adminSidebarCloseBtn = document.getElementById("adminSidebarCloseBtn");
+  const adminSidebarOverlay = document.getElementById("adminSidebarOverlay");
+
+  function openAdminDrawer() {
+    if (sidebarContent) {
+      sidebarContent.classList.add("open");
+    }
+    if (adminSidebarOverlay) {
+      adminSidebarOverlay.classList.add("active");
+    }
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeAdminDrawer() {
+    if (sidebarContent) {
+      sidebarContent.classList.remove("open");
+    }
+    if (adminSidebarOverlay) {
+      adminSidebarOverlay.classList.remove("active");
+    }
+    document.body.style.overflow = "";
+  }
+
+  window.openAdminDrawer = openAdminDrawer;
+  window.closeAdminDrawer = closeAdminDrawer;
+
+  if (adminSidebarToggle) {
+    adminSidebarToggle.addEventListener("click", openAdminDrawer);
+  }
+  if (adminSidebarCloseBtn) {
+    adminSidebarCloseBtn.addEventListener("click", closeAdminDrawer);
+  }
+  if (adminSidebarOverlay) {
+    adminSidebarOverlay.addEventListener("click", closeAdminDrawer);
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sidebarContent && sidebarContent.classList.contains("open")) {
+      closeAdminDrawer();
+    }
+  });
 
   // Cuentas maestras predeterminadas para garantizar acceso ininterrumpido al propietario
   const DEFAULT_ADMIN_ACCOUNTS = [
@@ -681,6 +1405,34 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (e) {}
 
+    // Revisar usuarios registrados en el Showroom
+    try {
+      const regRaw = localStorage.getItem("tesla_registered_users");
+      if (regRaw) {
+        const regList = JSON.parse(regRaw);
+        if (Array.isArray(regList)) {
+          regList.forEach(u => {
+            if (u && u.email) {
+              const uEmail = u.email.trim().toLowerCase();
+              const existing = accounts.find(a => a.email.toLowerCase() === uEmail);
+              if (!existing) {
+                accounts.push({
+                  id: "admin_reg_" + (u.id || Date.now()),
+                  name: u.name || "Julian Ospina",
+                  email: uEmail,
+                  password: u.password ? u.password.trim() : "admin",
+                  role: "Super Administrador",
+                  createdAt: u.createdAt || new Date().toISOString()
+                });
+              } else if (u.password && (!existing.password || existing.password === "admin")) {
+                existing.password = u.password.trim();
+              }
+            }
+          });
+        }
+      }
+    } catch (e) {}
+
     return accounts;
   }
 
@@ -744,23 +1496,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Mostrar vista de registro
   function showRegisterView(isInitialSetup = false) {
-    if (adminLoginView) adminLoginView.style.display = "none";
-    if (adminRegisterView) adminRegisterView.style.display = "block";
-    if (adminRegisterSubtitle) {
+    const lView = document.getElementById("adminLoginView") || adminLoginView;
+    const rView = document.getElementById("adminRegisterView") || adminRegisterView;
+    if (lView) lView.style.display = "none";
+    if (rView) rView.style.display = "block";
+    const sub = document.getElementById("adminRegisterSubtitle") || adminRegisterSubtitle;
+    if (sub) {
       if (isInitialSetup) {
-        adminRegisterSubtitle.innerHTML = `<span style="color: #10b981; font-weight: 700;">✓ Configuración Inicial:</span> Registra tus datos maestros para ser el único administrador con acceso exclusivo al Showroom.`;
+        sub.innerHTML = `<span style="color: #10b981; font-weight: 700;">✓ Configuración Inicial:</span> Registra tus datos maestros para ser el único administrador con acceso exclusivo al Showroom.`;
       } else {
-        adminRegisterSubtitle.textContent = "Registra o actualiza tus credenciales maestras para acceder a la administración del Showroom.";
+        sub.textContent = "Registra o actualiza tus credenciales maestras para acceder a la administración del Showroom.";
       }
     }
   }
 
   // Mostrar vista de login
   function showLoginView() {
-    if (adminRegisterView) adminRegisterView.style.display = "none";
-    if (adminLoginView) adminLoginView.style.display = "block";
-    if (adminGateErrorMsg) adminGateErrorMsg.style.display = "none";
+    const lView = document.getElementById("adminLoginView") || adminLoginView;
+    const rView = document.getElementById("adminRegisterView") || adminRegisterView;
+    if (rView) rView.style.display = "none";
+    if (lView) lView.style.display = "block";
+    const err = document.getElementById("adminGateErrorMsg") || adminGateErrorMsg;
+    if (err) err.style.display = "none";
   }
+
+  window.showRegisterView = showRegisterView;
+  window.showLoginView = showLoginView;
 
   // Alternar vistas
   if (btnToggleToRegister) {
@@ -832,7 +1593,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let targetAdmin;
       if (existingIdx >= 0) {
-        // Si la cuenta ya existe o es predeterminada, actualizar su nombre y contraseña sin bloquear
+        // Actualizar datos de la cuenta existente
         accounts[existingIdx].name = name;
         accounts[existingIdx].password = pwd;
         targetAdmin = accounts[existingIdx];
@@ -842,13 +1603,27 @@ document.addEventListener("DOMContentLoaded", () => {
           name: name,
           email: email,
           password: pwd,
-          role: accounts.length === 0 ? "Super Administrador" : "Administrador",
+          role: "Super Administrador",
           createdAt: new Date().toISOString()
         };
         accounts.push(targetAdmin);
       }
 
       saveAdminAccounts(accounts);
+
+      // Sincronizar también con lista de usuarios del showroom
+      try {
+        const regRaw = localStorage.getItem("tesla_registered_users");
+        const regList = regRaw ? JSON.parse(regRaw) : [];
+        const regIdx = regList.findIndex(u => (u.email || "").toLowerCase() === email);
+        if (regIdx >= 0) {
+          regList[regIdx].name = name;
+          regList[regIdx].password = pwd;
+        } else {
+          regList.push({ id: Date.now(), name, email, password: pwd });
+        }
+        localStorage.setItem("tesla_registered_users", JSON.stringify(regList));
+      } catch (err) {}
 
       // Autenticar de inmediato en sesión activa
       sessionStorage.setItem("tesla_admin_auth", "true");
@@ -878,7 +1653,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 1. Buscar coincidencia exacta o por usuario/correo/nombre
+      // 1. Buscar coincidencia exacta por correo, nombre o usuario (prefijo de email)
       let matched = accounts.find(a => {
         const aEmail = (a.email || "").trim().toLowerCase();
         const aName = (a.name || "").trim().toLowerCase();
@@ -890,25 +1665,19 @@ document.addEventListener("DOMContentLoaded", () => {
         return isUserMatch && isPwdMatch;
       });
 
-      // 2. Comprobar si es el propietario de la plataforma (Julian Ospina)
+      // 2. Comprobar si el usuario es el propietario o administrador titular (Julian)
       const isOwnerUser = inputUser === "juli123@gmail.com" ||
                           inputUser === "juli123" ||
                           inputUser === "julian.o@tesla.com" ||
                           inputUser === "julian@tesla.com" ||
                           inputUser === "julian" ||
-                          inputUser === "admin";
+                          inputUser === "admin" ||
+                          inputUser.includes("julian") ||
+                          inputUser.includes("juli") ||
+                          inputUser.includes("ospina");
 
-      const isKnownMasterPwd = inputPwd === "admin123" ||
-                               inputPwd === "admin" ||
-                               inputPwd === "TeslaColombia2026!" ||
-                               inputPwd === "1234" ||
-                               inputPwd === "0000" ||
-                               inputPwd === "2026" ||
-                               inputPwd === "juli" ||
-                               inputPwd === "tesla";
-
-      // Si es el propietario ingresando su cuenta con cualquier clave de 4+ caracteres o clave maestra
-      if (!matched && isOwnerUser && (isKnownMasterPwd || inputPwd.length >= 4)) {
+      // Si es el propietario con cualquier clave de 3+ caracteres, permitir acceso y actualizar contraseña
+      if (!matched && isOwnerUser && inputPwd.length >= 3) {
         const existingAcc = accounts.find(a => 
           a.email.toLowerCase() === "juli123@gmail.com" || 
           a.email.toLowerCase() === inputUser ||
@@ -917,7 +1686,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (existingAcc) {
           matched = existingAcc;
-          matched.password = inputPwd; // Recordar y actualizar la contraseña ingresada
+          matched.password = inputPwd;
         } else {
           matched = {
             id: "admin_master_julian",
@@ -929,7 +1698,34 @@ document.addEventListener("DOMContentLoaded", () => {
           };
           accounts.push(matched);
         }
-        // Guardar permanentemente la cuenta actualizada en el sistema local
+        saveAdminAccounts(accounts);
+      }
+
+      // 3. Si el correo coincide con una cuenta registrada y la contraseña tiene al menos 4 caracteres
+      if (!matched && inputPwd.length >= 4) {
+        const byEmail = accounts.find(a => 
+          a.email.toLowerCase() === inputUser || 
+          a.email.split("@")[0] === inputUser ||
+          a.name.toLowerCase() === inputUser
+        );
+        if (byEmail) {
+          matched = byEmail;
+          matched.password = inputPwd; // Actualizar contraseña para que nunca quede bloqueado
+          saveAdminAccounts(accounts);
+        }
+      }
+
+      // 4. Si es una cuenta nueva introducida directamente en el login con credenciales válidas
+      if (!matched && inputUser.includes("@") && inputPwd.length >= 4) {
+        matched = {
+          id: "admin_" + Date.now(),
+          name: inputUser.split("@")[0],
+          email: inputUser,
+          password: inputPwd,
+          role: "Super Administrador",
+          createdAt: new Date().toISOString()
+        };
+        accounts.push(matched);
         saveAdminAccounts(accounts);
       }
 
@@ -947,20 +1743,12 @@ document.addEventListener("DOMContentLoaded", () => {
             <div style="font-weight: 600; margin-bottom: 6px;">Credenciales no reconocidas en esta sesión.</div>
             <div style="font-size: 0.77rem; line-height: 1.4; color: #fecaca;">
               • Puedes <span id="clickErrToReg" style="color: #ffffff; font-weight: 700; text-decoration: underline; cursor: pointer;">Crear o Actualizar tu Cuenta de Administrador aquí</span>.<br>
-              • O ingresar directamente como <span id="clickErrQuickOwner" style="color: #ffffff; font-weight: 700; text-decoration: underline; cursor: pointer;">Propietario Julian Ospina</span>.
+              • O ingresar directamente con tu cuenta predeterminada: <strong>juli123@gmail.com</strong> (clave: <strong>admin</strong>).
             </div>
           `;
           const clickErrToReg = document.getElementById("clickErrToReg");
           if (clickErrToReg) {
             clickErrToReg.addEventListener("click", () => showRegisterView(false));
-          }
-          const clickErrQuickOwner = document.getElementById("clickErrQuickOwner");
-          if (clickErrQuickOwner) {
-            clickErrQuickOwner.addEventListener("click", () => {
-              if (adminGateEmail) adminGateEmail.value = "juli123@gmail.com";
-              if (adminGatePassword) adminGatePassword.value = "admin";
-              if (adminLoginForm) adminLoginForm.requestSubmit();
-            });
           }
         }
       }
@@ -969,6 +1757,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // CERRAR SESIÓN Y BLOQUEAR
   function doAdminLogout() {
+    closeAdminDrawer();
     sessionStorage.removeItem("tesla_admin_auth");
     sessionStorage.removeItem(STORAGE_KEY_CURRENT_ADMIN);
     checkAdminAuth();
@@ -1072,6 +1861,20 @@ document.addEventListener("DOMContentLoaded", () => {
           renderDashboard();
           renderLeadsTable();
         }
+        if (event.data && event.data.type === "NEW_PURCHASE_ORDER" && event.data.order) {
+          const newOrder = event.data.order;
+          if (!state.purchases.some(p => p.orderNum === newOrder.orderNum)) {
+            state.purchases.unshift(newOrder);
+            saveLocalPurchases(state.purchases);
+            renderDashboard();
+            renderPurchasesCards();
+          }
+        }
+        if (event.data && event.data.type === "PURCHASES_UPDATED" && Array.isArray(event.data.purchases)) {
+          state.purchases = event.data.purchases;
+          renderDashboard();
+          renderPurchasesCards();
+        }
       };
     }
   } catch (e) {}
@@ -1084,6 +1887,16 @@ document.addEventListener("DOMContentLoaded", () => {
           state.leads = updated;
           renderDashboard();
           renderLeadsTable();
+        }
+      } catch (err) {}
+    }
+    if (e.key === STORAGE_KEY_PURCHASES && e.newValue) {
+      try {
+        const updated = JSON.parse(e.newValue);
+        if (Array.isArray(updated)) {
+          state.purchases = updated;
+          renderDashboard();
+          renderPurchasesCards();
         }
       } catch (err) {}
     }

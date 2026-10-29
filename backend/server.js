@@ -87,6 +87,31 @@ function saveLeadsToFile(list) {
   }
 }
 
+const purchasesFile = path.join(dataDir, 'purchases.json');
+
+function loadPurchasesFromFile() {
+  try {
+    ensureDataDir();
+    if (fs.existsSync(purchasesFile)) {
+      const content = fs.readFileSync(purchasesFile, 'utf-8');
+      const list = JSON.parse(content);
+      if (Array.isArray(list)) return list;
+    }
+  } catch (err) {
+    console.warn('⚠️ Error al leer purchases.json local:', err.message);
+  }
+  return null;
+}
+
+function savePurchasesToFile(list) {
+  try {
+    ensureDataDir();
+    fs.writeFileSync(purchasesFile, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('❌ Error al escribir purchases.json local:', err.message);
+  }
+}
+
 // Configuración Pool PostgreSQL
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
@@ -264,6 +289,62 @@ if (loadedLeads && loadedLeads.length > 0) {
   console.log(`📁 [Disco] ${memoryLeads.length} solicitudes cargadas desde backend/data/leads.json`);
 } else {
   saveLeadsToFile(memoryLeads);
+}
+
+let memoryPurchases = [
+  {
+    orderNum: "TSL-ORD-88214",
+    date: "27/10/2026, 18:30",
+    customerName: "Carlos Restrepo Arango",
+    customerDoc: "CC 71.392.810",
+    customerPhone: "3124567890",
+    customerEmail: "carlos.restrepo@empresa.com.co",
+    customerCity: "Medellín",
+    vehicleId: "model-y",
+    vehicleName: "Model Y Dual Motor",
+    vehicleVersion: "Long Range All-Wheel Drive",
+    vehicleImage: "assets/images/model-y.jpg",
+    basePrice: 245000000,
+    isPromo: true,
+    promoLabel: "¡OFERTA ESPECIAL!",
+    includePapers: true,
+    papersCost: 5200000,
+    totalAmount: 250200000,
+    status: "pending_authorization",
+    statusLabel: "En Espera de Autorización",
+    authorizedBy: null,
+    authorizedAt: null
+  },
+  {
+    orderNum: "TSL-ORD-76109",
+    date: "26/10/2026, 14:15",
+    customerName: "Camila Vargas Gómez",
+    customerDoc: "CC 52.889.340",
+    customerPhone: "3108923451",
+    customerEmail: "camila.vargas@inversiones.co",
+    customerCity: "Bogotá D.C.",
+    vehicleId: "model-3",
+    vehicleName: "Model 3",
+    vehicleVersion: "Rear-Wheel Drive (Alta Eficiencia)",
+    vehicleImage: "assets/images/model-3.jpg",
+    basePrice: 198000000,
+    isPromo: false,
+    includePapers: true,
+    papersCost: 5200000,
+    totalAmount: 203200000,
+    status: "authorized",
+    statusLabel: "Autorizada por Asesor",
+    authorizedBy: "Julian O",
+    authorizedAt: "2026-10-26T14:35:00.000Z"
+  }
+];
+
+const loadedPurchases = loadPurchasesFromFile();
+if (loadedPurchases && loadedPurchases.length > 0) {
+  memoryPurchases = loadedPurchases;
+  console.log(`📁 [Disco] ${memoryPurchases.length} compras cargadas desde backend/data/purchases.json`);
+} else {
+  savePurchasesToFile(memoryPurchases);
 }
 
 // Inicialización de la base de datos PostgreSQL
@@ -444,6 +525,10 @@ app.get('/api/vehicles', async (req, res) => {
       category: v.category || "Sedán",
       badge: v.badge || "",
       price: Number(v.price || 0),
+      promo_label: v.promo_label || v.promoLabel || "",
+      promoLabel: v.promoLabel || v.promo_label || "",
+      promo_price: Number(v.promo_price || v.promoPrice || 0),
+      promoPrice: Number(v.promoPrice || v.promo_price || 0),
       // Autonomía
       range_km: Number(v.range_km || v.rangeKm || 500),
       rangeKm: Number(v.rangeKm || v.range_km || 500),
@@ -481,6 +566,10 @@ app.post('/api/vehicles', async (req, res) => {
     category: req.body.category || 'Sedán',
     badge: req.body.badge || 'Nuevo Ingreso',
     price: Number(req.body.price) || 200000000,
+    promo_label: req.body.promo_label || req.body.promoLabel || "",
+    promoLabel: req.body.promoLabel || req.body.promo_label || "",
+    promo_price: Number(req.body.promo_price || req.body.promoPrice || 0),
+    promoPrice: Number(req.body.promoPrice || req.body.promo_price || 0),
     range_km: Number(req.body.range_km ?? req.body.rangeKm) || 500,
     rangeKm: Number(req.body.rangeKm ?? req.body.range_km) || 500,
     acceleration_seconds: Number(req.body.acceleration_seconds ?? req.body.accelerationSeconds) || 4.0,
@@ -667,6 +756,80 @@ app.delete('/api/leads/:id', async (req, res) => {
   }
 
   res.json({ success: true, message: 'Lead eliminado' });
+});
+
+// COMPRAS / ÓRDENES DE VEHÍCULOS (AUTORIZACIÓN ADMINISTRATIVA)
+app.get('/api/purchases', (req, res) => {
+  res.json(memoryPurchases);
+});
+
+app.post('/api/purchases', (req, res) => {
+  const newOrder = {
+    orderNum: req.body.orderNum || `TSL-ORD-${Math.floor(10000 + Math.random() * 90000)}`,
+    date: req.body.date || new Date().toLocaleString('es-CO'),
+    customerName: req.body.customerName || 'Cliente Comprador',
+    customerDoc: req.body.customerDoc || '',
+    customerPhone: req.body.customerPhone || '',
+    customerEmail: req.body.customerEmail || '',
+    customerCity: req.body.customerCity || 'Colombia',
+    vehicleId: req.body.vehicleId || 'model-y',
+    vehicleName: req.body.vehicleName || 'Tesla',
+    vehicleVersion: req.body.vehicleVersion || '',
+    vehicleImage: req.body.vehicleImage || 'assets/images/model-y.jpg',
+    basePrice: Number(req.body.basePrice) || 0,
+    isPromo: Boolean(req.body.isPromo),
+    promoLabel: req.body.promoLabel || '',
+    includePapers: Boolean(req.body.includePapers),
+    papersCost: Number(req.body.papersCost) || 0,
+    totalAmount: Number(req.body.totalAmount) || 0,
+    status: req.body.status || 'pending_authorization',
+    statusLabel: req.body.statusLabel || 'En Espera de Autorización',
+    authorizedBy: req.body.authorizedBy || null,
+    authorizedAt: req.body.authorizedAt || null
+  };
+
+  memoryPurchases.unshift(newOrder);
+  savePurchasesToFile(memoryPurchases);
+  console.log(`🛒 [BACKEND] Nueva orden de compra radicada: ${newOrder.orderNum} (${newOrder.customerName})`);
+  res.status(201).json({ success: true, order: newOrder });
+});
+
+app.put('/api/purchases/:id/authorize', (req, res) => {
+  const { id } = req.params;
+  const order = memoryPurchases.find(p => p.orderNum === id);
+  if (order) {
+    order.status = 'authorized';
+    order.statusLabel = 'Autorizada por Asesor de Administración';
+    order.authorizedBy = req.body.authorizedBy || 'Julian O (Super Admin)';
+    order.authorizedAt = new Date().toISOString();
+    savePurchasesToFile(memoryPurchases);
+    console.log(`✅ [BACKEND] Orden de compra ${id} autorizada por ${order.authorizedBy}`);
+    return res.json({ success: true, order });
+  }
+  res.status(404).json({ success: false, message: 'Orden no encontrada' });
+});
+
+app.put('/api/purchases/:id/reject', (req, res) => {
+  const { id } = req.params;
+  const order = memoryPurchases.find(p => p.orderNum === id);
+  if (order) {
+    order.status = 'rejected';
+    order.statusLabel = 'Rechazada por Administración';
+    order.rejectedBy = req.body.rejectedBy || 'Julian O (Super Admin)';
+    order.rejectedAt = new Date().toISOString();
+    order.rejectedReason = req.body.rejectedReason || 'No cumple con los requisitos administrativos';
+    savePurchasesToFile(memoryPurchases);
+    console.log(`❌ [BACKEND] Orden de compra ${id} rechazada por ${order.rejectedBy}`);
+    return res.json({ success: true, order });
+  }
+  res.status(404).json({ success: false, message: 'Orden no encontrada' });
+});
+
+app.delete('/api/purchases/:id', (req, res) => {
+  const { id } = req.params;
+  memoryPurchases = memoryPurchases.filter(p => p.orderNum !== id);
+  savePurchasesToFile(memoryPurchases);
+  res.json({ success: true, message: 'Orden eliminada' });
 });
 
 // USUARIOS

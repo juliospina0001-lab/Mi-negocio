@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================================================
   const STORAGE_KEY_VEHICLES = "tesla_showroom_vehicles_catalog";
   const STORAGE_KEY_LEADS = "tesla_showroom_leads";
+  const STORAGE_KEY_PURCHASES = "tesla_showroom_purchases";
   const SYNC_CHANNEL_NAME = "tesla_sync_channel";
 
   function loadInitialVehicles() {
@@ -19,7 +20,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const stored = localStorage.getItem(STORAGE_KEY_VEHICLES);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map(v => {
+            const original = (typeof VEHICLES_DATA !== "undefined" && VEHICLES_DATA.find(o => o.id === v.id)) || {};
+            return {
+              ...original,
+              ...v,
+              promoPrice: Number(v.promoPrice ?? v.promo_price ?? original.promoPrice ?? 0),
+              promoLabel: (v.promoLabel ?? v.promo_label ?? original.promoLabel ?? "").trim()
+            };
+          });
+        }
       }
     } catch (e) {}
     return (typeof VEHICLES_DATA !== "undefined" && Array.isArray(VEHICLES_DATA)) ? [...VEHICLES_DATA] : [];
@@ -122,15 +133,31 @@ document.addEventListener("DOMContentLoaded", () => {
     dashKpiPreferredModel: document.getElementById("dashKpiPreferredModel"),
     dashOrdersTabBadge: document.getElementById("dashOrdersTabBadge"),
     tabDashProfileBtn: document.getElementById("tabDashProfileBtn"),
+    tabDashNotificationsBtn: document.getElementById("tabDashNotificationsBtn"),
     tabDashOrdersBtn: document.getElementById("tabDashOrdersBtn"),
     tabDashFavsBtn: document.getElementById("tabDashFavsBtn"),
     tabDashTestDriveBtn: document.getElementById("tabDashTestDriveBtn"),
     tabDashSecurityBtn: document.getElementById("tabDashSecurityBtn"),
     dashProfilePanel: document.getElementById("dashProfilePanel"),
+    dashNotificationsPanel: document.getElementById("dashNotificationsPanel"),
     dashOrdersPanel: document.getElementById("dashOrdersPanel"),
     dashFavsPanel: document.getElementById("dashFavsPanel"),
     dashTestDrivePanel: document.getElementById("dashTestDrivePanel"),
     dashSecurityPanel: document.getElementById("dashSecurityPanel"),
+    dashNotificationsBadge: document.getElementById("dashNotificationsBadge"),
+    dashTabNotifDot: document.getElementById("dashTabNotifDot"),
+    dashKpiNotifsCard: document.getElementById("dashKpiNotifsCard"),
+    dashKpiNotificationsCount: document.getElementById("dashKpiNotificationsCount"),
+    dashKpiPulseDot: document.getElementById("dashKpiPulseDot"),
+    dashNotificationsListContainer: document.getElementById("dashNotificationsListContainer"),
+    btnMarkAllNotifsRead: document.getElementById("btnMarkAllNotifsRead"),
+    btnClearAllNotifs: document.getElementById("btnClearAllNotifs"),
+    notifsUnreadPill: document.getElementById("notifsUnreadPill"),
+    headerNotifBtn: document.getElementById("headerNotifBtn"),
+    headerNotifBadge: document.getElementById("headerNotifBadge"),
+    dropdownOpenNotifsBtn: document.getElementById("dropdownOpenNotifsBtn"),
+    dropdownNotifDot: document.getElementById("dropdownNotifDot"),
+    dropdownNotifBadge: document.getElementById("dropdownNotifBadge"),
     dashEditProfileForm: document.getElementById("dashEditProfileForm"),
     dashEditName: document.getElementById("dashEditName"),
     dashEditEmail: document.getElementById("dashEditEmail"),
@@ -166,13 +193,8 @@ document.addEventListener("DOMContentLoaded", () => {
     sendOrderWhatsAppBtn: document.getElementById("sendOrderWhatsAppBtn"),
     purchaseStatusAlert: document.getElementById("purchaseStatusAlert"),
 
-    // Widget Flotante y Botón Header de WhatsApp
+    // Botón Header de WhatsApp
     headerWhatsappBtn: document.getElementById("headerWhatsappBtn"),
-    whatsappFloatWidget: document.getElementById("whatsappFloatWidget"),
-    whatsappBubbleBtn: document.getElementById("whatsappBubbleBtn"),
-    whatsappPopover: document.getElementById("whatsappPopover"),
-    closeWaPopoverBtn: document.getElementById("closeWaPopoverBtn"),
-    startWaChatBtn: document.getElementById("startWaChatBtn"),
 
     // Grids
     featuredGrid: document.getElementById("featuredGrid"),
@@ -200,7 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
     simAuthenticatedContent: document.getElementById("simAuthenticatedContent"),
     simUnlockRegisterBtn: document.getElementById("simUnlockRegisterBtn"),
     simUnlockLoginBtn: document.getElementById("simUnlockLoginBtn"),
-    simUserBadge: document.getElementById("simUserBadge"),
     simVehicleSelect: document.getElementById("simVehicleSelect"),
     simPriceInput: document.getElementById("simPriceInput"),
     simDownPercentRange: document.getElementById("simDownPercentRange"),
@@ -454,8 +475,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createVehicleCardHTML(vehicle) {
     const isFav = state.favorites.includes(vehicle.id);
+    const pricing = (typeof getVehiclePricing === "function") 
+      ? getVehiclePricing(vehicle) 
+      : { isPromo: false, normalPrice: vehicle.price, promoPrice: 0, activePrice: vehicle.price, discountPercent: 0, discountAmount: 0, promoLabel: "" };
+
+    const promoRibbonHTML = pricing.isPromo ? `
+      <div class="card-corner-ribbon-wrap" aria-label="Promoción especial: ${escapeHTML(pricing.promoLabel)}">
+        <div class="card-corner-ribbon">
+          <span class="ribbon-sparkle">★</span>
+          <span class="ribbon-text">${escapeHTML(pricing.promoLabel)}</span>
+        </div>
+      </div>
+    ` : "";
+
     return `
-      <article class="vehicle-card" data-vehicle-id="${escapeHTML(vehicle.id)}">
+      <article class="vehicle-card ${pricing.isPromo ? 'has-promo' : ''}" data-vehicle-id="${escapeHTML(vehicle.id)}">
+        ${promoRibbonHTML}
         <div class="card-image-wrap">
           <img src="${escapeHTML(vehicle.image)}" alt="${escapeHTML(vehicle.name)} ${escapeHTML(vehicle.category)}" loading="lazy">
           <span class="card-badge">${escapeHTML(vehicle.badge || vehicle.category)}</span>
@@ -487,11 +522,30 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
 
-          <div class="card-price-row">
-            <div>
-              <span class="card-price-label">Precio Demostrativo Sugerido</span>
-              <span class="card-price-value">${formatCurrencyCOP(vehicle.price)}</span>
-            </div>
+          <div class="card-price-row ${pricing.isPromo ? 'is-promo-price' : ''}">
+            ${pricing.isPromo ? `
+              <div class="promo-price-block">
+                <div class="promo-price-header">
+                  <span class="card-price-label-promo">⚡ Precio Promocional</span>
+                  <span class="promo-discount-badge">-${pricing.discountPercent}% OFF</span>
+                </div>
+                <div class="promo-price-main">
+                  <span class="card-price-value promo-highlight">${formatCurrencyCOP(pricing.promoPrice)}</span>
+                  <span class="card-price-original">
+                    <span class="price-strike-label">Antes:</span>
+                    <del>${formatCurrencyCOP(pricing.normalPrice)}</del>
+                  </span>
+                </div>
+                <div class="promo-saving-callout">
+                  Ahorras <strong>${formatCurrencyCOP(pricing.discountAmount)}</strong> con papeles al día
+                </div>
+              </div>
+            ` : `
+              <div>
+                <span class="card-price-label">Precio Demostrativo Sugerido</span>
+                <span class="card-price-value">${formatCurrencyCOP(vehicle.price)}</span>
+              </div>
+            `}
           </div>
 
           <div class="card-actions">
@@ -722,11 +776,32 @@ document.addEventListener("DOMContentLoaded", () => {
             `).join("")}
           </ul>
 
-          <div style="margin-top: var(--space-24); padding-top: var(--space-20); border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <span style="font-size: 0.75rem; color: var(--color-silver); display: block;">Valor demostrativo orientativo</span>
-              <span style="font-size: 1.625rem; font-weight: 700; color: var(--color-white);">${formatCurrencyCOP(vehicle.price)}</span>
-            </div>
+          <div style="margin-top: var(--space-24); padding-top: var(--space-20); border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            ${(() => {
+              const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(vehicle) : { isPromo: false };
+              if (pricing.isPromo) {
+                return `
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 0.72rem; color: #ff3b30; font-weight: 700; text-transform: uppercase;">⚡ Promoción Especial</span>
+                      <span class="promo-discount-badge">-${pricing.discountPercent}% OFF</span>
+                      <span style="font-size: 0.72rem; color: #fbbf24; font-weight: 600;">🔥 ${escapeHTML(pricing.promoLabel)}</span>
+                    </div>
+                    <div style="display: flex; align-items: baseline; gap: 10px; margin-top: 2px;">
+                      <span style="font-size: 1.85rem; font-weight: 800; color: #10b981;">${formatCurrencyCOP(pricing.promoPrice)}</span>
+                      <del style="font-size: 1rem; color: #9ca3af;">${formatCurrencyCOP(pricing.normalPrice)}</del>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #34d399; margin-top: 2px;">Ahorras ${formatCurrencyCOP(pricing.discountAmount)} con entrega de papeles al día</div>
+                  </div>
+                `;
+              }
+              return `
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--color-silver); display: block;">Valor demostrativo orientativo</span>
+                  <span style="font-size: 1.625rem; font-weight: 700; color: var(--color-white);">${formatCurrencyCOP(vehicle.price)}</span>
+                </div>
+              `;
+            })()}
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-12); margin-top: var(--space-20);">
@@ -878,13 +953,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let totalSum = 0;
     elements.favDrawerList.innerHTML = favVehicles.map(v => {
-      totalSum += v.price;
+      const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(v) : { activePrice: v.price, isPromo: false };
+      totalSum += pricing.activePrice;
       return `
         <div class="drawer-fav-item">
           <img src="${escapeHTML(v.image)}" alt="${escapeHTML(v.name)}" class="drawer-fav-thumb">
           <div class="drawer-fav-info">
             <h4 class="drawer-fav-name">${escapeHTML(v.name)}</h4>
-            <div class="drawer-fav-price">${formatCurrencyCOP(v.price)}</div>
+            <div class="drawer-fav-price">
+              ${pricing.isPromo ? `<span style="color: #10b981; font-weight: 700;">${formatCurrencyCOP(pricing.promoPrice)}</span> <del style="color: #9ca3af; font-size: 0.8em; margin-left: 4px;">${formatCurrencyCOP(pricing.normalPrice)}</del>` : formatCurrencyCOP(v.price)}
+            </div>
             <div class="drawer-fav-actions">
               <button type="button" class="btn btn-secondary btn-sm js-fav-view-detail" data-vehicle-id="${escapeHTML(v.id)}" style="padding: 4px 10px; font-size: 0.75rem;">Ver</button>
               <button type="button" class="drawer-fav-remove js-fav-remove-item" data-vehicle-id="${escapeHTML(v.id)}">Eliminar</button>
@@ -1032,15 +1110,16 @@ document.addEventListener("DOMContentLoaded", () => {
   function prefillSimulator(vehicleId) {
     const vehicle = state.vehicles.find(v => v.id === vehicleId);
     if (!vehicle) return;
+    const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(vehicle) : { activePrice: vehicle.price };
 
     state.simulator.vehicleId = vehicle.id;
-    state.simulator.vehiclePrice = vehicle.price;
+    state.simulator.vehiclePrice = pricing.activePrice;
 
     if (elements.simVehicleSelect) {
       elements.simVehicleSelect.value = vehicle.id;
     }
     if (elements.simPriceInput) {
-      elements.simPriceInput.value = vehicle.price;
+      elements.simPriceInput.value = pricing.activePrice;
     }
 
     updateSimulatorCalculations();
@@ -1055,18 +1134,22 @@ document.addEventListener("DOMContentLoaded", () => {
   function initSimulator() {
     // Llenar selector de vehículos
     if (elements.simVehicleSelect) {
-      elements.simVehicleSelect.innerHTML = state.vehicles.map(v => `
-        <option value="${escapeHTML(v.id)}" ${v.id === state.simulator.vehicleId ? 'selected' : ''}>
-          ${escapeHTML(v.name)} — ${formatCurrencyCOP(v.price)}
-        </option>
-      `).join("");
+      elements.simVehicleSelect.innerHTML = state.vehicles.map(v => {
+        const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(v) : { activePrice: v.price, isPromo: false };
+        return `
+          <option value="${escapeHTML(v.id)}" ${v.id === state.simulator.vehicleId ? 'selected' : ''}>
+            ${escapeHTML(v.name)} — ${formatCurrencyCOP(pricing.activePrice)}${pricing.isPromo ? ` (🔥 ${escapeHTML(pricing.promoLabel)})` : ''}
+          </option>
+        `;
+      }).join("");
 
       elements.simVehicleSelect.addEventListener("change", (e) => {
         const selVehicle = state.vehicles.find(v => v.id === e.target.value);
         if (selVehicle) {
+          const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(selVehicle) : { activePrice: selVehicle.price };
           state.simulator.vehicleId = selVehicle.id;
-          state.simulator.vehiclePrice = selVehicle.price;
-          if (elements.simPriceInput) elements.simPriceInput.value = selVehicle.price;
+          state.simulator.vehiclePrice = pricing.activePrice;
+          if (elements.simPriceInput) elements.simPriceInput.value = pricing.activePrice;
           updateSimulatorCalculations();
         }
       });
@@ -1240,8 +1323,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const rows = [
       { label: "Imagen", valA: `<img src="${vA.image}" alt="${vA.name}" style="height: 100px; object-fit: cover; border-radius: 4px; margin: 0 auto;">`, valB: `<img src="${vB.image}" alt="${vB.name}" style="height: 100px; object-fit: cover; border-radius: 4px; margin: 0 auto;">` },
       { label: "Categoría", valA: vA.category, valB: vB.category },
-      { label: "Versión", valA: vA.version, valB: vB.version },
-      { label: "Precio Sugerido", valA: `<strong>${formatCurrencyCOP(vA.price)}</strong>`, valB: `<strong>${formatCurrencyCOP(vB.price)}</strong>` },
+      { 
+        label: "Precio Sugerido", 
+        valA: (() => {
+          const pA = (typeof getVehiclePricing === "function") ? getVehiclePricing(vA) : { isPromo: false };
+          return pA.isPromo 
+            ? `<span style="color: #10b981; font-weight: 700;">${formatCurrencyCOP(pA.promoPrice)}</span> <del style="color: #9ca3af; font-size: 0.85em; margin-left: 4px;">${formatCurrencyCOP(pA.normalPrice)}</del> <span class="promo-discount-badge" style="margin-left: 4px;">-${pA.discountPercent}%</span>`
+            : `<strong>${formatCurrencyCOP(vA.price)}</strong>`;
+        })(), 
+        valB: (() => {
+          const pB = (typeof getVehiclePricing === "function") ? getVehiclePricing(vB) : { isPromo: false };
+          return pB.isPromo 
+            ? `<span style="color: #10b981; font-weight: 700;">${formatCurrencyCOP(pB.promoPrice)}</span> <del style="color: #9ca3af; font-size: 0.85em; margin-left: 4px;">${formatCurrencyCOP(pB.normalPrice)}</del> <span class="promo-discount-badge" style="margin-left: 4px;">-${pB.discountPercent}%</span>`
+            : `<strong>${formatCurrencyCOP(vB.price)}</strong>`;
+        })() 
+      },
       { label: "Aceleración 0-100 km/h", valA: `${vA.accelerationSeconds} seg`, valB: `${vB.accelerationSeconds} seg` },
       { label: "Autonomía WLTP", valA: `${vA.rangeKm} km`, valB: `${vB.rangeKm} km` },
       { label: "Velocidad Máxima", valA: `${vA.topSpeedKm} km/h`, valB: `${vB.topSpeedKm} km/h` },
@@ -1913,8 +2009,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================================================
-  // CONTROL DE NAVEGACIÓN, MENÚ MÓVIL Y SCROLL (F-01)
+  // CONTROL DE NAVEGACIÓN Y MENÚ MÓVIL (OFF-CANVAS DRAWER)
   // =========================================================================
+
+  function openNavDrawer() {
+    if (!elements.mainNavList) return;
+    const navDrawerOverlay = document.getElementById("navDrawerOverlay");
+    elements.mainNavList.classList.add("is-open");
+    if (elements.header) elements.header.classList.add("drawer-open");
+    if (navDrawerOverlay) {
+      navDrawerOverlay.classList.add("is-visible");
+      navDrawerOverlay.setAttribute("aria-hidden", "false");
+    }
+    if (elements.navToggle) {
+      elements.navToggle.setAttribute("aria-expanded", "true");
+      elements.navToggle.classList.add("is-active");
+    }
+    document.body.classList.add("nav-drawer-active");
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+  }
+
+  function closeNavDrawer() {
+    if (!elements.mainNavList) return;
+    const navDrawerOverlay = document.getElementById("navDrawerOverlay");
+    elements.mainNavList.classList.remove("is-open");
+    if (elements.header) elements.header.classList.remove("drawer-open");
+    if (navDrawerOverlay) {
+      navDrawerOverlay.classList.remove("is-visible");
+      navDrawerOverlay.setAttribute("aria-hidden", "true");
+    }
+    if (elements.navToggle) {
+      elements.navToggle.setAttribute("aria-expanded", "false");
+      elements.navToggle.classList.remove("is-active");
+    }
+    document.body.classList.remove("nav-drawer-active");
+    document.body.style.overflow = "";
+    document.body.style.touchAction = "";
+  }
 
   function initNavigation() {
     // Scroll header background
@@ -1926,83 +2058,31 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // =========================================================================
-    // MENÚ MÓVIL — OFF-CANVAS SIDE DRAWER
-    // =========================================================================
     const navDrawerOverlay = document.getElementById("navDrawerOverlay");
-
-    function openNavDrawer() {
-      if (!elements.mainNavList) return;
-      elements.mainNavList.classList.add("is-open");
-      if (navDrawerOverlay) {
-        navDrawerOverlay.classList.add("is-visible");
-        navDrawerOverlay.setAttribute("aria-hidden", "false");
-      }
-      if (elements.navToggle) elements.navToggle.setAttribute("aria-expanded", "true");
-      document.body.style.overflow = "hidden";
-      document.body.style.touchAction = "none";
-    }
-
-    function closeNavDrawer() {
-      if (!elements.mainNavList) return;
-      elements.mainNavList.classList.remove("is-open");
-      if (navDrawerOverlay) {
-        navDrawerOverlay.classList.remove("is-visible");
-        navDrawerOverlay.setAttribute("aria-hidden", "true");
-      }
-      if (elements.navToggle) elements.navToggle.setAttribute("aria-expanded", "false");
-      document.body.style.overflow = "";
-      document.body.style.touchAction = "";
-    }
+    const drawerCloseBtn = document.getElementById("drawerCloseBtn");
 
     if (elements.navToggle && elements.mainNavList) {
-      elements.navToggle.addEventListener("click", () => {
+      elements.navToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
         const isOpen = elements.mainNavList.classList.contains("is-open");
         isOpen ? closeNavDrawer() : openNavDrawer();
       });
+    }
 
-      // Gestión interactiva de funciones activas (rotación de colores rojo y blanco) y cierre de drawer
-      const navLinks = elements.mainNavList.querySelectorAll(".nav-link");
-      navLinks.forEach(link => {
-        link.addEventListener("click", () => {
-          navLinks.forEach(l => l.classList.remove("active"));
-          link.classList.add("active");
-          closeNavDrawer();
-        });
+    if (drawerCloseBtn) {
+      drawerCloseBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeNavDrawer();
       });
-
-      // ScrollSpy: Sincroniza automáticamente la función seleccionada al desplazarse
-      const trackedSections = [
-        { id: "catalogo", href: "#catalogo" },
-        { id: "experiencia", href: "#experiencia" },
-        { id: "financiacion", href: "#financiacion" },
-        { id: "comparador", href: "#comparador" },
-        { id: "contacto", href: "#contacto" },
-        { id: "faqs", href: "#faqs" }
-      ];
-
-      window.addEventListener("scroll", () => {
-        const scrollPos = window.scrollY + 180;
-        for (let i = trackedSections.length - 1; i >= 0; i--) {
-          const sec = document.getElementById(trackedSections[i].id);
-          if (sec && scrollPos >= sec.offsetTop) {
-            const targetHref = trackedSections[i].href;
-            navLinks.forEach(l => {
-              if (l.getAttribute("href") === targetHref) {
-                l.classList.add("active");
-              } else {
-                l.classList.remove("active");
-              }
-            });
-            break;
-          }
-        }
-      }, { passive: true });
     }
 
     // Cerrar drawer al hacer clic en overlay
     if (navDrawerOverlay) {
-      navDrawerOverlay.addEventListener("click", closeNavDrawer);
+      navDrawerOverlay.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeNavDrawer();
+      });
     }
 
     // Cerrar drawer con tecla Escape
@@ -2011,6 +2091,66 @@ document.addEventListener("DOMContentLoaded", () => {
         closeNavDrawer();
       }
     });
+
+    // Gestión interactiva de enlaces de navegación (anclas a secciones con scroll suave y compensación de header)
+    const anchorNavLinks = elements.mainNavList.querySelectorAll("a[href^='#']");
+    anchorNavLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        const href = link.getAttribute("href");
+        anchorNavLinks.forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
+        closeNavDrawer();
+
+        if (href && href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            requestAnimationFrame(() => {
+              const headerHeight = elements.header ? elements.header.offsetHeight : 64;
+              const targetTop = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+              window.scrollTo({
+                top: Math.max(0, targetTop),
+                behavior: "smooth"
+              });
+              if (history.pushState) {
+                history.pushState(null, null, href);
+              } else {
+                location.hash = href;
+              }
+            });
+          }
+        }
+      });
+    });
+
+    // ScrollSpy: Sincroniza automáticamente la función seleccionada al desplazarse
+    const trackedSections = [
+      { id: "inicio", href: "#inicio" },
+      { id: "catalogo", href: "#catalogo" },
+      { id: "experiencia", href: "#experiencia" },
+      { id: "financiacion", href: "#financiacion" },
+      { id: "comparador", href: "#comparador" },
+      { id: "contacto", href: "#contacto" },
+      { id: "faqs", href: "#faqs" }
+    ];
+
+    window.addEventListener("scroll", () => {
+      const scrollPos = window.scrollY + 180;
+      for (let i = trackedSections.length - 1; i >= 0; i--) {
+        const sec = document.getElementById(trackedSections[i].id);
+        if (sec && scrollPos >= sec.offsetTop) {
+          const targetHref = trackedSections[i].href;
+          anchorNavLinks.forEach(l => {
+            if (l.getAttribute("href") === targetHref) {
+              l.classList.add("active");
+            } else {
+              l.classList.remove("active");
+            }
+          });
+          break;
+        }
+      }
+    }, { passive: true });
 
 
     // Trigger de Favoritos
@@ -2124,8 +2264,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const firstName = user.name.trim().split(" ")[0] || "Usuario";
         elements.mobileAccountBtnText.textContent = `Mi Cuenta (${firstName})`;
       } else {
-        elements.mobileAccountBtnText.textContent = "Mi Cuenta";
+        elements.mobileAccountBtnText.textContent = "Mi Cuenta / Iniciar Sesión";
       }
+    }
+
+    const navMobileRegisterItem = document.getElementById("navMobileRegisterItem");
+    if (navMobileRegisterItem) {
+      navMobileRegisterItem.style.display = isLogged ? "none" : "";
     }
 
     // Compatibilidad si hubiera enlace en el menú
@@ -2152,16 +2297,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sincronizar visibilidad del Simulador de Financiación y Crédito
     const simGuestLock = elements.simGuestLockState || document.getElementById("simGuestLockState");
     const simAuthContent = elements.simAuthenticatedContent || document.getElementById("simAuthenticatedContent");
-    const simUserBadge = elements.simUserBadge || document.getElementById("simUserBadge");
 
     if (simGuestLock && simAuthContent) {
       if (isLogged) {
         simGuestLock.style.display = "none";
         simAuthContent.style.display = "block";
-        if (simUserBadge && user) {
-          const firstName = user.name.trim().split(" ")[0] || "Cliente";
-          simUserBadge.textContent = `👤 Plan para ${firstName}`;
-        }
         updateSimulatorCalculations();
       } else {
         simGuestLock.style.display = "block";
@@ -2245,6 +2385,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function switchDashboardTab(tabName) {
     const tabs = [
       { id: "profile", btn: elements.tabDashProfileBtn, panel: elements.dashProfilePanel },
+      { id: "notifications", btn: elements.tabDashNotificationsBtn, panel: elements.dashNotificationsPanel },
       { id: "orders", btn: elements.tabDashOrdersBtn, panel: elements.dashOrdersPanel },
       { id: "favs", btn: elements.tabDashFavsBtn, panel: elements.dashFavsPanel },
       { id: "testdrive", btn: elements.tabDashTestDriveBtn, panel: elements.dashTestDrivePanel },
@@ -2309,25 +2450,39 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
       } else {
-        elements.dashOrdersListContainer.innerHTML = orders.map(ord => `
-          <div class="account-order-card">
-            <img src="${ord.vehicleImage || 'assets/model-3.jpg'}" alt="${escapeHTML(ord.vehicleName)}" class="account-order-img">
-            <div>
-              <div class="account-order-title">${escapeHTML(ord.vehicleName)} <span style="font-size: 0.8rem; font-weight: 400; color: var(--color-silver);">(${escapeHTML(ord.vehicleVersion || '')})</span></div>
-              <div class="account-order-meta">
-                Radicado: <strong style="color: var(--color-white);">${escapeHTML(ord.orderNum)}</strong> • Fecha: ${escapeHTML(ord.date)}<br>
-                Paquete de Papeles: <strong style="color: ${ord.includePapers ? '#10b981' : 'var(--color-silver)'};">${ord.includePapers ? 'Incluido (Al Día)' : 'No incluido'}</strong>
+        elements.dashOrdersListContainer.innerHTML = orders.map(ord => {
+          const isAuth = ord.status === "authorized";
+          const isRejected = ord.status === "rejected";
+          let statusBadgeHTML = "";
+
+          if (isAuth) {
+            statusBadgeHTML = `<span class="account-order-status" style="background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-weight: 700;">✅ Compra Autorizada</span>`;
+          } else if (isRejected) {
+            statusBadgeHTML = `<span class="account-order-status" style="background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-weight: 700;">❌ Compra Rechazada${ord.rejectedReason ? `: ${escapeHTML(ord.rejectedReason)}` : ''}</span>`;
+          } else {
+            statusBadgeHTML = `<span class="account-order-status" style="background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 700;">⏳ En Espera de Autorización de la Administración</span>`;
+          }
+
+          return `
+            <div class="account-order-card">
+              <img src="${ord.vehicleImage || 'assets/images/model-3.jpg'}" alt="${escapeHTML(ord.vehicleName)}" class="account-order-img">
+              <div>
+                <div class="account-order-title">${escapeHTML(ord.vehicleName)} <span style="font-size: 0.8rem; font-weight: 400; color: var(--color-silver);">(${escapeHTML(ord.vehicleVersion || '')})</span></div>
+                <div class="account-order-meta">
+                  Radicado: <strong style="color: var(--color-white); font-family: monospace;">${escapeHTML(ord.orderNum)}</strong> • Fecha: ${escapeHTML(ord.date)}<br>
+                  Paquete de Papeles: <strong style="color: ${ord.includePapers ? '#10b981' : 'var(--color-silver)'};">${ord.includePapers ? 'Incluido (Al Día)' : 'No incluido'}</strong>
+                </div>
+                ${statusBadgeHTML}
               </div>
-              <span class="account-order-status">${escapeHTML(ord.status || 'En Proceso')}</span>
+              <div class="account-order-price-wrap">
+                <span class="account-order-price">${formatCurrencyCOP(ord.totalAmount)}</span>
+                <a href="https://wa.me/573105550199?text=Hola,%20quisiera%20consultar%20la%20autorizaci%C3%B3n%20de%20mi%20orden%20${encodeURIComponent(ord.orderNum)}%20para%20el%20veh%C3%ADculo%20${encodeURIComponent(ord.vehicleName)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" style="margin-top: 6px; padding: 5px 10px; font-size: 0.75rem;">
+                  Consultar Radicado
+                </a>
+              </div>
             </div>
-            <div class="account-order-price-wrap">
-              <span class="account-order-price">${formatCurrencyCOP(ord.totalAmount)}</span>
-              <a href="https://wa.me/573009123456?text=Hola,%20quisiera%20consultar%20el%20estado%20de%20mi%20orden%20${encodeURIComponent(ord.orderNum)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" style="margin-top: 6px; padding: 5px 10px; font-size: 0.75rem;">
-                Consultar Radicado
-              </a>
-            </div>
-          </div>
-        `).join("");
+          `;
+        }).join("");
       }
     }
 
@@ -2371,7 +2526,226 @@ document.addEventListener("DOMContentLoaded", () => {
         `).join("");
       }
     }
+
+    // Renderizar pestaña de Notificaciones
+    renderNotificationsUI();
   }
+
+  // =========================================================================
+  // GESTOR DEL CENTRO DE NOTIFICACIONES (COMPRAS, APROBACIONES Y RECHAZOS)
+  // =========================================================================
+
+  function addUserNotification(notifData) {
+    if (!state.currentUser) return;
+    state.currentUser.notifications = state.currentUser.notifications || [];
+
+    // Prevenir duplicados del mismo tipo para la misma orden
+    if (notifData.orderNum && notifData.type) {
+      const exists = state.currentUser.notifications.some(n => n.orderNum === notifData.orderNum && n.type === notifData.type);
+      if (exists) return;
+    }
+
+    const newNotif = {
+      id: notifData.id || ("notif_" + Date.now().toString(36) + "_" + Math.random().toString(36).substr(2, 5)),
+      type: notifData.type || "info",
+      title: notifData.title || "Notificación",
+      message: notifData.message || "",
+      orderNum: notifData.orderNum || null,
+      vehicleName: notifData.vehicleName || "",
+      amount: notifData.amount || 0,
+      isRead: false,
+      date: new Date().toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+      timestamp: new Date().toISOString(),
+      extra: notifData.extra || {}
+    };
+
+    state.currentUser.notifications.unshift(newNotif);
+    saveAuthUser(state.currentUser);
+    renderNotificationsUI();
+  }
+
+  function markNotificationAsRead(notifId) {
+    if (!state.currentUser || !Array.isArray(state.currentUser.notifications)) return;
+    const notif = state.currentUser.notifications.find(n => n.id === notifId);
+    if (notif) {
+      notif.isRead = true;
+      saveAuthUser(state.currentUser);
+      renderNotificationsUI();
+    }
+  }
+
+  function markAllNotificationsAsRead() {
+    if (!state.currentUser || !Array.isArray(state.currentUser.notifications)) return;
+    state.currentUser.notifications.forEach(n => { n.isRead = true; });
+    saveAuthUser(state.currentUser);
+    renderNotificationsUI();
+    showToast("Todas las notificaciones han sido marcadas como leídas.", "success");
+  }
+
+  function deleteNotification(notifId) {
+    if (!state.currentUser || !Array.isArray(state.currentUser.notifications)) return;
+    const idx = state.currentUser.notifications.findIndex(n => n.id === notifId);
+    if (idx !== -1) {
+      state.currentUser.notifications.splice(idx, 1);
+      saveAuthUser(state.currentUser);
+      renderNotificationsUI();
+    }
+  }
+
+  function clearAllNotifications() {
+    if (!state.currentUser || !Array.isArray(state.currentUser.notifications)) return;
+    if (state.currentUser.notifications.length === 0) return;
+    if (!confirm("¿Deseas eliminar todas las notificaciones de tu historial?")) return;
+    state.currentUser.notifications = [];
+    saveAuthUser(state.currentUser);
+    renderNotificationsUI();
+    showToast("Historial de notificaciones vaciado.", "info");
+  }
+
+  function renderNotificationsUI() {
+    const user = state.currentUser;
+    if (!user) {
+      if (elements.headerNotifBtn) elements.headerNotifBtn.style.display = "none";
+      return;
+    }
+
+    const notifs = user.notifications || [];
+    const unreadCount = notifs.filter(n => !n.isRead).length;
+
+    // Actualizar insignias de notificación en la UI
+    const updateBadgeElement = (badgeEl, dotEl, count) => {
+      if (badgeEl) {
+        if (count > 0) {
+          badgeEl.textContent = count > 99 ? "99+" : count;
+          badgeEl.style.display = "inline-flex";
+        } else {
+          badgeEl.style.display = "none";
+        }
+      }
+      if (dotEl) {
+        dotEl.style.display = count > 0 ? "inline-block" : "none";
+      }
+    };
+
+    updateBadgeElement(elements.dashNotificationsBadge, elements.dashTabNotifDot, unreadCount);
+    updateBadgeElement(elements.dropdownNotifBadge, elements.dropdownNotifDot, unreadCount);
+    updateBadgeElement(elements.headerNotifBadge, null, unreadCount);
+
+    if (elements.headerNotifBtn) {
+      elements.headerNotifBtn.style.display = "inline-flex";
+    }
+
+    if (elements.dashKpiNotificationsCount) {
+      elements.dashKpiNotificationsCount.textContent = notifs.length;
+    }
+    if (elements.dashKpiPulseDot) {
+      elements.dashKpiPulseDot.style.display = unreadCount > 0 ? "inline-block" : "none";
+    }
+    if (elements.notifsUnreadPill) {
+      if (unreadCount > 0) {
+        elements.notifsUnreadPill.textContent = `${unreadCount} Nuevas`;
+        elements.notifsUnreadPill.style.display = "inline-block";
+      } else {
+        elements.notifsUnreadPill.style.display = "none";
+      }
+    }
+
+    // Renderizar contenedor de lista
+    if (elements.dashNotificationsListContainer) {
+      if (notifs.length === 0) {
+        elements.dashNotificationsListContainer.innerHTML = `
+          <div class="account-empty-state">
+            <div class="account-empty-icon">🔔</div>
+            <h4 style="color: var(--color-white); font-size: 1.05rem; margin-bottom: 6px;">No tienes notificaciones por el momento</h4>
+            <p style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 16px;">
+              Aquí recibirás avisos en tiempo real sobre tus radicados de compra, autorizaciones y novedades de administración.
+            </p>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="switchDashboardTab('orders');">Ver Mis Reservas</button>
+          </div>
+        `;
+      } else {
+        elements.dashNotificationsListContainer.innerHTML = notifs.map(n => {
+          let cardTypeClass = "notif-info";
+          let iconHtml = "ℹ️";
+          let badgeStatusText = "INFORMACIÓN";
+
+          if (n.type === "purchase_authorized") {
+            cardTypeClass = "notif-authorized";
+            iconHtml = "✓";
+            badgeStatusText = "Aprobada";
+          } else if (n.type === "purchase_rejected") {
+            cardTypeClass = "notif-rejected";
+            iconHtml = "✕";
+            badgeStatusText = "Rechazada";
+          } else if (n.type === "purchase_created") {
+            cardTypeClass = "notif-created";
+            iconHtml = "📋";
+            badgeStatusText = "Radicada";
+          }
+
+          let extraBoxHtml = "";
+          if (n.type === "purchase_rejected" && n.extra && n.extra.rejectedReason) {
+            extraBoxHtml = `
+              <div class="notif-meta-box box-danger">
+                <strong>Motivo del Rechazo:</strong> ${escapeHTML(n.extra.rejectedReason)}
+              </div>
+            `;
+          } else if (n.type === "purchase_authorized") {
+            extraBoxHtml = `
+              <div class="notif-meta-box box-success">
+                <span>Tu orden se encuentra formalmente aprobada para alistamiento y entrega en showroom.</span>
+              </div>
+            `;
+          }
+
+          let orderActionBtn = "";
+          if (n.orderNum) {
+            orderActionBtn = `
+              <button type="button" class="btn btn-secondary btn-sm" onclick="switchDashboardTab('orders');">
+                Ver Orden (${escapeHTML(n.orderNum)})
+              </button>
+            `;
+          }
+
+          return `
+            <article class="notif-card ${cardTypeClass} ${n.isRead ? '' : 'is-unread'}">
+              <div class="notif-icon-circle">
+                ${iconHtml}
+              </div>
+              <div class="notif-content">
+                <div class="notif-top-row">
+                  <div class="notif-title-wrap">
+                    <h4 class="notif-title">${escapeHTML(n.title)}</h4>
+                    <span class="notif-badge-status">${badgeStatusText}</span>
+                    ${!n.isRead ? '<span class="status-indicator-dot" style="width: 7px; height: 7px; background: #ff4d4f; border-radius: 50%; display: inline-block;" title="No leída"></span>' : ''}
+                  </div>
+                  <time class="notif-time">${escapeHTML(n.date || '')}</time>
+                </div>
+                <p class="notif-body-text">${escapeHTML(n.message)}</p>
+                ${extraBoxHtml}
+                <div class="notif-footer-actions">
+                  ${orderActionBtn}
+                  ${!n.isRead ? `
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="markNotificationAsRead('${escapeHTML(n.id)}');">
+                      Marcar Leída
+                    </button>
+                  ` : ''}
+                  <button type="button" class="btn-notif-delete" onclick="deleteNotification('${escapeHTML(n.id)}');" title="Eliminar notificación">
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+    }
+  }
+
+  // Exportar funciones para handlers inline en HTML dinámico
+  window.markNotificationAsRead = markNotificationAsRead;
+  window.deleteNotification = deleteNotification;
+  window.switchDashboardTab = switchDashboardTab;
 
   function toggleUserDropdown() {
     if (!elements.userDropdownMenu) return;
@@ -2425,8 +2799,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.navMobileAccountBtn) {
       elements.navMobileAccountBtn.addEventListener("click", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         closeNavDrawer();
-        openLoginModal(state.currentUser ? "login" : "login", "profile");
+        setTimeout(() => {
+          openLoginModal(state.currentUser ? "login" : "login", "profile");
+        }, 120);
       });
     }
 
@@ -2435,8 +2812,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (navMobileRegisterBtn) {
       navMobileRegisterBtn.addEventListener("click", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         closeNavDrawer();
-        openLoginModal("register");
+        setTimeout(() => {
+          openLoginModal("register");
+        }, 120);
       });
     }
 
@@ -2460,6 +2840,19 @@ document.addEventListener("DOMContentLoaded", () => {
       elements.dropdownOpenFullProfileBtn.addEventListener("click", () => {
         closeUserDropdown();
         openLoginModal("login", "profile");
+      });
+    }
+
+    if (elements.dropdownOpenNotifsBtn) {
+      elements.dropdownOpenNotifsBtn.addEventListener("click", () => {
+        closeUserDropdown();
+        openLoginModal("login", "notifications");
+      });
+    }
+
+    if (elements.headerNotifBtn) {
+      elements.headerNotifBtn.addEventListener("click", () => {
+        openLoginModal("login", "notifications");
       });
     }
 
@@ -2509,6 +2902,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.tabDashProfileBtn) {
       elements.tabDashProfileBtn.addEventListener("click", () => switchDashboardTab("profile"));
     }
+    if (elements.tabDashNotificationsBtn) {
+      elements.tabDashNotificationsBtn.addEventListener("click", () => switchDashboardTab("notifications"));
+    }
+    if (elements.dashKpiNotifsCard) {
+      elements.dashKpiNotifsCard.addEventListener("click", () => switchDashboardTab("notifications"));
+    }
     if (elements.tabDashOrdersBtn) {
       elements.tabDashOrdersBtn.addEventListener("click", () => switchDashboardTab("orders"));
     }
@@ -2520,6 +2919,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (elements.tabDashSecurityBtn) {
       elements.tabDashSecurityBtn.addEventListener("click", () => switchDashboardTab("security"));
+    }
+
+    // Acciones de Notificaciones (Marcar todas y Limpiar)
+    if (elements.btnMarkAllNotifsRead) {
+      elements.btnMarkAllNotifsRead.addEventListener("click", markAllNotificationsAsRead);
+    }
+    if (elements.btnClearAllNotifs) {
+      elements.btnClearAllNotifs.addEventListener("click", clearAllNotifications);
     }
 
     // Visibilidad de contraseñas
@@ -2592,7 +2999,37 @@ document.addEventListener("DOMContentLoaded", () => {
               vehicleImage: "assets/model-3.jpg",
               includePapers: true,
               totalAmount: 203200000,
-              status: "Radicado Activo — Matrícula y SOAT al Día"
+              status: "authorized",
+              statusLabel: "Autorizada por Asesor de Administración",
+              authorizedBy: "Julian O (Super Admin)"
+            }
+          ],
+          notifications: [
+            {
+              id: "notif_demo_01",
+              type: "purchase_authorized",
+              title: "🎉 ¡Tu compra ha sido APROBADA!",
+              message: "Tu orden de compra [TSL-ORD-742918] para el vehículo Tesla Model 3 Gran Autonomía ha sido AUTORIZADA formalmente. Paquete de matrícula y SOAT legalizados al día.",
+              orderNum: "TSL-ORD-742918",
+              vehicleName: "Tesla Model 3 Gran Autonomía",
+              amount: 203200000,
+              date: "Hoy, 2:15 p. m.",
+              timestamp: new Date().toISOString(),
+              isRead: false,
+              extra: {}
+            },
+            {
+              id: "notif_demo_02",
+              type: "purchase_created",
+              title: "📋 Radicado de Compra Exitoso",
+              message: "Has radicado la solicitud de reserva para el Tesla Model 3. El radicado TSL-ORD-742918 fue enviado a mesa de control administrativo.",
+              orderNum: "TSL-ORD-742918",
+              vehicleName: "Tesla Model 3 Gran Autonomía",
+              amount: 203200000,
+              date: "Ayer, 4:30 p. m.",
+              timestamp: new Date(Date.now() - 86400000).toISOString(),
+              isRead: true,
+              extra: { papers: true }
             }
           ]
         };
@@ -2866,6 +3303,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function updatePurchaseModalView() {
     const vehicle = state.vehicles.find(v => v.id === state.selectedVehicleForPurchase) || state.vehicles[0];
     if (!vehicle) return;
+    const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(vehicle) : { activePrice: vehicle.price, isPromo: false };
+    const activePrice = pricing.activePrice;
 
     if (elements.purchaseVehicleImg) {
       elements.purchaseVehicleImg.src = vehicle.image;
@@ -2875,15 +3314,19 @@ document.addEventListener("DOMContentLoaded", () => {
       elements.purchaseCarVersion.textContent = `${vehicle.name} — ${vehicle.version}`;
     }
     if (elements.purchaseBasePrice) {
-      elements.purchaseBasePrice.textContent = formatCurrencyCOP(vehicle.price);
+      if (pricing.isPromo) {
+        elements.purchaseBasePrice.innerHTML = `<span style="color: #10b981; font-weight: 700;">${formatCurrencyCOP(pricing.promoPrice)}</span> <del style="color: #9ca3af; font-size: 0.85em; margin-left: 6px;">${formatCurrencyCOP(pricing.normalPrice)}</del> <span class="promo-discount-badge" style="margin-left: 6px;">-${pricing.discountPercent}% OFF</span>`;
+      } else {
+        elements.purchaseBasePrice.textContent = formatCurrencyCOP(vehicle.price);
+      }
     }
     if (elements.summarySubtotalPrice) {
-      elements.summarySubtotalPrice.textContent = formatCurrencyCOP(vehicle.price);
+      elements.summarySubtotalPrice.textContent = formatCurrencyCOP(activePrice);
     }
 
     const includePapers = state.includePapersInPurchase;
     const papersCost = includePapers ? state.papersPackageCost : 0;
-    const totalAmount = vehicle.price + papersCost;
+    const totalAmount = activePrice + papersCost;
 
     if (elements.includePapersCheck) {
       elements.includePapersCheck.checked = includePapers;
@@ -2990,58 +3433,138 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!valid) return;
 
         const vehicle = state.vehicles.find(v => v.id === state.selectedVehicleForPurchase) || state.vehicles[0];
+        const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(vehicle) : { activePrice: vehicle.price, isPromo: false };
+        const activePrice = pricing.activePrice;
         const includePapers = state.includePapersInPurchase;
         const papersCost = includePapers ? state.papersPackageCost : 0;
-        const totalAmount = vehicle.price + papersCost;
+        const totalAmount = activePrice + papersCost;
         const orderNum = generateSecureId("TSL-ORD");
+
+        const needsAuthorization = Boolean(includePapers);
+        const orderStatus = needsAuthorization ? "pending_authorization" : "authorized";
+        const orderStatusLabel = needsAuthorization
+          ? "En Espera de Autorización (Papeleo al Día)"
+          : "Aprobada Directa — Sin Papeleo (No Requiere Autorización)";
 
         if (elements.purchaseStatusAlert) {
           elements.purchaseStatusAlert.style.display = "block";
-          elements.purchaseStatusAlert.innerHTML = `
-            <div style="background-color: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-radius: var(--radius-md); padding: var(--space-20);">
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <h4 style="color: #10b981; font-size: 1.125rem;">¡Orden de Compra Generada!</h4>
+          if (needsAuthorization) {
+            elements.purchaseStatusAlert.innerHTML = `
+              <div style="background-color: rgba(245, 158, 11, 0.12); border: 1.5px solid #fbbf24; border-radius: var(--radius-md); padding: var(--space-20);">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                  <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #fbbf24; box-shadow: 0 0 10px #fbbf24;"></span>
+                  <h4 style="color: #fbbf24; font-size: 1.15rem; font-weight: 800;">⏳ ¡Solicitud Radicada — En Espera de Autorización de Papeleo!</h4>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--color-silver-light); margin-bottom: 10px;">
+                  Radicado comercial: <strong style="color: var(--color-white); font-family: monospace; font-size: 1rem;">${orderNum}</strong> para <strong>${escapeHTML(nameInp.value)}</strong>.
+                </p>
+                <div style="background: rgba(0, 0, 0, 0.45); border-left: 3.5px solid #fbbf24; padding: 12px 16px; border-radius: 6px; margin-bottom: 14px; font-size: 0.84rem; color: #fef3c7; line-height: 1.55;">
+                  <strong>⚠️ AVISO DE AUTORIZACIÓN:</strong> Has solicitado incluir el <strong>Paquete de Papeles Legales al Día (SOAT, Matrícula, Impuesto)</strong>. Para diligenciar los formularios legales y coordinar la entrega con los documentos listos, <strong>debes esperar la autorización de uno de los agentes de la administración</strong>. Puedes dar seguimiento en tiempo real desde tu perfil.
+                </div>
+                <div style="font-size: 0.82rem; color: var(--color-silver); margin-bottom: 12px; line-height: 1.6;">
+                  🚗 Vehículo: <strong>Tesla ${escapeHTML(vehicle.name)}</strong> (${formatCurrencyCOP(activePrice)}${pricing.isPromo ? ` — 🔥 Promoción: ${escapeHTML(pricing.promoLabel)}` : ''})<br>
+                  📋 Paquete de Papeles Legales: <strong style="color: #10b981;">✅ Incluido (+$5.200.000 COP — Requiere tramitación de formularios)</strong><br>
+                  💵 Liquidación Total: <strong style="color: #10b981; font-size: 1.1rem; font-weight: 800;">${formatCurrencyCOP(totalAmount)}</strong>
+                </div>
+                <p style="font-size: 0.78rem; color: #a1a1aa; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 10px;">
+                  <em>Plataforma Administrador:</em> Tu orden ya se encuentra registrada en la consola administrativa con el auto de fondo. Uno de nuestros agentes evaluará los formularios y autorizará el inicio del trámite.
+                </p>
               </div>
-              <p style="font-size: 0.875rem; color: var(--color-silver-light); margin-bottom: 6px;">
-                Radicado comercial: <strong style="color: var(--color-white);">${orderNum}</strong> para <strong>${escapeHTML(nameInp.value)}</strong>.
-              </p>
-              <div style="font-size: 0.8125rem; color: var(--color-silver); margin-bottom: 10px;">
-                Vehículo: <strong>${escapeHTML(vehicle.name)}</strong> (${formatCurrencyCOP(vehicle.price)})<br>
-                Paquete de Papeles Legales: <strong style="color: ${includePapers ? '#10b981' : 'var(--color-silver)'};">${includePapers ? 'Incluido (+$5.200.000 COP)' : 'No incluido (Precio base neto)'}</strong><br>
-                Liquidación Total: <strong style="color: var(--color-white); font-size: 1rem;">${formatCurrencyCOP(totalAmount)}</strong>
+            `;
+          } else {
+            elements.purchaseStatusAlert.innerHTML = `
+              <div style="background-color: rgba(16, 185, 129, 0.12); border: 1.5px solid #10b981; border-radius: var(--radius-md); padding: var(--space-20);">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                  <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981;"></span>
+                  <h4 style="color: #10b981; font-size: 1.15rem; font-weight: 800;">✅ ¡Compra Confirmada Directamente!</h4>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--color-silver-light); margin-bottom: 10px;">
+                  Radicado comercial: <strong style="color: var(--color-white); font-family: monospace; font-size: 1rem;">${orderNum}</strong> para <strong>${escapeHTML(nameInp.value)}</strong>.
+                </p>
+                <div style="background: rgba(0, 0, 0, 0.45); border-left: 3.5px solid #10b981; padding: 12px 16px; border-radius: 6px; margin-bottom: 14px; font-size: 0.84rem; color: #d1fae5; line-height: 1.55;">
+                  <strong>⚡ COMPRA DIRECTA:</strong> Al adquirir el vehículo sin paquete de papeles legales al día, <strong>tu orden NO requiere autorización administrativa de formularios</strong>. Tu compra está aprobada para facturación y entrega directa.
+                </div>
+                <div style="font-size: 0.82rem; color: var(--color-silver); margin-bottom: 12px; line-height: 1.6;">
+                  🚗 Vehículo: <strong>Tesla ${escapeHTML(vehicle.name)}</strong> (${formatCurrencyCOP(activePrice)}${pricing.isPromo ? ` — 🔥 Promoción: ${escapeHTML(pricing.promoLabel)}` : ''})<br>
+                  📋 Paquete de Papeles Legales: <strong style="color: var(--color-silver);">⚪ No incluido (Compra directa neta)</strong><br>
+                  💵 Liquidación Total: <strong style="color: #10b981; font-size: 1.1rem; font-weight: 800;">${formatCurrencyCOP(totalAmount)}</strong>
+                </div>
+                <p style="font-size: 0.78rem; color: #a1a1aa; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 10px;">
+                  <em>Plataforma Administrador:</em> Registrada en la consola con auto de fondo como orden de entrega directa.
+                </p>
               </div>
-              <p style="font-size: 0.75rem; color: var(--color-silver); border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 8px;">
-                <em>Aviso:</em> Reserva demostrativa registrada en la plataforma frontend. Puedes confirmar los detalles de entrega directamente con un asesor por WhatsApp.
-              </p>
-            </div>
-          `;
+            `;
+          }
           elements.purchaseStatusAlert.scrollIntoView({ behavior: "smooth" });
         }
 
-        // Guardar la orden en la cuenta del usuario si está conectado
+        // Estructura completa de la orden de compra
         const newOrder = {
           orderNum: orderNum,
-          date: new Date().toLocaleDateString("es-CO"),
+          date: new Date().toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" }),
+          customerName: nameInp.value.trim(),
+          customerDoc: docInp.value.trim(),
+          customerPhone: phoneInp.value.trim(),
+          customerEmail: emailInp.value.trim(),
+          customerCity: elements.buyerCity ? elements.buyerCity.value : "Colombia",
           vehicleId: vehicle.id,
-          vehicleName: `Tesla ${vehicle.name}`,
+          vehicleName: vehicle.name,
           vehicleVersion: vehicle.version,
           vehicleImage: vehicle.image,
+          basePrice: activePrice,
+          isPromo: Boolean(pricing.isPromo),
+          promoLabel: pricing.promoLabel || "",
           includePapers: includePapers,
+          papersCost: papersCost,
           totalAmount: totalAmount,
-          status: includePapers ? "Gestión de Matrícula y SOAT (Papeles al Día)" : "Reserva Comercial Base"
+          requiresAuthorization: needsAuthorization,
+          status: orderStatus,
+          statusLabel: orderStatusLabel,
+          authorizedBy: needsAuthorization ? null : "Aprobación Inmediata (Sin trámite de papeleo)",
+          authorizedAt: needsAuthorization ? null : new Date().toISOString()
         };
 
+        // 1. Guardar en la lista centralizada de compras para la consola administrativa
+        try {
+          const rawPurchases = localStorage.getItem(STORAGE_KEY_PURCHASES);
+          const purchasesList = rawPurchases ? JSON.parse(rawPurchases) : [];
+          purchasesList.unshift(newOrder);
+          localStorage.setItem(STORAGE_KEY_PURCHASES, JSON.stringify(purchasesList));
+        } catch (e) {}
+
+        // 2. Transmitir en tiempo real a la consola de administración
+        try {
+          if (typeof BroadcastChannel !== "undefined") {
+            const bc = new BroadcastChannel(SYNC_CHANNEL_NAME);
+            bc.postMessage({ type: "NEW_PURCHASE_ORDER", order: newOrder });
+            bc.close();
+          }
+        } catch (e) {}
+
+        // 3. Persistir en la cuenta del usuario actual si está autenticado
         if (state.currentUser) {
           state.currentUser.orders = state.currentUser.orders || [];
           state.currentUser.orders.unshift(newOrder);
+          addUserNotification({
+            type: "purchase_created",
+            title: "📋 Nueva Compra Radicada",
+            message: `Has radicado exitosamente la compra del Tesla ${vehicle.name} (${vehicle.version}). Radicado: ${orderNum}. ${needsAuthorization ? 'En espera de revisión y autorización administrativa para papeleo legal al día.' : 'Aprobación directa sin trámites adicionales.'}`,
+            orderNum: orderNum,
+            vehicleName: vehicle.name,
+            amount: totalAmount,
+            extra: { includePapers: includePapers }
+          });
           saveAuthUser(state.currentUser);
         }
 
-        showToast(`Tu solicitud de orden ha sido enviada con éxito. Radicado: ${orderNum}`, "success", true);
+        // 4. Enviar al backend si está disponible
+        fetch("/api/purchases", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newOrder)
+        }).catch(() => null);
+
+        showToast(`Tu orden ${orderNum} ha sido radicada. Está en espera de autorización administrativa.`, "warning", true);
       });
     }
 
@@ -3049,15 +3572,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.sendOrderWhatsAppBtn) {
       elements.sendOrderWhatsAppBtn.addEventListener("click", () => {
         const vehicle = state.vehicles.find(v => v.id === state.selectedVehicleForPurchase) || state.vehicles[0];
+        const pricing = (typeof getVehiclePricing === "function") ? getVehiclePricing(vehicle) : { activePrice: vehicle.price, isPromo: false };
+        const activePrice = pricing.activePrice;
         const includePapers = state.includePapersInPurchase;
         const papersCost = includePapers ? state.papersPackageCost : 0;
-        const totalAmount = vehicle.price + papersCost;
+        const totalAmount = activePrice + papersCost;
         const buyerName = elements.buyerName && elements.buyerName.value ? elements.buyerName.value.trim() : (state.currentUser ? state.currentUser.name : "Cliente Interesado");
         const buyerCity = elements.buyerCity ? elements.buyerCity.value : "Colombia";
 
         const text = `Hola, deseo cotizar y comprar el siguiente vehículo:%0A%0A` +
           `🚗 *Modelo:* Tesla ${vehicle.name} (${vehicle.version})%0A` +
-          `💰 *Precio Base:* ${formatCurrencyCOP(vehicle.price)}%0A` +
+          `💰 *Precio Base:* ${formatCurrencyCOP(activePrice)}${pricing.isPromo ? ` (🔥 Promoción: ${pricing.promoLabel})` : ''}%0A` +
           `📋 *Incluye Papeles al Día (Matrícula, SOAT, Impuesto):* ${includePapers ? 'SÍ (+ $5.200.000 COP)' : 'NO (Sin papeles)'}%0A` +
           `💵 *VALOR TOTAL:* ${formatCurrencyCOP(totalAmount)}%0A` +
           `👤 *Titular:* ${buyerName}%0A` +
@@ -3069,53 +3594,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // =========================================================================
-  // WIDGET FLOTANTE Y CHAT DE WHATSAPP
-  // =========================================================================
 
-  function initWhatsAppWidget() {
-    if (elements.headerWhatsappBtn) {
-      elements.headerWhatsappBtn.addEventListener("click", () => {
-        if (elements.whatsappPopover) {
-          elements.whatsappPopover.style.display = "block";
-        }
-      });
-    }
-
-    if (elements.whatsappBubbleBtn) {
-      elements.whatsappBubbleBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (!elements.whatsappPopover) return;
-        const isVisible = elements.whatsappPopover.style.display === "block";
-        elements.whatsappPopover.style.display = isVisible ? "none" : "block";
-      });
-    }
-
-    if (elements.closeWaPopoverBtn && elements.whatsappPopover) {
-      elements.closeWaPopoverBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        elements.whatsappPopover.style.display = "none";
-      });
-    }
-
-    // Cerrar popover al hacer clic fuera
-    document.addEventListener("click", (e) => {
-      if (elements.whatsappFloatWidget && !elements.whatsappFloatWidget.contains(e.target)) {
-        if (elements.whatsappPopover) elements.whatsappPopover.style.display = "none";
-      }
-    });
-
-    // Chips de opciones rápidas dentro de WhatsApp
-    if (elements.whatsappPopover) {
-      elements.whatsappPopover.querySelectorAll(".wa-chip-btn").forEach(chip => {
-        chip.addEventListener("click", () => {
-          const msg = encodeURIComponent(chip.dataset.msg || "Hola, deseo información sobre los vehículos Tesla");
-          window.open(`https://wa.me/573105550199?text=${msg}`, "_blank", "noopener,noreferrer");
-          elements.whatsappPopover.style.display = "none";
-        });
-      });
-    }
-  }
 
   // =========================================================================
   // SINCRONIZACIÓN AUTOMÁTICA CON EL BACKEND Y CONSOLA ADMIN
@@ -3136,6 +3615,10 @@ document.addEventListener("DOMContentLoaded", () => {
         category: v.category || original.category || "Sedán",
         badge: v.badge || original.badge || "",
         price: Number(v.price ?? original.price ?? 0),
+        promoPrice: Number(v.promoPrice ?? v.promo_price ?? original.promoPrice ?? 0),
+        promo_price: Number(v.promoPrice ?? v.promo_price ?? original.promoPrice ?? 0),
+        promoLabel: (v.promoLabel ?? v.promo_label ?? original.promoLabel ?? "").trim(),
+        promo_label: (v.promoLabel ?? v.promo_label ?? original.promoLabel ?? "").trim(),
         rangeKm: Number(v.rangeKm ?? v.range_km ?? original.rangeKm ?? 500),
         accelerationSeconds: Number(v.accelerationSeconds ?? v.acceleration_seconds ?? original.accelerationSeconds ?? 3.5),
         topSpeedKm: Number(v.topSpeedKm ?? v.top_speed_kmh ?? original.topSpeedKm ?? 220),
@@ -3225,7 +3708,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initNavigation();
     initAuth();
     initPurchaseModal();
-    initWhatsAppWidget();
     renderFeaturedVehicles();
     initCatalogEvents();
     renderCatalog();
@@ -3245,9 +3727,117 @@ document.addEventListener("DOMContentLoaded", () => {
           if (event.data && event.data.type === "CATALOG_UPDATED" && Array.isArray(event.data.vehicles)) {
             applyCatalogData(event.data.vehicles, true);
           }
+          if (event.data && event.data.type === "PURCHASE_AUTHORIZED") {
+            const { orderId, authorizedBy, order } = event.data;
+            if (state.currentUser && Array.isArray(state.currentUser.orders)) {
+              const myOrder = state.currentUser.orders.find(o => o.orderNum === orderId);
+              if (myOrder) {
+                myOrder.status = "authorized";
+                myOrder.statusLabel = "Autorizada por Asesor de Administración";
+                myOrder.authorizedBy = authorizedBy || (order && order.authorizedBy) || "Administración";
+                myOrder.authorizedAt = new Date().toISOString();
+                delete myOrder.rejectedBy;
+                delete myOrder.rejectedReason;
+                delete myOrder.rejectedAt;
+
+                addUserNotification({
+                  type: "purchase_authorized",
+                  title: "🎉 ¡Tu compra ha sido APROBADA!",
+                  message: `Tu orden de compra [${orderId}] para el Tesla ${myOrder.vehicleName} ha sido formalmente AUTORIZADA. El vehículo ya está en preparación para entrega.`,
+                  orderNum: orderId,
+                  vehicleName: myOrder.vehicleName,
+                  amount: myOrder.totalAmount,
+                  extra: {}
+                });
+
+                saveAuthUser(state.currentUser);
+                renderAccountDashboard();
+                showToast(`🎉 ¡Tu orden [${orderId}] ha sido AUTORIZADA!`, "success", true);
+              }
+            }
+          }
+
+          if (event.data && event.data.type === "PURCHASE_REJECTED") {
+            const { orderId, rejectedBy, rejectedReason, order } = event.data;
+            if (state.currentUser && Array.isArray(state.currentUser.orders)) {
+              const myOrder = state.currentUser.orders.find(o => o.orderNum === orderId);
+              if (myOrder) {
+                myOrder.status = "rejected";
+                myOrder.statusLabel = "Rechazada por Administración";
+                myOrder.rejectedBy = rejectedBy || (order && order.rejectedBy) || "Administración";
+                myOrder.rejectedReason = rejectedReason || (order && order.rejectedReason) || "No cumple con los requisitos administrativos";
+                myOrder.rejectedAt = new Date().toISOString();
+
+                addUserNotification({
+                  type: "purchase_rejected",
+                  title: "⚠️ Solicitud de Compra RECHAZADA",
+                  message: `La orden [${orderId}] para el Tesla ${myOrder.vehicleName} fue RECHAZADA. Motivo: "${myOrder.rejectedReason}".`,
+                  orderNum: orderId,
+                  vehicleName: myOrder.vehicleName,
+                  amount: myOrder.totalAmount,
+                  extra: { rejectedReason: myOrder.rejectedReason }
+                });
+
+                saveAuthUser(state.currentUser);
+                renderAccountDashboard();
+                showToast(`⚠️ Tu orden [${orderId}] fue rechazada. Revisa tus notificaciones.`, "danger", true);
+              }
+            }
+          }
         };
       }
     } catch (e) {}
+
+    // Sincronizar estado de compras y generar notificaciones si cambiaron en background
+    function syncUserPurchasesFromGlobal() {
+      if (!state.currentUser || !Array.isArray(state.currentUser.orders)) return;
+      try {
+        const rawPurchases = localStorage.getItem(STORAGE_KEY_PURCHASES);
+        if (!rawPurchases) return;
+        const globalPurchases = JSON.parse(rawPurchases);
+        if (!Array.isArray(globalPurchases)) return;
+
+        let changed = false;
+        state.currentUser.orders.forEach(userOrder => {
+          const globalMatch = globalPurchases.find(p => p.orderNum === userOrder.orderNum);
+          if (globalMatch && globalMatch.status !== userOrder.status) {
+            userOrder.status = globalMatch.status;
+            userOrder.statusLabel = globalMatch.statusLabel;
+            userOrder.authorizedBy = globalMatch.authorizedBy;
+            userOrder.rejectedBy = globalMatch.rejectedBy;
+            userOrder.rejectedReason = globalMatch.rejectedReason;
+            changed = true;
+
+            if (globalMatch.status === "authorized") {
+              addUserNotification({
+                type: "purchase_authorized",
+                title: "🎉 ¡Tu compra ha sido APROBADA!",
+                message: `Tu orden de compra [${userOrder.orderNum}] para el Tesla ${userOrder.vehicleName} ha sido formalmente autorizada.`,
+                orderNum: userOrder.orderNum,
+                vehicleName: userOrder.vehicleName,
+                amount: userOrder.totalAmount,
+                extra: {}
+              });
+            } else if (globalMatch.status === "rejected") {
+              addUserNotification({
+                type: "purchase_rejected",
+                title: "⚠️ Solicitud de Compra RECHAZADA",
+                message: `La orden [${userOrder.orderNum}] para el Tesla ${userOrder.vehicleName} fue rechazada. Motivo: "${globalMatch.rejectedReason || 'No cumple requisitos'}".`,
+                orderNum: userOrder.orderNum,
+                vehicleName: userOrder.vehicleName,
+                amount: userOrder.totalAmount,
+                extra: { rejectedReason: globalMatch.rejectedReason }
+              });
+            }
+          }
+        });
+
+        if (changed) {
+          saveAuthUser(state.currentUser);
+          renderAccountDashboard();
+        }
+      } catch (err) {}
+    }
 
     // Sintonizar cambios de localStorage entre diferentes pestañas o ventanas
     window.addEventListener("storage", (e) => {
@@ -3258,6 +3848,9 @@ document.addEventListener("DOMContentLoaded", () => {
             applyCatalogData(updated, false);
           }
         } catch (err) {}
+      }
+      if (e.key === STORAGE_KEY_PURCHASES) {
+        syncUserPurchasesFromGlobal();
       }
     });
 
@@ -3270,6 +3863,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cada vez que el usuario regrese a la pestaña del showroom, verificar actualización
     window.addEventListener("focus", () => {
       syncVehiclesFromBackend();
+      syncUserPurchasesFromGlobal();
     });
   }
 
