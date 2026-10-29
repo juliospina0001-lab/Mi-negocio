@@ -2173,7 +2173,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Trigger de Favoritos
     if (elements.favTriggerBtn) {
-      elements.favTriggerBtn.addEventListener("click", openFavoritesDrawer);
+      elements.favTriggerBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openFavoritesDrawer();
+      });
     }
     if (elements.navMobileFavBtn) {
       elements.navMobileFavBtn.addEventListener("click", (e) => {

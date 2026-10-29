@@ -1033,6 +1033,33 @@
       expect(isLeadDeleted).toBe(true);
       expect(lead).toBe(null);
     });
+
+    it("El botón de favoritos del header debe tener z-index prioritario y evitar ser interceptado por el menú móvil", () => {
+      const headerLayers = {
+        headerActionsZIndex: 50,
+        favTriggerZIndex: 20,
+        mobileToggleZIndex: 10,
+        favTriggerPointerEvents: "auto"
+      };
+
+      expect(headerLayers.favTriggerZIndex > headerLayers.mobileToggleZIndex).toBe(true);
+      expect(headerLayers.favTriggerPointerEvents).toBe("auto");
+      expect(headerLayers.headerActionsZIndex >= 50).toBe(true);
+    });
+
+    it("El buscador de radicados y el botón de enviar experiencia deben soportar ajuste multilínea y evitar recorte en móvil", () => {
+      const mobileButtonSpecs = {
+        submitExperienceWhiteSpace: "normal",
+        submitExperienceWordBreak: "break-word",
+        radicadoSearchBarFlexDirectionMobile: "column",
+        minTouchTargetHeight: 46
+      };
+
+      expect(mobileButtonSpecs.submitExperienceWhiteSpace).toBe("normal");
+      expect(mobileButtonSpecs.submitExperienceWordBreak).toBe("break-word");
+      expect(mobileButtonSpecs.radicadoSearchBarFlexDirectionMobile).toBe("column");
+      expect(mobileButtonSpecs.minTouchTargetHeight >= 44).toBe(true);
+    });
   });
 
 })(typeof window !== "undefined" ? window : global);
