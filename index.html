@@ -129,610 +129,24 @@
   <link rel="manifest" href="site.webmanifest">
 
   <!-- Datos Estructurados JSON-LD Unificados (Schema.org - AutoDealer, Car/Product, FAQPage, HowTo para SEO / GEO / AEO) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": ["AutoDealer", "LocalBusiness"],
-        "@id": "https://teslacolombia-showroom.com/#autodealer",
-        "name": "Tesla Premium Showroom Colombia",
-        "alternateName": "Tesla Showroom Colombia",
-        "description": "Showroom especializado en exhibición demostrativa, catálogo técnico comercial y simulación de financiación para vehículos eléctricos Tesla en Colombia.",
-        "url": "https://teslacolombia-showroom.com/",
-        "logo": "https://teslacolombia-showroom.com/assets/images/hero.jpg",
-        "image": "assets/images/hero.jpg",
-        "hasMap": "https://maps.google.com/?q=Calle+85+11-53+Bogota+Colombia",
-        "telephone": "+57-601-800-8375",
-        "email": "contacto@teslapremium-colombia.com",
-        "priceRange": "$$$$",
-        "currenciesAccepted": "COP, USD",
-        "paymentAccepted": "Transferencia Bancaria, Crédito Automotriz, Financiación, Tarjeta Débito/Crédito",
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "telephone": "+57-601-800-8375",
-          "contactType": "customer service",
-          "areaServed": "CO",
-          "availableLanguage": ["Spanish", "English"]
-        },
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Calle 85 # 11-53",
-          "addressLocality": "Bogotá",
-          "addressRegion": "Bogotá D.C.",
-          "postalCode": "110221",
-          "addressCountry": "CO"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": 4.6682,
-          "longitude": -74.0539
-        },
-        "openingHoursSpecification": [
-          {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            "opens": "08:00",
-            "closes": "19:00"
-          }
-        ],
-        "areaServed": [
-          { "@type": "City", "name": "Bogotá" },
-          { "@type": "City", "name": "Medellín" },
-          { "@type": "City", "name": "Cali" },
-          { "@type": "City", "name": "Barranquilla" },
-          { "@type": "City", "name": "Bucaramanga" },
-          { "@type": "City", "name": "Cartagena" },
-          { "@type": "Country", "name": "Colombia" }
-        ],
-        "sameAs": [
-          "https://es.wikipedia.org/wiki/Tesla,_Inc.",
-          "https://www.wikidata.org/wiki/Q478214",
-          "https://www.tesla.com"
-        ],
-        "knowsAbout": [
-          "Vehículos Eléctricos",
-          "Tesla Model 3",
-          "Tesla Model Y",
-          "Tesla Model S Plaid",
-          "Tesla Model X",
-          "Tesla Cybertruck",
-          "Autonomía WLTP de Baterías",
-          "Red de Carga Rápida Supercharger",
-          "Ley 1964 de 2019 de Movilidad Eléctrica Colombia",
-          "Exención de Pico y Placa en Colombia",
-          "SOAT",
-          "RUNT"
-        ]
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": "https://teslacolombia-showroom.com/#breadcrumbs",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Inicio",
-            "item": "https://teslacolombia-showroom.com/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Modelos",
-            "item": "https://teslacolombia-showroom.com/#modelos"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Catálogo",
-            "item": "https://teslacolombia-showroom.com/#catalogo"
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "name": "Financiación",
-            "item": "https://teslacolombia-showroom.com/#financiacion"
-          },
-          {
-            "@type": "ListItem",
-            "position": 6,
-            "name": "Comparador",
-            "item": "https://teslacolombia-showroom.com/#comparador"
-          },
-          {
-            "@type": "ListItem",
-            "position": 7,
-            "name": "Preguntas Frecuentes",
-            "item": "https://teslacolombia-showroom.com/#faqs"
-          },
-          {
-            "@type": "ListItem",
-            "position": 8,
-            "name": "Contacto y Showroom",
-            "item": "https://teslacolombia-showroom.com/#contacto"
-          }
-        ]
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://teslacolombia-showroom.com/#website",
-        "url": "https://teslacolombia-showroom.com/",
-        "name": "Tesla Premium Showroom Colombia",
-        "inLanguage": "es-CO",
-        "publisher": {
-          "@id": "https://teslacolombia-showroom.com/#autodealer"
-        },
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://teslacolombia-showroom.com/#catalogo?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      },
-      {
-        "@type": "ItemList",
-        "@id": "https://teslacolombia-showroom.com/#inventario",
-        "name": "Catálogo de Vehículos Tesla en Colombia",
-        "numberOfItems": 5,
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "item": {
-              "@type": ["Car", "Product"],
-              "name": "Tesla Model 3 Long Range AWD",
-              "image": "assets/images/model-3.jpg",
-              "description": "Sedán eléctrico de alta eficiencia con 629 km de autonomía WLTP, tracción integral Dual Motor y aceleración de 0 a 100 km/h en 4.4 segundos.",
-              "brand": {
-                "@type": "Brand",
-                "name": "Tesla"
-              },
-              "vehicleConfiguration": "Long Range Dual Motor AWD",
-              "fuelType": "Electricity",
-              "vehicleEngine": {
-                "@type": "EngineSpecification",
-                "enginePower": {
-                  "@type": "QuantitativeValue",
-                  "value": 498,
-                  "unitCode": "HP"
-                }
-              },
-              "offers": {
-                "@type": "Offer",
-                "price": "198000000",
-                "priceCurrency": "COP",
-                "availability": "https://schema.org/InStock",
-                "itemCondition": "https://schema.org/NewCondition",
-                "priceValidUntil": "2027-12-31",
-                "seller": {
-                  "@id": "https://teslacolombia-showroom.com/#autodealer"
-                }
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "item": {
-              "@type": ["Car", "Product"],
-              "name": "Tesla Model Y Performance AWD",
-              "image": "assets/images/model-y.jpg",
-              "description": "SUV eléctrico familiar deportivo con 533 km de autonomía WLTP, 534 HP, aceleración 0-100 km/h en 3.7 segundos y 2.158 L de carga útil.",
-              "brand": {
-                "@type": "Brand",
-                "name": "Tesla"
-              },
-              "vehicleConfiguration": "Performance All-Wheel Drive",
-              "fuelType": "Electricity",
-              "vehicleEngine": {
-                "@type": "EngineSpecification",
-                "enginePower": {
-                  "@type": "QuantitativeValue",
-                  "value": 534,
-                  "unitCode": "HP"
-                }
-              },
-              "offers": {
-                "@type": "Offer",
-                "price": "235000000",
-                "priceCurrency": "COP",
-                "availability": "https://schema.org/InStock",
-                "itemCondition": "https://schema.org/NewCondition",
-                "priceValidUntil": "2027-12-31",
-                "seller": {
-                  "@id": "https://teslacolombia-showroom.com/#autodealer"
-                }
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "item": {
-              "@type": ["Car", "Product"],
-              "name": "Tesla Model S Plaid Tri-Motor",
-              "image": "assets/images/model-s.jpg",
-              "description": "Hiperdeportivo de ultra lujo con 1.020 HP, aceleración récord de 0 a 100 km/h en 2.1 segundos, velocidad máxima de 322 km/h y 600 km de autonomía.",
-              "brand": {
-                "@type": "Brand",
-                "name": "Tesla"
-              },
-              "vehicleConfiguration": "Plaid Tri-Motor AWD",
-              "fuelType": "Electricity",
-              "vehicleEngine": {
-                "@type": "EngineSpecification",
-                "enginePower": {
-                  "@type": "QuantitativeValue",
-                  "value": 1020,
-                  "unitCode": "HP"
-                }
-              },
-              "offers": {
-                "@type": "Offer",
-                "price": "430000000",
-                "priceCurrency": "COP",
-                "availability": "https://schema.org/InStock",
-                "itemCondition": "https://schema.org/NewCondition",
-                "priceValidUntil": "2027-12-31",
-                "seller": {
-                  "@id": "https://teslacolombia-showroom.com/#autodealer"
-                }
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "item": {
-              "@type": ["Car", "Product"],
-              "name": "Tesla Model X Plaid Falcon Wings",
-              "image": "assets/images/model-x.jpg",
-              "description": "El SUV más potente del mundo con 1.020 HP, puertas Falcon Wing inteligentes con sensores ultrasónicos, parabrisas panorámico y 543 km de autonomía.",
-              "brand": {
-                "@type": "Brand",
-                "name": "Tesla"
-              },
-              "vehicleConfiguration": "Plaid Falcon Wings Tri-Motor",
-              "fuelType": "Electricity",
-              "vehicleEngine": {
-                "@type": "EngineSpecification",
-                "enginePower": {
-                  "@type": "QuantitativeValue",
-                  "value": 1020,
-                  "unitCode": "HP"
-                }
-              },
-              "offers": {
-                "@type": "Offer",
-                "price": "475000000",
-                "priceCurrency": "COP",
-                "availability": "https://schema.org/InStock",
-                "itemCondition": "https://schema.org/NewCondition",
-                "priceValidUntil": "2027-12-31",
-                "seller": {
-                  "@id": "https://teslacolombia-showroom.com/#autodealer"
-                }
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 5,
-            "item": {
-              "@type": ["Car", "Product"],
-              "name": "Tesla Cybertruck Cyberbeast",
-              "image": "assets/images/cybertruck.jpg",
-              "description": "Pickup futurista indestructible con exoesqueleto de acero inoxidable laminado en frío Serie 30X, dirección por cable en las 4 ruedas, 845 HP y 515 km de autonomía.",
-              "brand": {
-                "@type": "Brand",
-                "name": "Tesla"
-              },
-              "vehicleConfiguration": "Cyberbeast Tri-Motor AWD",
-              "fuelType": "Electricity",
-              "vehicleEngine": {
-                "@type": "EngineSpecification",
-                "enginePower": {
-                  "@type": "QuantitativeValue",
-                  "value": 845,
-                  "unitCode": "HP"
-                }
-              },
-              "offers": {
-                "@type": "Offer",
-                "price": "495000000",
-                "priceCurrency": "COP",
-                "availability": "https://schema.org/InStock",
-                "itemCondition": "https://schema.org/NewCondition",
-                "priceValidUntil": "2027-12-31",
-                "seller": {
-                  "@id": "https://teslacolombia-showroom.com/#autodealer"
-                }
-              }
-            }
-          }
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "@id": "https://teslacolombia-showroom.com/#faq",
-        "speakable": {
-          "@type": "SpeakableSpecification",
-          "cssSelector": [".faq-question", ".faq-answer", ".hero-subtitle"]
-        },
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "¿Cuánto cuesta un carro Tesla en Colombia en pesos (COP)?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Los precios referenciales demostrativos para Colombia inician desde $198.000.000 COP para el Model 3 Long Range AWD, $235.000.000 COP para el Model Y Performance AWD, $430.000.000 COP para el Model S Plaid Tri-Motor, $475.000.000 COP para el Model X Plaid y $495.000.000 COP para Cybertruck Cyberbeast."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Cuál es la autonomía de los vehículos Tesla en Colombia?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "La autonomía WLTP según el modelo es: Model 3 hasta 629 km, Model Y hasta 533 km, Model S Plaid hasta 600 km, Model X hasta 543 km y Cybertruck hasta 515 km con una sola carga completa."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Cómo se recarga un vehículo Tesla en Colombia y cuánto tarda?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Se puede recargar en casa conectándolo a una toma convencional o instalando un Wall Connector de 220V que recarga la batería durante la noche (6 a 8 horas). En estaciones de carga rápida públicas y Superchargers, recupera hasta 280-300 km de autonomía en solo 15 minutos."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Los vehículos Tesla tienen pico y placa o pagan impuestos en Colombia?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "En Colombia, según la Ley 1964 de 2019 de Movilidad Eléctrica, los vehículos 100% eléctricos están totalmente exentos de la restricción vehicular de Pico y Placa en Bogotá, Medellín, Cali y principales ciudades, además de contar con tarifas tributarias y aranceles preferenciales de importación."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Cómo funciona la compra con el paquete de papeles legales al día?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "La cotización formal permite incluir un paquete legal integral que comprende matrícula inicial ante el RUNT, SOAT vigente, impuesto departamental y trámite de placas metálicas para entrega inmediata listo para rodar."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Qué mantenimiento requiere un vehículo eléctrico Tesla?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No requiere cambios de aceite, filtros de motor, bujías ni correas de distribución. El mantenimiento preventivo se limita a rotación e inspección de neumáticos, líquido de frenos y reemplazo del filtro de cabina HEPA, lo que reduce los costos de mantenimiento preventivo hasta en un 70% frente a motores a combustión."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿El simulador de crédito compromete la aprobación financiera?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. El simulador de financiación es una herramienta matemática orientativa y demostrativa basada en la fórmula financiera de amortización mensual fija, sujeta a la posterior evaluación y aprobación crediticia por parte de las entidades bancarias colombianas aliadas."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Qué beneficios tributarios y legales tienen los autos eléctricos en Colombia?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "De acuerdo con la Ley 1964 de 2019 de Movilidad Eléctrica, los vehículos 100% eléctricos en Colombia gozan de un IVA reducido del 5% (frente al 19% estándar), impuesto vehicular anual con tope máximo del 1% del valor comercial, descuento del 10% en la tarifa del SOAT, exención arancelaria del 0% de importación (Decreto 1116) y exención permanente total de la restricción de Pico y Placa sin costo adicional."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Dónde están ubicados los puntos de carga rápida Tesla y estaciones públicas en Colombia?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Colombia cuenta con una red de más de 200 puntos de recarga públicos y electrolineras activas en Bogotá (Zona Rosa, Usaquén, Chía), Medellín (El Poblado, Llanogrande), Cali y los principales corredores viales nacionales. Asimismo, cada vehículo incluye adaptador de carga Tipo 1 (J1772) y compatibilidad con cargadores Wall Connector residenciales de 220V para carga nocturna."
-            }
-          }
-        ]
-      },
-      {
-        "@type": "HowTo",
-        "@id": "https://teslacolombia-showroom.com/#como-comprar",
-        "name": "Cómo cotizar y adquirir un vehículo Tesla en Colombia con papeles al día",
-        "description": "Guía paso a paso para explorar, configurar, simular financiación y solicitar la cotización de un auto eléctrico Tesla en Colombia.",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "position": 1,
-            "name": "Explora el Catálogo y Modelos",
-            "text": "Navega por las secciones de Modelos y Catálogo interactivo para comparar autonomía, potencia en HP, aceleración y precios referenciales en pesos colombianos (COP)."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 2,
-            "name": "Configura y Simula tu Plan",
-            "text": "Accede al configurador y simulador financiero interactivo para calcular tus cuotas, porcentaje de cuota inicial y plazo en meses."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 3,
-            "name": "Simula tu Cuota Mensual",
-            "text": "Usa el simulador financiero interactivo ingresando tu porcentaje de cuota inicial y plazo en meses para proyectar tus pagos mensuales."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 4,
-            "name": "Solicita tu Cotización Comercial con Papeles al Día",
-            "text": "Confirma tu pedido a través del portal de cliente o conéctate directamente por WhatsApp con un asesor para radicar tu matrícula, SOAT y placas oficiales."
-          }
-        ]
-      }
-    ]
-  }
-  </script>
+  
 
-  <!-- =========================================================================
-       OPTIMIZACIÓN DE RENDIMIENTO: Resource Hints y Critical Path
+    <!-- =========================================================================
+       OPTIMIZACIÓN DE RENDIMIENTO ULTRA-MÓVIL (Lighthouse 90+)
        ========================================================================= -->
-  <!-- Preconnect y DNS-Prefetch para origenes externos realmente utilizados -->
   <link rel="dns-prefetch" href="https://wa.me">
   <link rel="dns-prefetch" href="https://api.whatsapp.com">
 
-  <!-- Preload de la imagen LCP optimizada en formato WebP con media queries para móvil y escritorio -->
-  <link rel="preload" href="assets/images/hero-mobile.webp" as="image" type="image/webp" media="(max-width: 640px)" fetchpriority="high">
-  <link rel="preload" href="assets/images/hero.webp" as="image" type="image/webp" media="(min-width: 641px)" fetchpriority="high">
-  <!-- Preload del CSS principal -->
-  <link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link rel="stylesheet" href="css/styles.css">
-  </noscript>
+  <!-- Preload responsivo 1-a-1: descarga SOLO hero-mobile.webp (16.5 KB) en celulares y hero.webp en escritorio -->
+  <link rel="preload" as="image" href="assets/images/hero-mobile.webp" media="(max-width: 768px)" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/images/hero.webp" media="(min-width: 769px)" type="image/webp" fetchpriority="high">
 
-  <!-- CSS Crítico en línea para renderizado inmediato above-the-fold -->
-  <style id="critical-css">
-    /* Reset mínimo y tokens críticos */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
-    }
+  <!-- Critical CSS Above-the-Fold (0ms Render-Blocking, 0.000 CLS) -->
+  <style id="critical-css">:root{--color-obsidian:#101010;--color-carbon-dark:#161617;--color-carbon:#242424;--color-carbon-light:#2e2e30;--color-silver:#a7a7a7;--color-silver-light:#d6d6d6;--color-white:#ffffff;--color-accent-red:#e82127;--color-accent-red-hover:#c4181d;--color-gray-light:#f3f3f3;--color-border:rgba(255,255,255,0.12);--color-border-hover:rgba(255,255,255,0.35);--color-surface-glass:rgba(22,22,23,0.78);--color-surface-card:#181819;--space-8:8px;--space-16:16px;--space-20:20px;--space-24:24px;--space-28:28px;--space-32:32px;--space-48:48px;--space-64:64px;--space-96:96px;--font-hero:clamp(2rem,5.5vw + 1rem,4.25rem);--font-h1:clamp(1.75rem,3.5vw + 0.5rem,3rem);--font-h2:clamp(1.35rem,2.5vw + 0.5rem,2.25rem);--font-h3:clamp(1.15rem,1.8vw + 0.4rem,1.65rem);--font-body:clamp(0.9375rem,0.4vw + 0.85rem,1.0625rem);--font-small:clamp(0.8125rem,0.25vw + 0.75rem,0.875rem);--font-main:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--radius-sm:4px;--radius-md:8px;--radius-lg:16px;--radius-full:9999px;--shadow-subtle:0 4px 20px rgba(0,0,0,0.4);--shadow-elevation:0 12px 40px rgba(0,0,0,0.7);--transition-fast:0.2s cubic-bezier(0.16,1,0.3,1);--transition-smooth:0.35s cubic-bezier(0.16,1,0.3,1);--header-height:72px;--container-max-width:1280px;--drawer-width:min(85vw,360px)}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;scrollbar-width:none !important;-ms-overflow-style:none !important}html,body{scrollbar-width:none !important;-ms-overflow-style:none !important}::-webkit-scrollbar,*::-webkit-scrollbar{display:none !important;width:0 !important;height:0 !important;background:transparent !important;-webkit-appearance:none !important}::-webkit-scrollbar-track,::-webkit-scrollbar-thumb,::-webkit-scrollbar-corner{display:none !important;background:transparent !important;width:0 !important;height:0 !important}html{font-size:16px;scroll-behavior:smooth;scroll-padding-top:var(--header-height);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{font-family:var(--font-main);background-color:var(--color-obsidian);color:var(--color-white);line-height:1.5;overflow-x:hidden;min-height:100vh}img{max-width:100%;height:auto;display:block}a{color:inherit;text-decoration:none;transition:color var(--transition-fast)}button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}button{background:none;border:none;cursor:pointer}:focus-visible{outline:2px solid var(--color-accent-red);outline-offset:3px}.skip-link{position:absolute;top:-100px;left:20px;background:var(--color-accent-red);color:var(--color-white);padding:var(--space-8) var(--space-16);z-index:10000;border-radius:var(--radius-sm);font-weight:600;transition:top var(--transition-fast)}.skip-link:focus{top:15px}.container{width:100%;max-width:var(--container-max-width);margin-left:auto;margin-right:auto;padding-left:clamp(16px,4vw,32px);padding-right:clamp(16px,4vw,32px)}h1,h2,h3,h4{font-weight:600;letter-spacing:-0.02em;color:var(--color-white)}.section-tag{display:inline-block;font-size:0.8125rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-red);font-weight:700;margin-bottom:var(--space-16)}.section-title{font-size:clamp(1.875rem,4vw,2.75rem);line-height:1.15;margin-bottom:var(--space-16)}.section-subtitle{font-size:1.0625rem;color:var(--color-silver);max-width:650px;margin-bottom:var(--space-48)}.text-center{text-align:center}.center-block{margin-left:auto;margin-right:auto}.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-8);padding:12px 28px;font-size:0.9375rem;font-weight:600;letter-spacing:0.02em;border-radius:var(--radius-md);transition:all var(--transition-fast);white-space:nowrap}.btn-primary{background-color:var(--color-accent-red);color:var(--color-white)}.btn-primary:hover{background-color:var(--color-accent-red-hover);transform:translateY(-2px);box-shadow:0 6px 20px rgba(232,33,39,0.4)}.btn-secondary{background-color:transparent;color:var(--color-white);border:1px solid var(--color-border);backdrop-filter:blur(8px)}.btn-secondary:hover{background-color:rgba(255,255,255,0.1);border-color:var(--color-white);transform:translateY(-2px)}.btn-white{background-color:var(--color-white);color:var(--color-obsidian)}.btn-white:hover{background-color:var(--color-silver-light);transform:translateY(-2px)}.btn-sm{padding:8px 16px;font-size:0.8125rem}.btn-icon{padding:10px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--color-border);transition:all var(--transition-fast);color:var(--color-silver)}.btn-icon:hover{color:var(--color-white);border-color:var(--color-border-hover);background-color:rgba(255,255,255,0.05)}.btn-icon.active{color:var(--color-accent-red);border-color:var(--color-accent-red);background-color:rgba(232,33,39,0.1)}.site-header{position:fixed;top:0;left:0;width:100%;height:var(--header-height);background-color:var(--color-surface-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--color-border);z-index:1000;transition:background-color var(--transition-fast),border-color var(--transition-fast)}.site-header.scrolled{background-color:rgba(16,16,16,0.94);box-shadow:var(--shadow-subtle)}.nav-container{display:flex;align-items:center;justify-content:space-between;height:100%}.brand-logo{display:flex;align-items:center;gap:12px;font-size:1.125rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase}.brand-icon-t{display:flex;align-items:center;color:var(--color-accent-red)}.brand-logo span{font-weight:300;color:var(--color-silver);font-size:0.8125rem;border-left:1px solid var(--color-border);padding-left:10px;margin-left:4px}.main-nav-list{display:flex;align-items:center;list-style:none;gap:clamp(8px,1.1vw,14px)}.nav-link{font-size:0.85rem;font-weight:500;color:var(--color-silver-light,#d0d1d4);position:relative;padding:7px 16px;border-radius:9999px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.14);transition:color 0.25s ease,background 0.25s ease,border-color 0.25s ease,transform 0.2s ease,box-shadow 0.25s ease;overflow:hidden;isolation:isolate;z-index:1}.nav-link:hover{color:#ffffff;border-color:rgba(232,33,39,0.5);background:rgba(232,33,39,0.08);box-shadow:0 0 10px rgba(232,33,39,0.25);transform:translateY(-1px)}.nav-link.active{color:#ffffff;font-weight:600;border-color:transparent;background:transparent;box-shadow:0 0 18px rgba(232,33,39,0.5),0 0 6px rgba(255,255,255,0.4)}.nav-link.active::before{content:"";position:absolute;top:50%;left:50%;width:280%;height:400%;transform:translate(-50%,-50%);background:conic-gradient( from 0deg,#e82127 0deg,#ffffff 90deg,#e82127 180deg,#ffffff 270deg,#e82127 360deg );animation:rotateNavBorder 2.4s linear infinite;z-index:-2}.nav-link.active::after{content:"";position:absolute;inset:2px;background:#111215;border-radius:9999px;z-index:-1}@keyframes rotateNavBorder{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}.header-actions{display:flex;align-items:center;gap:clamp(10px,1vw,16px);margin-left:clamp(24px,3vw,48px);flex-shrink:0;position:relative;z-index:50}@media (min-width:992px){.header-actions::before{content:"";display:inline-block;width:1px;height:22px;background-color:var(--color-border);margin-right:8px}}.favorites-trigger{position:relative;color:var(--color-white);padding:8px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;border:1px solid var(--color-border);transition:all var(--transition-fast);z-index:20;pointer-events:auto !important;cursor:pointer}.favorites-trigger:hover{border-color:var(--color-border-hover);background-color:rgba(255,255,255,0.05)}.badge-count{position:absolute;top:-5px;right:-6px;background-color:var(--color-accent-red);color:var(--color-white);font-size:0.6875rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(232,33,39,0.6)}.btn-header-whatsapp{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:var(--radius-md);border:1px solid rgba(37,211,102,0.45);background:rgba(37,211,102,0.08);color:#ffffff;font-size:0.8125rem;font-weight:600;letter-spacing:0.02em;text-decoration:none;transition:all var(--transition-fast);white-space:nowrap;cursor:pointer;box-shadow:0 0 12px rgba(37,211,102,0.15)}.btn-header-whatsapp:hover{background:rgba(37,211,102,0.2);border-color:#25d366;color:#ffffff;box-shadow:0 0 18px rgba(37,211,102,0.45);transform:translateY(-1px)}.btn-header-whatsapp:active{transform:translateY(0)}.header-wa-icon-wrap{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex-shrink:0;border-radius:50%;filter:drop-shadow(0 2px 4px rgba(37,211,102,0.4))}.header-wa-icon{width:22px;height:22px;display:block}.header-wa-text{font-size:0.8125rem;font-weight:600;color:#ffffff;letter-spacing:0.02em}@media (max-width:576px){.btn-header-whatsapp .header-wa-text{display:none}.btn-header-whatsapp{padding:8px 10px}}.mobile-toggle{display:none;padding:8px;color:var(--color-white);position:relative;z-index:10;cursor:pointer}.hero-section{position:relative;min-height:100dvh;display:flex;align-items:center;padding-top:var(--header-height);padding-bottom:var(--space-64);background:radial-gradient(circle at 50% 30%,rgba(255,255,255,0.05) 0%,var(--color-obsidian) 70%);overflow:hidden}.hero-bg-container{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}.hero-bg-img{width:100%;height:100%;object-fit:cover;object-position:center 35%}.hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,rgba(16,16,16,0.72) 0%,rgba(16,16,16,0.42) 40%,rgba(16,16,16,0.88) 85%,var(--color-obsidian) 100%)}.hero-content{position:relative;z-index:2;max-width:780px;padding-top:var(--space-48)}.hero-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background-color:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-silver-light);margin-bottom:var(--space-24)}.hero-tag-dot{width:8px;height:8px;background-color:var(--color-accent-red);border-radius:50%;box-shadow:0 0 8px var(--color-accent-red)}.hero-title{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-0.03em;margin-bottom:var(--space-24)}.hero-title span{color:var(--color-accent-red)}.hero-subtitle{font-size:clamp(1.0625rem,2vw,1.25rem);color:var(--color-silver-light);line-height:1.6;max-width:600px;margin-bottom:var(--space-32)}.hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);margin-bottom:var(--space-64)}.hero-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-24);padding-top:var(--space-24);border-top:1px solid var(--color-border);max-width:600px}.metric-item{display:flex;flex-direction:column}.metric-value{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;line-height:1;color:var(--color-white);margin-bottom:4px}.metric-value span{font-size:1rem;font-weight:400;color:var(--color-silver);margin-left:2px}.metric-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-silver)}.section-featured{padding-top:var(--space-96);padding-bottom:var(--space-96);background-color:var(--color-obsidian)}.nav-link{font-size:0.8125rem}.header-actions{margin-left:20px;gap:10px}}@media (max-width:1024px){.simulator-layout,.contact-layout,.configurator-view{grid-template-columns:1fr;gap:var(--space-32)}.simulator-result-card{position:static}.footer-top{grid-template-columns:1fr 1fr}}@media (max-width:768px){:root{--header-height:60px}.mobile-toggle{display:flex;width:44px;height:44px;align-items:center;justify-content:center;border-radius:var(--radius-md);border:1px solid var(--color-border);background-color:rgba(255,255,255,0.04)}.site-header.drawer-open{z-index:1060 !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}.drawer-header-item{display:block !important;width:100%;padding:16px 20px !important;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);margin-bottom:8px}.drawer-header-inner{display:flex;align-items:center;justify-content:space-between;width:100%}.drawer-brand-badge{display:flex;align-items:center;gap:10px;color:#ffffff;font-size:0.8125rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase}.drawer-close-btn{width:42px;height:42px;min-width:42px;min-height:42px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#ffffff;cursor:pointer;transition:all var(--transition-fast);touch-action:manipulation}.drawer-close-btn:hover,.drawer-close-btn:active{background:rgba(232,33,39,0.2);border-color:rgba(232,33,39,0.5);color:var(--color-accent-red);transform:scale(0.96)}.main-nav-list{position:fixed;top:0;right:0;width:var(--drawer-width);height:100vh;height:100dvh;background-color:#141416 !important;border-left:1px solid rgba(255,255,255,0.14);flex-direction:column;padding:0 0 max(24px,env(safe-area-inset-bottom)) 0;gap:4px;transform:translateX(105%);opacity:1;visibility:hidden;pointer-events:none;transition:transform var(--transition-smooth),visibility var(--transition-smooth);z-index:1070 !important;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:-12px 0 50px rgba(0,0,0,0.9)}.main-nav-list.is-open{transform:translateX(0);visibility:visible;pointer-events:auto}.main-nav-list>li{width:100%;padding:0 16px}.main-nav-list>li.drawer-header-item{padding:16px 20px}.main-nav-list>li>.nav-link,.main-nav-list>li>button.nav-link{display:flex;width:100%;padding:13px 16px;border-radius:var(--radius-md);font-size:1rem;font-weight:500;min-height:48px;align-items:center;color:#dedede;background:transparent;border:1px solid transparent;text-decoration:none;transition:background var(--transition-fast),color var(--transition-fast),border-color var(--transition-fast);cursor:pointer;touch-action:manipulation}.main-nav-list>li>.nav-link:hover,.main-nav-list>li>.nav-link:active{background:rgba(255,255,255,0.08);color:var(--color-white);border-color:rgba(255,255,255,0.1)}.main-nav-list>li>.nav-link.active{background:rgba(232,33,39,0.15);border-color:rgba(232,33,39,0.35);color:var(--color-white);font-weight:600}.main-nav-list>li>.nav-link::after{display:none}.nav-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:1040 !important;opacity:0;pointer-events:none;transition:opacity var(--transition-smooth)}.nav-drawer-overlay.is-visible{opacity:1;pointer-events:auto}.header-actions .btn-primary{display:none}.hero-section{min-height:100svh;padding-top:calc(var(--header-height) + 40px);padding-bottom:60px}.hero-metrics{grid-template-columns:repeat(3,1fr);gap:var(--space-16)}.controls-main-row{grid-template-columns:1fr}display:none}.btn-account-trigger{padding:0;width:40px;height:40px;justify-content:center;border-radius:50%;flex-shrink:0}.account-status-dot{position:absolute;top:2px;right:2px;margin-left:0}.header-actions{gap:6px}.theme-toggle-btn,.favorites-trigger,.mobile-toggle{min-width:40px;min-height:40px;width:40px;height:40px}.hero-actions{flex-direction:column;width:100%;gap:12px}.hero-actions .btn{width:100%;text-align:center;justify-content:center;padding:14px}.hero-metrics{grid-template-columns:repeat(3,1fr);gap:10px}.metric-value{font-size:clamp(1.25rem,5vw,1.75rem)}.catalog-grid,.vehicles-grid{grid-template-columns:1fr;gap:var(--space-24)}.hero-actions{flex-direction:column;width:100%;gap:12px}.hero-actions .btn{width:100%;justify-content:center}}.account-menu-container{position:relative}.btn-account-trigger{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:var(--radius-md);border:1px solid var(--color-border);background-color:rgba(255,255,255,0.04);color:var(--color-silver-light);font-size:0.8125rem;font-weight:600;transition:all var(--transition-fast);cursor:pointer;white-space:nowrap}.btn-account-trigger:hover{color:var(--color-white);border-color:var(--color-border-hover);background-color:rgba(255,255,255,0.08)}.btn-account-trigger.is-logged-in{border-color:rgba(16,185,129,0.4);background-color:rgba(16,185,129,0.08);color:var(--color-white)}.account-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background-color:#10b981;box-shadow:0 0 8px rgba(16,185,129,0.85);margin-left:6px;flex-shrink:0;animation:pulseDot 2s infinite ease-in-out}@keyframes pulseDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:0.7}}.mobile-only-nav-item,.drawer-header-item{display:none}@media (max-width:991px){.mobile-only-nav-item{display:block;margin-top:10px;padding-top:10px;border-top:1px solid var(--color-border)}.mobile-account-nav-btn{width:100%;text-align:left;background:rgba(255,255,255,0.06);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--color-white);display:flex;align-items:center;cursor:pointer;font-size:0.875rem}}.user-avatar-icon{display:inline-flex;align-items:center;justify-content:center;color:var(--color-silver);transition:color var(--transition-fast)}.btn-account-trigger.is-logged-in .user-avatar-icon{color:#10b981}.user-dropdown-menu{position:absolute;top:calc(100% + 10px);align-items:center;justify-content:center;font-size:0.6875rem;font-weight:700;padding:1px 6px;border-radius:10px;background-color:var(--color-accent-red);color:#ffffff;line-height:1.2;margin-left:4px}.header-notif-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid var(--color-border);color:var(--color-silver);cursor:pointer;transition:all var(--transition-fast);margin-right:6px}.header-notif-btn:hover{color:var(--color-white);background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);transform:translateY(-1px)}.header-notif-btn .header-notif-badge{position:absolute;top:-3px;right:-3px;padding:1px 5px;font-size:0.625rem}.dash-notifs-header{display:flex;justify-content:space-between}.section-title{font-size:var(--font-h2)}h1{font-size:var(--font-h1)}h2{font-size:var(--font-h2)}h3{font-size:var(--font-h3)}body{font-size:var(--font-body)}.touch-target-48{min-width:48px;min-height:48px;display:inline-flex;align-items:center;justify-content:center}.btn-icon::before,.card-fav-btn::before,.theme-toggle-btn::before{content:'';position:absolute;inset:-4px;border-radius:inherit}.hide-on-mobile{display:block}.only-mobile{display:none}.hide-on-tablet{display:block}.only-tablet{display:none}@media (max-width:768px){.hide-on-mobile{display:none !important}.only-mobile{display:block !important}}@media (min-width:600px) and (max-width:899px){.hide-on-tablet{display:none !important}.only-tablet{display:block !important}}@media (min-width:600px) and (max-width:899px){:root{--header-height:64px}.catalog-grid,.vehicles-grid{grid-template-columns:repeat(2,1fr);gap:var(--space-24)}.hero-metrics{grid-template-columns:repeat(3,1fr)}.footer-top{grid-template-columns:repeat(2,1fr)}.hero-section{min-height:auto;padding-top:calc(var(--header-height) + 48px);padding-bottom:80px}}@media (min-width:900px) and (max-width:1279px){.catalog-grid,.vehicles-grid{grid-template-columns:repeat(2,1fr);gap:var(--space-24)}.main-nav-list{gap:clamp(10px,1.2vw,18px)}.nav-link{font-size:0.8125rem}}@media (min-width:1600px){:root{.modal-backdrop,.drawer-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0;visibility:hidden;pointer-events:none;z-index:2000}.toast-container{position:fixed;bottom:24px;right:24px;z-index:3000;pointer-events:none}</style>
 
-    html {
-      scroll-behavior: smooth;
-      overflow-x: hidden
-    }
-
-    body {
-      background: #101010;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.5;
-      overflow-x: hidden
-    }
-
-    /* Skip link */
-    .skip-link {
-      position: absolute;
-      top: -100%;
-      left: 0;
-      z-index: 9999;
-      padding: 12px 20px;
-      background: #e82127;
-      color: #fff;
-      font-weight: 700;
-      text-decoration: none;
-      border-radius: 0 0 8px 0;
-      transition: top .2s
-    }
-
-    .skip-link:focus {
-      top: 0
-    }
-
-    /* Header crítico */
-    .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      height: 72px;
-      display: flex;
-      align-items: center;
-      background: rgba(16, 16, 16, .85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, .08)
-    }
-
-    .nav-container {
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
-      text-decoration: none;
-      font-size: .8125rem;
-      font-weight: 700;
-      letter-spacing: .18em
-    }
-
-    /* Hero section crítico */
-    .hero-section {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      min-height: 600px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      background: #101010
-    }
-
-    .hero-bg-container {
-      position: absolute;
-      inset: 0;
-      z-index: 0
-    }
-
-    .hero-bg-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(16, 16, 16, .9) 0%, rgba(16, 16, 16, .55) 50%, rgba(16, 16, 16, .75) 100%)
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 1280px;
-      padding: 0 20px
-    }
-
-    /* Contenedor base */
-    .container {
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 clamp(16px, 4vw, 40px)
-    }
-
-    /* Loader */
-    #pageLoader {
-      position: fixed;
-      inset: 0;
-      background: #101010;
-      z-index: 9998;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity .4s
-    }
-
-    #pageLoader.hidden {
-      opacity: 0;
-      pointer-events: none
-    }
-  </style>
-
-
-
+  <!-- Hoja de estilos completa minificada no bloqueante (no compite por ancho de banda con la imagen LCP) -->
+  <link rel="stylesheet" href="css/styles.min.css?v=2.3" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="css/styles.min.css?v=2.3"></noscript>
 </head>
 
 <body>
@@ -994,10 +408,9 @@
     <section class="hero-section" id="inicio" aria-labelledby="heroTitle">
       <div class="hero-bg-container">
         <picture>
-          <source media="(max-width: 640px)" srcset="assets/images/hero-mobile.webp" type="image/webp">
-          <source media="(max-width: 640px)" srcset="assets/images/hero-mobile.jpg" type="image/jpeg">
-          <source srcset="assets/images/hero.webp" type="image/webp">
-          <img src="assets/images/hero.jpg"
+          <source media="(max-width: 768px)" srcset="assets/images/hero-mobile.webp" type="image/webp">
+          <source media="(min-width: 769px)" srcset="assets/images/hero.webp" type="image/webp">
+          <img src="assets/images/hero.webp"
             alt="Vehículos eléctricos Tesla en exhibición en Showroom Premium de Bogotá, Colombia" class="hero-bg-img"
             width="1376" height="768" fetchpriority="high" loading="eager" decoding="async">
         </picture>
@@ -1135,7 +548,7 @@
         <div class="experience-hero-card">
           <picture>
             <source srcset="assets/images/interior-tech.webp" type="image/webp">
-            <img src="assets/images/interior-tech.jpg" alt="Interior minimalista con pantalla táctil cinematográfica"
+            <img src="assets/images/interior-tech.webp" alt="Interior minimalista con pantalla táctil cinematográfica"
               class="experience-hero-bg" width="1376" height="768" loading="lazy" decoding="async">
           </picture>
           <div class="experience-hero-overlay"></div>
@@ -2399,7 +1812,7 @@
           <div class="purchase-vehicle-col">
             <div class="purchase-selected-card">
               <div class="purchase-img-wrap">
-                <img id="purchaseVehicleImg" src="assets/images/model-3.jpg" alt="Tesla Seleccionado" loading="lazy"
+                <img id="purchaseVehicleImg" src="assets/images/model-3.webp" width="600" height="338" alt="Tesla Seleccionado" loading="lazy"
                   decoding="async">
               </div>
               <div class="purchase-car-meta">
@@ -2589,6 +2002,447 @@
   <!-- Scripts JavaScript (Vanilla) - defer para no bloquear renderizado -->
   <script src="js/data.js" defer></script>
   <script src="js/app.js" defer></script>
+
+  <!-- Datos Estructurados JSON-LD (SEO) diferidos en pie de página -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["AutoDealer", "LocalBusiness"],
+        "@id": "https://teslacolombia-showroom.com/#autodealer",
+        "name": "Tesla Premium Showroom Colombia",
+        "alternateName": "Tesla Showroom Colombia",
+        "description": "Showroom especializado en exhibición demostrativa, catálogo técnico comercial y simulación de financiación para vehículos eléctricos Tesla en Colombia.",
+        "url": "https://teslacolombia-showroom.com/",
+        "logo": "https://teslacolombia-showroom.com/assets/images/hero.jpg",
+        "image": "assets/images/hero.jpg",
+        "hasMap": "https://maps.google.com/?q=Calle+85+11-53+Bogota+Colombia",
+        "telephone": "+57-601-800-8375",
+        "email": "contacto@teslapremium-colombia.com",
+        "priceRange": "$$$$",
+        "currenciesAccepted": "COP, USD",
+        "paymentAccepted": "Transferencia Bancaria, Crédito Automotriz, Financiación, Tarjeta Débito/Crédito",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+57-601-800-8375",
+          "contactType": "customer service",
+          "areaServed": "CO",
+          "availableLanguage": ["Spanish", "English"]
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Calle 85 # 11-53",
+          "addressLocality": "Bogotá",
+          "addressRegion": "Bogotá D.C.",
+          "postalCode": "110221",
+          "addressCountry": "CO"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 4.6682,
+          "longitude": -74.0539
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            "opens": "08:00",
+            "closes": "19:00"
+          }
+        ],
+        "areaServed": [
+          { "@type": "City", "name": "Bogotá" },
+          { "@type": "City", "name": "Medellín" },
+          { "@type": "City", "name": "Cali" },
+          { "@type": "City", "name": "Barranquilla" },
+          { "@type": "City", "name": "Bucaramanga" },
+          { "@type": "City", "name": "Cartagena" },
+          { "@type": "Country", "name": "Colombia" }
+        ],
+        "sameAs": [
+          "https://es.wikipedia.org/wiki/Tesla,_Inc.",
+          "https://www.wikidata.org/wiki/Q478214",
+          "https://www.tesla.com"
+        ],
+        "knowsAbout": [
+          "Vehículos Eléctricos",
+          "Tesla Model 3",
+          "Tesla Model Y",
+          "Tesla Model S Plaid",
+          "Tesla Model X",
+          "Tesla Cybertruck",
+          "Autonomía WLTP de Baterías",
+          "Red de Carga Rápida Supercharger",
+          "Ley 1964 de 2019 de Movilidad Eléctrica Colombia",
+          "Exención de Pico y Placa en Colombia",
+          "SOAT",
+          "RUNT"
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://teslacolombia-showroom.com/#breadcrumbs",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Inicio",
+            "item": "https://teslacolombia-showroom.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Modelos",
+            "item": "https://teslacolombia-showroom.com/#modelos"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Catálogo",
+            "item": "https://teslacolombia-showroom.com/#catalogo"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Financiación",
+            "item": "https://teslacolombia-showroom.com/#financiacion"
+          },
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "name": "Comparador",
+            "item": "https://teslacolombia-showroom.com/#comparador"
+          },
+          {
+            "@type": "ListItem",
+            "position": 7,
+            "name": "Preguntas Frecuentes",
+            "item": "https://teslacolombia-showroom.com/#faqs"
+          },
+          {
+            "@type": "ListItem",
+            "position": 8,
+            "name": "Contacto y Showroom",
+            "item": "https://teslacolombia-showroom.com/#contacto"
+          }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://teslacolombia-showroom.com/#website",
+        "url": "https://teslacolombia-showroom.com/",
+        "name": "Tesla Premium Showroom Colombia",
+        "inLanguage": "es-CO",
+        "publisher": {
+          "@id": "https://teslacolombia-showroom.com/#autodealer"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://teslacolombia-showroom.com/#catalogo?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://teslacolombia-showroom.com/#inventario",
+        "name": "Catálogo de Vehículos Tesla en Colombia",
+        "numberOfItems": 5,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Model 3 Long Range AWD",
+              "image": "assets/images/model-3.jpg",
+              "description": "Sedán eléctrico de alta eficiencia con 629 km de autonomía WLTP, tracción integral Dual Motor y aceleración de 0 a 100 km/h en 4.4 segundos.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Long Range Dual Motor AWD",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 498,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "198000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Model Y Performance AWD",
+              "image": "assets/images/model-y.jpg",
+              "description": "SUV eléctrico familiar deportivo con 533 km de autonomía WLTP, 534 HP, aceleración 0-100 km/h en 3.7 segundos y 2.158 L de carga útil.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Performance All-Wheel Drive",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 534,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "235000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Model S Plaid Tri-Motor",
+              "image": "assets/images/model-s.jpg",
+              "description": "Hiperdeportivo de ultra lujo con 1.020 HP, aceleración récord de 0 a 100 km/h en 2.1 segundos, velocidad máxima de 322 km/h y 600 km de autonomía.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Plaid Tri-Motor AWD",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 1020,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "430000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Model X Plaid Falcon Wings",
+              "image": "assets/images/model-x.jpg",
+              "description": "El SUV más potente del mundo con 1.020 HP, puertas Falcon Wing inteligentes con sensores ultrasónicos, parabrisas panorámico y 543 km de autonomía.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Plaid Falcon Wings Tri-Motor",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 1020,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "475000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "item": {
+              "@type": ["Car", "Product"],
+              "name": "Tesla Cybertruck Cyberbeast",
+              "image": "assets/images/cybertruck.jpg",
+              "description": "Pickup futurista indestructible con exoesqueleto de acero inoxidable laminado en frío Serie 30X, dirección por cable en las 4 ruedas, 845 HP y 515 km de autonomía.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Tesla"
+              },
+              "vehicleConfiguration": "Cyberbeast Tri-Motor AWD",
+              "fuelType": "Electricity",
+              "vehicleEngine": {
+                "@type": "EngineSpecification",
+                "enginePower": {
+                  "@type": "QuantitativeValue",
+                  "value": 845,
+                  "unitCode": "HP"
+                }
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "495000000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "priceValidUntil": "2027-12-31",
+                "seller": {
+                  "@id": "https://teslacolombia-showroom.com/#autodealer"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://teslacolombia-showroom.com/#faq",
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": [".faq-question", ".faq-answer", ".hero-subtitle"]
+        },
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Cuánto cuesta un carro Tesla en Colombia en pesos (COP)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Los precios referenciales demostrativos para Colombia inician desde $198.000.000 COP para el Model 3 Long Range AWD, $235.000.000 COP para el Model Y Performance AWD, $430.000.000 COP para el Model S Plaid Tri-Motor, $475.000.000 COP para el Model X Plaid y $495.000.000 COP para Cybertruck Cyberbeast."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cuál es la autonomía de los vehículos Tesla en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "La autonomía WLTP según el modelo es: Model 3 hasta 629 km, Model Y hasta 533 km, Model S Plaid hasta 600 km, Model X hasta 543 km y Cybertruck hasta 515 km con una sola carga completa."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo se recarga un vehículo Tesla en Colombia y cuánto tarda?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Se puede recargar en casa conectándolo a una toma convencional o instalando un Wall Connector de 220V que recarga la batería durante la noche (6 a 8 horas). En estaciones de carga rápida públicas y Superchargers, recupera hasta 280-300 km de autonomía en solo 15 minutos."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Los vehículos Tesla tienen pico y placa o pagan impuestos en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "En Colombia, según la Ley 1964 de 2019 de Movilidad Eléctrica, los vehículos 100% eléctricos están totalmente exentos de la restricción vehicular de Pico y Placa en Bogotá, Medellín, Cali y principales ciudades, además de contar con tarifas tributarias y aranceles preferenciales de importación."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo funciona la compra con el paquete de papeles legales al día?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "La cotización formal permite incluir un paquete legal integral que comprende matrícula inicial ante el RUNT, SOAT vigente, impuesto departamental y trámite de placas metálicas para entrega inmediata listo para rodar."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Qué mantenimiento requiere un vehículo eléctrico Tesla?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No requiere cambios de aceite, filtros de motor, bujías ni correas de distribución. El mantenimiento preventivo se limita a rotación e inspección de neumáticos, líquido de frenos y reemplazo del filtro de cabina HEPA, lo que reduce los costos de mantenimiento preventivo hasta en un 70% frente a motores a combustión."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿El simulador de crédito compromete la aprobación financiera?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. El simulador de financiación es una herramienta matemática orientativa y demostrativa basada en la fórmula financiera de amortización mensual fija, sujeta a la posterior evaluación y aprobación crediticia por parte de las entidades bancarias colombianas aliadas."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Qué beneficios tributarios y legales tienen los autos eléctricos en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "De acuerdo con la Ley 1964 de 2019 de Movilidad Eléctrica, los vehículos 100% eléctricos en Colombia gozan de un IVA reducido del 5% (frente al 19% estándar), impuesto vehicular anual con tope máximo del 1% del valor comercial, descuento del 10% en la tarifa del SOAT, exención arancelaria del 0% de importación (Decreto 1116) y exención permanente total de la restricción de Pico y Placa sin costo adicional."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Dónde están ubicados los puntos de carga rápida Tesla y estaciones públicas en Colombia?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Colombia cuenta con una red de más de 200 puntos de recarga públicos y electrolineras activas en Bogotá (Zona Rosa, Usaquén, Chía), Medellín (El Poblado, Llanogrande), Cali y los principales corredores viales nacionales. Asimismo, cada vehículo incluye adaptador de carga Tipo 1 (J1772) y compatibilidad con cargadores Wall Connector residenciales de 220V para carga nocturna."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "@id": "https://teslacolombia-showroom.com/#como-comprar",
+        "name": "Cómo cotizar y adquirir un vehículo Tesla en Colombia con papeles al día",
+        "description": "Guía paso a paso para explorar, configurar, simular financiación y solicitar la cotización de un auto eléctrico Tesla en Colombia.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Explora el Catálogo y Modelos",
+            "text": "Navega por las secciones de Modelos y Catálogo interactivo para comparar autonomía, potencia en HP, aceleración y precios referenciales en pesos colombianos (COP)."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Configura y Simula tu Plan",
+            "text": "Accede al configurador y simulador financiero interactivo para calcular tus cuotas, porcentaje de cuota inicial y plazo en meses."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Simula tu Cuota Mensual",
+            "text": "Usa el simulador financiero interactivo ingresando tu porcentaje de cuota inicial y plazo en meses para proyectar tus pagos mensuales."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Solicita tu Cotización Comercial con Papeles al Día",
+            "text": "Confirma tu pedido a través del portal de cliente o conéctate directamente por WhatsApp con un asesor para radicar tu matrícula, SOAT y placas oficiales."
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </body>
 
 </html>

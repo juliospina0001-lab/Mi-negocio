@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return {
               ...original,
               ...v,
+              image: (v.image || original.image || "assets/images/model-3.webp").replace(/\.jpg$/i, ".webp"),
               promoPrice: Number(v.promoPrice ?? v.promo_price ?? original.promoPrice ?? 0),
               promoLabel: (v.promoLabel ?? v.promo_label ?? original.promoLabel ?? "").trim()
             };
@@ -378,6 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("No se pudo guardar en localStorage:", e);
       }
     }
+    document.querySelectorAll('link[media="print"]').forEach(l => { l.media = "all"; });
     updateFavoritesBadge();
     renderFavoritesDrawer();
     updateFavoriteButtonsUI();
@@ -2505,7 +2507,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           return `
             <div class="account-order-card">
-              <img src="${ord.vehicleImage || 'assets/images/model-3.jpg'}" alt="${escapeHTML(ord.vehicleName)}" class="account-order-img">
+              <img src="${ord.vehicleImage || 'assets/images/model-3.webp'}" alt="${escapeHTML(ord.vehicleName)}" class="account-order-img">
               <div>
                 <div class="account-order-title">${escapeHTML(ord.vehicleName)} <span style="font-size: 0.8rem; font-weight: 400; color: var(--color-silver);">(${escapeHTML(ord.vehicleVersion || '')})</span></div>
                 <div class="account-order-meta">
@@ -3046,7 +3048,7 @@ document.addEventListener("DOMContentLoaded", () => {
               vehicleId: "model-3",
               vehicleName: "Tesla Model 3 Gran Autonomía",
               vehicleVersion: "Dual Motor AWD",
-              vehicleImage: "assets/model-3.jpg",
+              vehicleImage: "assets/images/model-3.webp",
               includePapers: true,
               totalAmount: 203200000,
               status: "authorized",
@@ -3676,7 +3678,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cargoVolume: v.cargoVolume || v.cargo_volume || original.cargoVolume || "600 L",
         chargingTime: v.chargingTime || v.charging_time || original.chargingTime || "Hasta 250 km en 15 min",
         availability: v.availability || original.availability || "Disponible para entrega",
-        image: v.image || original.image || "assets/images/model-3.jpg",
+        image: v.image || original.image || "assets/images/model-3.webp",
         description: v.description || original.description || "",
         colors: (Array.isArray(v.colors) && v.colors.length > 0) ? v.colors : (original.colors || [
           { id: "pearl-white", name: "Blanco Perla Multicapa", hex: "#E8E9EB", filter: "none" },
@@ -3729,24 +3731,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function syncVehiclesFromBackend() {
+    const isLocalBackend =
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") &&
+      window.location.port !== "";
+    if (!isLocalBackend) return;
     try {
       const response = await fetch("/api/vehicles").catch(() => null);
       if (response && response.ok) {
         const apiVehicles = await response.json();
         if (Array.isArray(apiVehicles) && apiVehicles.length > 0) {
           applyCatalogData(apiVehicles, true);
-          return;
         }
       }
-    } catch (error) {
-      console.info("Showroom funcionando con catálogo local:", error);
-    }
-
-    // Si la API no está disponible, asegurar lectura desde localStorage
-    const localData = loadInitialVehicles();
-    if (localData && localData.length > 0) {
-      applyCatalogData(localData, false);
-    }
+    } catch (error) {}
   }
 
   // =========================================================================
@@ -3754,59 +3752,43 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================================================
 
   function init() {
+    // Fase 1 (Crítica Above-the-Fold < 3ms): Header, Navegación y Cuenta
     updateFavoritesBadge();
     initNavigation();
     initAuth();
-    initPurchaseModal();
-    renderFeaturedVehicles();
-    initCatalogEvents();
-    renderCatalog();
-    initSimulator();
-    initContactForm();
 
-    // Tareas diferidas en idle para máximo rendimiento móvil (TBT 0ms y LCP ultra-rápido)
-    const runIdleTasks = () => {
+    // Fase 2 (Catálogo tras primer pintado del Hero LCP):
+    const runCatalogTasks = () => {
+      renderFeaturedVehicles();
+      initCatalogEvents();
+      renderCatalog();
+    };
+
+    // Fase 3 (Secciones inferiores Below-the-Fold):
+    const runBelowFoldTasks = () => {
+      initPurchaseModal();
+      initSimulator();
+      initContactForm();
       renderVehicleComparator();
       initFAQs();
       syncVehiclesFromBackend();
     };
 
-    if (typeof requestIdleCallback === "function") {
-      requestIdleCallback(runIdleTasks, { timeout: 1200 });
-    } else {
-      setTimeout(runIdleTasks, 50);
-    }
-
-    // Sintonizar canal de difusión en tiempo real desde la consola admin (instantáneo)
-    try {
-      if (typeof BroadcastChannel !== "undefined") {
-        const syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
-        syncChannel.onmessage = (event) => {
-          if (event.data && event.data.type === "CATALOG_UPDATED" && Array.isArray(event.data.vehicles)) {
-            applyCatalogData(event.data.vehicles, true);
+    if (typeof window !== "undefined" && typeof window.requestAnimationFrame === "function") {
+      window.requestAnimationFrame(() => {
+        setTimeout(() => {
+          runCatalogTasks();
+          if (typeof window.requestIdleCallback === "function") {
+            window.requestIdleCallback(runBelowFoldTasks, { timeout: 600 });
+          } else {
+            setTimeout(runBelowFoldTasks, 24);
           }
-          if (event.data && event.data.type === "PURCHASE_AUTHORIZED") {
-            const { orderId, authorizedBy, order } = event.data;
-            if (state.currentUser && Array.isArray(state.currentUser.orders)) {
-              const myOrder = state.currentUser.orders.find(o => o.orderNum === orderId);
-              if (myOrder) {
-                myOrder.status = "authorized";
-                myOrder.statusLabel = "Autorizada por Asesor de Administración";
-                myOrder.authorizedBy = authorizedBy || (order && order.authorizedBy) || "Administración";
-                myOrder.authorizedAt = new Date().toISOString();
-                delete myOrder.rejectedBy;
-                delete myOrder.rejectedReason;
-                delete myOrder.rejectedAt;
-
-                addUserNotification({
-                  type: "purchase_authorized",
-                  title: "🎉 ¡Tu compra ha sido APROBADA!",
-                  message: `Tu orden de compra [${orderId}] para el Tesla ${myOrder.vehicleName} ha sido formalmente AUTORIZADA. El vehículo ya está en preparación para entrega.`,
-                  orderNum: orderId,
-                  vehicleName: myOrder.vehicleName,
-                  amount: myOrder.totalAmount,
-                  extra: {}
-                });
+        }, 0);
+      });
+    } else {
+      runCatalogTasks();
+      runBelowFoldTasks();
+    });
 
                 saveAuthUser(state.currentUser);
                 renderAccountDashboard();

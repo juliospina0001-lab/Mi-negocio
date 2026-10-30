@@ -734,9 +734,6 @@ h4 {
   height: 100%;
   object-fit: cover;
   object-position: center 35%;
-  filter: brightness(0.65) contrast(1.1);
-  transform: scale(1.02);
-  transition: transform 10s ease;
 }
 
 .hero-overlay {
@@ -746,9 +743,9 @@ h4 {
   width: 100%;
   height: 100%;
   background: linear-gradient(180deg,
-      rgba(16, 16, 16, 0.6) 0%,
-      rgba(16, 16, 16, 0.2) 40%,
-      rgba(16, 16, 16, 0.85) 85%,
+      rgba(16, 16, 16, 0.72) 0%,
+      rgba(16, 16, 16, 0.42) 40%,
+      rgba(16, 16, 16, 0.88) 85%,
       var(--color-obsidian) 100%);
 }
 
@@ -3549,7 +3546,7 @@ h4 {
 
   /* === HERO RESPONSIVE === */
   .hero-section {
-    min-height: auto;
+    min-height: 100svh;
     padding-top: calc(var(--header-height) + 40px);
     padding-bottom: 60px;
   }
@@ -6840,54 +6837,12 @@ textarea {
 
 /* ==========================================================================
    OPTIMIZACIONES DE RENDIMIENTO (PERFORMANCE)
-   - will-change: Promueve elementos animados al compositor de GPU
-   - content-visibility: Omite renderizado de secciones fuera de pantalla
-   - contain: Aísla subsecciones del árbol de layout/paint
-   - prefers-reduced-motion: Accesibilidad y perf en dispositivos de gama baja
    ========================================================================== */
 
-/* Promoted GPU layers para elementos con transformaciones frecuentes */
-.hero-bg-img {
-  will-change: transform;
-}
-
-.modal-dialog,
-.drawer-panel,
-.main-nav-list {
-  will-change: transform, opacity;
-}
-
-
-/* content-visibility para secciones fuera de la vista inicial */
-/* Esto permite al navegador omitir el layout y paint de estas secciones
-   hasta que el usuario haga scroll, mejorando significativamente el LCP y FCP */
-.modelos-section,
-.catalog-section,
-.experience-section,
-.financiacion-section,
-.comparador-section,
-.contact-section,
-.site-footer {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 600px;
-}
-
-/* Containment para componentes auto-contenidos */
 .vehicle-card {
   contain: layout style;
 }
 
-.modal-backdrop {
-  contain: strict;
-}
-
-/* Optimización de imágenes en el layout */
-img {
-  image-rendering: auto;
-  content-visibility: auto;
-}
-
-/* Reducir uso de backdrop-filter en dispositivos de baja potencia */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -6897,42 +6852,12 @@ img {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-
-  .hero-bg-img {
-    transform: none !important;
-    transition: none !important;
-    will-change: auto;
-  }
 }
 
-/* Scroll suave con hardware acceleration en iOS/Android */
 .main-nav-list,
 .drawer-panel,
 .modal-dialog,
 .catalog-scroll-area,
 .compare-table-wrap {
   -webkit-overflow-scrolling: touch;
-}
-
-/* Forzar aceleración hardware en capas animadas */
-.site-header,
-.whatsapp-aside,
-.toast-container {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-/* ==========================================================================
-   OPTIMIZACIONES DE RENDIMIENTO MÓVIL (Lighthouse 95-100)
-   ========================================================================== */
-.experience-section,
-.simulator-section,
-.compare-section,
-.section-contact,
-.section-faqs {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 650px;
-}
-
-img {
-  content-visibility: auto;
 }
