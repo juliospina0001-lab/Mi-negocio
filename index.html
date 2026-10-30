@@ -572,15 +572,13 @@
   <!-- =========================================================================
        OPTIMIZACIÓN DE RENDIMIENTO: Resource Hints y Critical Path
        ========================================================================= -->
-  <!-- Preconnect para origenes externos críticos -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <!-- Preconnect y DNS-Prefetch para origenes externos realmente utilizados -->
   <link rel="dns-prefetch" href="https://wa.me">
   <link rel="dns-prefetch" href="https://api.whatsapp.com">
 
-  <!-- Preload de la imagen LCP (Largest Contentful Paint) - Hero -->
-  <link rel="preload" href="assets/images/hero.jpg" as="image" fetchpriority="high">
+  <!-- Preload de la imagen LCP optimizada en formato WebP con media queries para móvil y escritorio -->
+  <link rel="preload" href="assets/images/hero-mobile.webp" as="image" type="image/webp" media="(max-width: 640px)" fetchpriority="high">
+  <link rel="preload" href="assets/images/hero.webp" as="image" type="image/webp" media="(min-width: 641px)" fetchpriority="high">
   <!-- Preload del CSS principal -->
   <link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
@@ -995,9 +993,14 @@
     <!-- 01. HERO CINEMATOGRÁFICO -->
     <section class="hero-section" id="inicio" aria-labelledby="heroTitle">
       <div class="hero-bg-container">
-        <img src="assets/images/hero.jpg"
-          alt="Vehículos eléctricos Tesla en exhibición en Showroom Premium de Bogotá, Colombia" class="hero-bg-img"
-          fetchpriority="high" loading="eager">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/images/hero-mobile.webp" type="image/webp">
+          <source media="(max-width: 640px)" srcset="assets/images/hero-mobile.jpg" type="image/jpeg">
+          <source srcset="assets/images/hero.webp" type="image/webp">
+          <img src="assets/images/hero.jpg"
+            alt="Vehículos eléctricos Tesla en exhibición en Showroom Premium de Bogotá, Colombia" class="hero-bg-img"
+            width="1376" height="768" fetchpriority="high" loading="eager" decoding="async">
+        </picture>
         <div class="hero-overlay"></div>
       </div>
 
@@ -1130,8 +1133,11 @@
 
         <!-- Banner Editorial Destacado -->
         <div class="experience-hero-card">
-          <img src="assets/images/interior-tech.jpg" alt="Interior minimalista con pantalla táctil cinematográfica"
-            class="experience-hero-bg" loading="lazy" decoding="async">
+          <picture>
+            <source srcset="assets/images/interior-tech.webp" type="image/webp">
+            <img src="assets/images/interior-tech.jpg" alt="Interior minimalista con pantalla táctil cinematográfica"
+              class="experience-hero-bg" width="1376" height="768" loading="lazy" decoding="async">
+          </picture>
           <div class="experience-hero-overlay"></div>
           <div class="experience-hero-text">
             <span class="section-tag">Cabina Cinematográfica</span>

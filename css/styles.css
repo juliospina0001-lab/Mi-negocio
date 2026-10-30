@@ -6921,3 +6921,18 @@ img {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
+/* ==========================================================================
+   OPTIMIZACIONES DE RENDIMIENTO MÓVIL (Lighthouse 95-100)
+   ========================================================================== */
+.experience-section,
+.simulator-section,
+.compare-section,
+.section-contact,
+.section-faqs {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 650px;
+}
+
+img {
+  content-visibility: auto;
+}

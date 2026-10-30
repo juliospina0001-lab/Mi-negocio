@@ -24,7 +24,7 @@ const VEHICLES_DATA = [
     powerHp: 498,
     cargoVolume: "682 L",
     chargingTime: "Hasta 282 km en 15 min",
-    image: "assets/images/model-3.jpg",
+    image: "assets/images/model-3.webp",
     featured: true,
     availability: "Entrega estimada: 30 a 45 días",
     colors: [
@@ -61,7 +61,7 @@ const VEHICLES_DATA = [
     powerHp: 534,
     cargoVolume: "2.158 L (asientos abatidos)",
     chargingTime: "Hasta 261 km en 15 min",
-    image: "assets/images/model-y.jpg",
+    image: "assets/images/model-y.webp",
     featured: true,
     availability: "Disponibilidad inmediata para entrega",
     colors: [
@@ -98,7 +98,7 @@ const VEHICLES_DATA = [
     powerHp: 1020,
     cargoVolume: "793 L",
     chargingTime: "Hasta 300 km en 15 min",
-    image: "assets/images/model-s.jpg",
+    image: "assets/images/model-s.webp",
     featured: true,
     availability: "Unidades limitadas bajo pedido exclusivo",
     colors: [
@@ -135,7 +135,7 @@ const VEHICLES_DATA = [
     powerHp: 1020,
     cargoVolume: "2.614 L",
     chargingTime: "Hasta 270 km en 15 min",
-    image: "assets/images/model-x.jpg",
+    image: "assets/images/model-x.webp",
     featured: false,
     availability: "Bajo pedido especial - Entrega personalizada",
     colors: [
@@ -172,7 +172,7 @@ const VEHICLES_DATA = [
     powerHp: 845,
     cargoVolume: "3.423 L (caja y compartimientos)",
     chargingTime: "Hasta 206 km en 15 min",
-    image: "assets/images/cybertruck.jpg",
+    image: "assets/images/cybertruck.webp",
     featured: true,
     availability: "Reserva exclusiva para importación directa",
     colors: [

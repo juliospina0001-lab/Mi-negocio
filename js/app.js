@@ -507,7 +507,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <article class="vehicle-card ${pricing.isPromo ? 'has-promo' : ''}" data-vehicle-id="${escapeHTML(vehicle.id)}">
         ${promoRibbonHTML}
         <div class="card-image-wrap">
-          <img src="${escapeHTML(vehicle.image)}" alt="${escapeHTML(vehicle.name)} ${escapeHTML(vehicle.category)}" loading="lazy">
+          <img src="${escapeHTML(vehicle.image)}" alt="${escapeHTML(vehicle.name)} ${escapeHTML(vehicle.category)}" loading="lazy" decoding="async" width="600" height="338">
           <span class="card-badge">${escapeHTML(vehicle.badge || vehicle.category)}</span>
           <button type="button" class="card-fav-btn ${isFav ? 'is-active' : ''}" data-vehicle-id="${escapeHTML(vehicle.id)}" aria-label="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
@@ -2067,14 +2067,52 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initNavigation() {
-    // Scroll header background
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 40) {
-        elements.header.classList.add("scrolled");
-      } else {
-        elements.header.classList.remove("scrolled");
+    // Scroll header background y ScrollSpy unificados y optimizados con requestAnimationFrame
+    let scrollScheduled = false;
+    const trackedSections = [
+      { id: "inicio", href: "#inicio" },
+      { id: "catalogo", href: "#catalogo" },
+      { id: "experiencia", href: "#experiencia" },
+      { id: "financiacion", href: "#financiacion" },
+      { id: "comparador", href: "#comparador" },
+      { id: "contacto", href: "#contacto" },
+      { id: "faqs", href: "#faqs" }
+    ];
+
+    function handleScrollOptimized() {
+      const currentScrollY = window.scrollY;
+      if (elements.header) {
+        if (currentScrollY > 40) {
+          elements.header.classList.add("scrolled");
+        } else {
+          elements.header.classList.remove("scrolled");
+        }
       }
-    });
+
+      const scrollPos = currentScrollY + 180;
+      for (let i = trackedSections.length - 1; i >= 0; i--) {
+        const sec = document.getElementById(trackedSections[i].id);
+        if (sec && scrollPos >= sec.offsetTop) {
+          const targetHref = trackedSections[i].href;
+          anchorNavLinks.forEach(l => {
+            if (l.getAttribute("href") === targetHref) {
+              l.classList.add("active");
+            } else {
+              l.classList.remove("active");
+            }
+          });
+          break;
+        }
+      }
+      scrollScheduled = false;
+    }
+
+    window.addEventListener("scroll", () => {
+      if (!scrollScheduled) {
+        scrollScheduled = true;
+        requestAnimationFrame(handleScrollOptimized);
+      }
+    }, { passive: true });
 
     const navDrawerOverlay = document.getElementById("navDrawerOverlay");
     const drawerCloseBtn = document.getElementById("drawerCloseBtn");
@@ -2141,34 +2179,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // ScrollSpy: Sincroniza automáticamente la función seleccionada al desplazarse
-    const trackedSections = [
-      { id: "inicio", href: "#inicio" },
-      { id: "catalogo", href: "#catalogo" },
-      { id: "experiencia", href: "#experiencia" },
-      { id: "financiacion", href: "#financiacion" },
-      { id: "comparador", href: "#comparador" },
-      { id: "contacto", href: "#contacto" },
-      { id: "faqs", href: "#faqs" }
-    ];
-
-    window.addEventListener("scroll", () => {
-      const scrollPos = window.scrollY + 180;
-      for (let i = trackedSections.length - 1; i >= 0; i--) {
-        const sec = document.getElementById(trackedSections[i].id);
-        if (sec && scrollPos >= sec.offsetTop) {
-          const targetHref = trackedSections[i].href;
-          anchorNavLinks.forEach(l => {
-            if (l.getAttribute("href") === targetHref) {
-              l.classList.add("active");
-            } else {
-              l.classList.remove("active");
-            }
-          });
-          break;
-        }
-      }
-    }, { passive: true });
+    // ScrollSpy unificado con listener pasivo superior
 
 
     // Trigger de Favoritos
@@ -3751,12 +3762,20 @@ document.addEventListener("DOMContentLoaded", () => {
     initCatalogEvents();
     renderCatalog();
     initSimulator();
-    renderVehicleComparator();
     initContactForm();
-    initFAQs();
 
-    // Sincronizar catálogo con las modificaciones hechas en la consola administrativa
-    syncVehiclesFromBackend();
+    // Tareas diferidas en idle para máximo rendimiento móvil (TBT 0ms y LCP ultra-rápido)
+    const runIdleTasks = () => {
+      renderVehicleComparator();
+      initFAQs();
+      syncVehiclesFromBackend();
+    };
+
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(runIdleTasks, { timeout: 1200 });
+    } else {
+      setTimeout(runIdleTasks, 50);
+    }
 
     // Sintonizar canal de difusión en tiempo real desde la consola admin (instantáneo)
     try {
