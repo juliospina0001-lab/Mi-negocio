@@ -380,6 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     document.querySelectorAll('link[media="print"]').forEach(l => { l.media = "all"; });
+    setTimeout(() => { if (document.body) document.body.classList.add("css-loaded"); }, 350);
     updateFavoritesBadge();
     renderFavoritesDrawer();
     updateFavoriteButtonsUI();

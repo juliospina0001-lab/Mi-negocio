@@ -240,6 +240,7 @@ html {
 
 body {
   font-family: var(--font-main);
+  font-size: var(--font-body);
   background-color: var(--color-obsidian);
   color: var(--color-white);
   line-height: 1.5;
@@ -782,7 +783,7 @@ h4 {
 }
 
 .hero-title {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: var(--font-hero);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.03em;
@@ -3546,7 +3547,7 @@ h4 {
 
   /* === HERO RESPONSIVE === */
   .hero-section {
-    min-height: 100svh;
+    min-height: 100dvh;
     padding-top: calc(var(--header-height) + 40px);
     padding-bottom: 60px;
   }
