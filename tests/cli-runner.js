@@ -20,7 +20,7 @@ if (typeof crypto === "undefined" || !global.crypto) {
 }
 
 // 1. Cargar datos del catálogo (js/data.js)
-const dataPath = path.join(__dirname, "../js/data.js");
+const dataPath = path.join(__dirname, "../frontend/js/data.js");
 const dataCode = fs.readFileSync(dataPath, "utf-8");
 eval(dataCode);
 if (typeof VEHICLES_DATA !== "undefined") {

@@ -1,7 +1,53 @@
 {
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/frontend/index.html"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/frontend/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/frontend/admin.html"
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/frontend/admin.html"
+    },
+    {
+      "source": "/css/:path*",
+      "destination": "/frontend/css/:path*"
+    },
+    {
+      "source": "/js/:path*",
+      "destination": "/frontend/js/:path*"
+    },
+    {
+      "source": "/assets/:path*",
+      "destination": "/frontend/assets/:path*"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/frontend/robots.txt"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/frontend/sitemap.xml"
+    },
+    {
+      "source": "/site.webmanifest",
+      "destination": "/frontend/site.webmanifest"
+    },
+    {
+      "source": "/frontend/tests/:path*",
+      "destination": "/tests/:path*"
+    }
+  ],
   "headers": [
     {
-      "source": "/assets/(.*)",
+      "source": "/(frontend/)?assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -10,7 +56,7 @@
       ]
     },
     {
-      "source": "/css/(.*)",
+      "source": "/(frontend/)?css/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -19,7 +65,7 @@
       ]
     },
     {
-      "source": "/js/(.*)",
+      "source": "/(frontend/)?js/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

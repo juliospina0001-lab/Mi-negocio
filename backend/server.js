@@ -13,12 +13,13 @@ const port = process.env.PORT || 4000;
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// Servir frontend completo y estáticos
-app.use(express.static(path.join(__dirname, '..')));
+// Servir frontend completo y estáticos desde /frontend y suite de pruebas desde /tests
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
+app.use('/tests', express.static(path.join(__dirname, '..', 'tests')));
 
 // Ruta oficial solicitada para la consola administrativa
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'admin.html'));
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'admin.html'));
 });
 
 // Prevención de caídas del servidor por excepciones no controladas

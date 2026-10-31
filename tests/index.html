@@ -383,7 +383,7 @@
       </div>
 
       <div class="runner-actions">
-        <a href="../index.html" class="btn btn-secondary">
+        <a href="../frontend/index.html" onclick="if(location.pathname.startsWith('/tests')){this.href='/';}" class="btn btn-secondary">
           ← Volver al Showroom
         </a>
         <button type="button" class="btn btn-primary" id="btnRerun">
@@ -442,7 +442,8 @@
   </div>
 
   <!-- Carga de datos base de la app -->
-  <script src="../js/data.js"></script>
+  <script src="../frontend/js/data.js"></script>
+  <script>if (typeof VEHICLES_DATA === "undefined") { document.write('<scr' + 'ipt src="/js/data.js"></scr' + 'ipt>'); }</script>
   <!-- Carga de la suite de pruebas -->
   <script src="test-suite.js"></script>
 
