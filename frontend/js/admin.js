@@ -1730,6 +1730,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (matched) {
+        if (window.supabaseAuth) {
+          window.supabaseAuth.signIn({
+            email: (matched.email && matched.email.includes('@')) ? matched.email : `${inputUser}@tesla.com`,
+            password: inputPwd
+          });
+        }
         sessionStorage.setItem("tesla_admin_auth", "true");
         setCurrentAdmin(matched);
         if (adminGateErrorMsg) adminGateErrorMsg.style.display = "none";
@@ -1758,6 +1764,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // CERRAR SESIÓN Y BLOQUEAR
   function doAdminLogout() {
     closeAdminDrawer();
+    if (window.supabaseAuth) window.supabaseAuth.signOut();
     sessionStorage.removeItem("tesla_admin_auth");
     sessionStorage.removeItem(STORAGE_KEY_CURRENT_ADMIN);
     checkAdminAuth();

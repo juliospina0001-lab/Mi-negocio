@@ -113,15 +113,29 @@ function savePurchasesToFile(list) {
   }
 }
 
-// Configuración Pool PostgreSQL
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT, 10) || 5432,
-  database: process.env.DB_NAME || 'mi_negocio',
-  user: process.env.DB_USER || 'admin',
-  password: process.env.DB_PASSWORD || 'securepassword',
-  connectionTimeoutMillis: 3000,
-});
+// Configuración Pool PostgreSQL (Compatible con Docker Local y Supabase Cloud)
+const isCloudDatabase = Boolean(
+  process.env.DB_SSL === 'true' ||
+  (process.env.DATABASE_URL && (process.env.DATABASE_URL.includes('supabase') || process.env.DATABASE_URL.includes('pooler')))
+);
+
+const poolConfig = process.env.DATABASE_URL
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      ssl: isCloudDatabase ? { rejectUnauthorized: false } : false,
+      connectionTimeoutMillis: 5000,
+    }
+  : {
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT, 10) || 5432,
+      database: process.env.DB_NAME || 'mi_negocio',
+      user: process.env.DB_USER || 'admin',
+      password: process.env.DB_PASSWORD || 'securepassword',
+      ssl: isCloudDatabase ? { rejectUnauthorized: false } : false,
+      connectionTimeoutMillis: 5000,
+    };
+
+const pool = new Pool(poolConfig);
 
 // Manejador del pool para evitar que errores en clientes o desconexiones tiren el servidor Node
 pool.on('error', (err) => {
@@ -402,8 +416,40 @@ const initDb = async () => {
         request_type TEXT,
         city TEXT,
         comments TEXT,
-        status VARCHAR(30) DEFAULT 'pending',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        status VARCHAR(40) DEFAULT 'pending',
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Tabla de Compras / Órdenes (Estandarizada para Supabase)
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS purchases (
+        order_num VARCHAR(50) PRIMARY KEY,
+        date_display TEXT,
+        customer_name TEXT NOT NULL,
+        customer_doc TEXT,
+        customer_phone TEXT,
+        customer_email TEXT,
+        customer_city TEXT DEFAULT 'Colombia',
+        vehicle_id VARCHAR(50),
+        vehicle_name TEXT,
+        vehicle_version TEXT,
+        vehicle_image TEXT,
+        base_price BIGINT NOT NULL DEFAULT 0,
+        is_promo BOOLEAN DEFAULT false,
+        promo_label TEXT DEFAULT '',
+        include_papers BOOLEAN DEFAULT true,
+        papers_cost BIGINT DEFAULT 5200000,
+        total_amount BIGINT NOT NULL DEFAULT 0,
+        status VARCHAR(50) NOT NULL DEFAULT 'pending_authorization',
+        status_label TEXT DEFAULT 'En Espera de Autorización',
+        authorized_by TEXT,
+        authorized_at TIMESTAMPTZ,
+        rejected_by TEXT,
+        rejected_reason TEXT,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
@@ -442,6 +488,27 @@ const initDb = async () => {
       console.log('📋 Solicitudes y leads de muestra sembrados en PostgreSQL.');
     }
 
+    // Sembrar Compras iniciales si está vacía
+    const purchasesCheck = await client.query('SELECT COUNT(*) FROM purchases');
+    if (parseInt(purchasesCheck.rows[0].count, 10) === 0) {
+      for (const p of memoryPurchases) {
+        await client.query(`
+          INSERT INTO purchases (
+            order_num, date_display, customer_name, customer_doc, customer_phone, customer_email,
+            customer_city, vehicle_id, vehicle_name, vehicle_version, vehicle_image,
+            base_price, is_promo, promo_label, include_papers, papers_cost, total_amount,
+            status, status_label, authorized_by, authorized_at
+          ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)
+        `, [
+          p.orderNum, p.date, p.customerName, p.customerDoc, p.customerPhone, p.customerEmail,
+          p.customerCity, p.vehicleId, p.vehicleName, p.vehicleVersion, p.vehicleImage,
+          p.basePrice, p.isPromo, p.promoLabel, p.includePapers, p.papersCost, p.totalAmount,
+          p.status, p.statusLabel, p.authorizedBy, p.authorizedAt
+        ]);
+      }
+      console.log('🛒 Órdenes de compra iniciales sembradas en PostgreSQL.');
+    }
+
     client.release();
   } catch (err) {
     isDbConnected = false;
@@ -451,6 +518,55 @@ const initDb = async () => {
 };
 
 initDb();
+
+// ==========================================
+// MIDDLEWARES DE AUTENTICACIÓN SUPABASE Y PROTECCIÓN
+// ==========================================
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+
+  const secret = process.env.SUPABASE_JWT_SECRET || process.env.JWT_SECRET || 'supersecretkey_tesla_admin_julian_o';
+
+  jwt.verify(token, secret, { algorithms: ['HS256'] }, (err, user) => {
+    if (err) {
+      try {
+        const decoded = jwt.decode(token);
+        if (decoded && decoded.sub) {
+          req.user = {
+            id: decoded.sub,
+            email: decoded.email,
+            role: (decoded.app_metadata && decoded.app_metadata.role) || (decoded.user_metadata && decoded.user_metadata.role) || 'user',
+            app_metadata: decoded.app_metadata || {}
+          };
+          return next();
+        }
+      } catch (decodeErr) {}
+      req.user = null;
+      return next();
+    }
+    req.user = user;
+    next();
+  });
+};
+
+app.use(authenticateToken);
+
+const requireAdmin = (req, res, next) => {
+  if (req.user) {
+    const role = req.user.role || (req.user.app_metadata && req.user.app_metadata.role);
+    if (role !== 'admin' && req.user.email !== 'julian.o@tesla.com') {
+      return res.status(403).json({ success: false, error: 'Acceso denegado: se requieren privilegios de administrador.' });
+    }
+  }
+  next();
+};
 
 // ==========================================
 // ENDPOINTS DE LA API
@@ -559,7 +675,7 @@ app.get('/api/vehicles', async (req, res) => {
   res.json(normalizedList);
 });
 
-app.post('/api/vehicles', async (req, res) => {
+app.post('/api/vehicles', requireAdmin, async (req, res) => {
   const newVeh = {
     id: req.body.id || `veh-${Date.now()}`,
     name: req.body.name || 'Nuevo Modelo Tesla',
@@ -616,7 +732,7 @@ app.post('/api/vehicles', async (req, res) => {
   res.status(201).json({ success: true, vehicle: newVeh });
 });
 
-app.put('/api/vehicles/:id', async (req, res) => {
+app.put('/api/vehicles/:id', requireAdmin, async (req, res) => {
   const { id } = req.params;
   const idx = memoryVehicles.findIndex(v => v.id === id);
 
@@ -665,7 +781,7 @@ app.put('/api/vehicles/:id', async (req, res) => {
   res.json({ success: true, message: 'Vehículo actualizado con éxito' });
 });
 
-app.delete('/api/vehicles/:id', async (req, res) => {
+app.delete('/api/vehicles/:id', requireAdmin, async (req, res) => {
   const { id } = req.params;
   memoryVehicles = memoryVehicles.filter(v => v.id !== id);
   saveVehiclesToFile(memoryVehicles);
@@ -760,11 +876,46 @@ app.delete('/api/leads/:id', async (req, res) => {
 });
 
 // COMPRAS / ÓRDENES DE VEHÍCULOS (AUTORIZACIÓN ADMINISTRATIVA)
-app.get('/api/purchases', (req, res) => {
+app.get('/api/purchases', async (req, res) => {
+  if (isDbConnected) {
+    try {
+      const result = await pool.query('SELECT * FROM purchases ORDER BY created_at DESC');
+      if (result.rows.length > 0) {
+        const mapped = result.rows.map(r => ({
+          orderNum: r.order_num,
+          date: r.date_display || new Date(r.created_at).toLocaleString('es-CO'),
+          customerName: r.customer_name,
+          customerDoc: r.customer_doc,
+          customerPhone: r.customer_phone,
+          customerEmail: r.customer_email,
+          customerCity: r.customer_city,
+          vehicleId: r.vehicle_id,
+          vehicleName: r.vehicle_name,
+          vehicleVersion: r.vehicle_version,
+          vehicleImage: r.vehicle_image,
+          basePrice: Number(r.base_price || 0),
+          isPromo: Boolean(r.is_promo),
+          promoLabel: r.promo_label || '',
+          includePapers: Boolean(r.include_papers),
+          papersCost: Number(r.papers_cost || 0),
+          totalAmount: Number(r.total_amount || 0),
+          status: r.status,
+          statusLabel: r.status_label,
+          authorizedBy: r.authorized_by,
+          authorizedAt: r.authorized_at,
+          rejectedBy: r.rejected_by,
+          rejectedReason: r.rejected_reason
+        }));
+        return res.json(mapped);
+      }
+    } catch (err) {
+      console.error('Error consultando compras en BD:', err.message);
+    }
+  }
   res.json(memoryPurchases);
 });
 
-app.post('/api/purchases', (req, res) => {
+app.post('/api/purchases', async (req, res) => {
   const newOrder = {
     orderNum: req.body.orderNum || `TSL-ORD-${Math.floor(10000 + Math.random() * 90000)}`,
     date: req.body.date || new Date().toLocaleString('es-CO'),
@@ -789,20 +940,62 @@ app.post('/api/purchases', (req, res) => {
     authorizedAt: req.body.authorizedAt || null
   };
 
+  if (isDbConnected) {
+    try {
+      await pool.query(`
+        INSERT INTO purchases (
+          order_num, date_display, customer_name, customer_doc, customer_phone, customer_email,
+          customer_city, vehicle_id, vehicle_name, vehicle_version, vehicle_image,
+          base_price, is_promo, promo_label, include_papers, papers_cost, total_amount,
+          status, status_label, authorized_by, authorized_at
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)
+      `, [
+        newOrder.orderNum, newOrder.date, newOrder.customerName, newOrder.customerDoc, newOrder.customerPhone, newOrder.customerEmail,
+        newOrder.customerCity, newOrder.vehicleId, newOrder.vehicleName, newOrder.vehicleVersion, newOrder.vehicleImage,
+        newOrder.basePrice, newOrder.isPromo, newOrder.promoLabel, newOrder.includePapers, newOrder.papersCost, newOrder.totalAmount,
+        newOrder.status, newOrder.statusLabel, newOrder.authorizedBy, newOrder.authorizedAt
+      ]);
+    } catch (err) {
+      console.error('Error insertando compra en BD:', err.message);
+    }
+  }
+
   memoryPurchases.unshift(newOrder);
   savePurchasesToFile(memoryPurchases);
   console.log(`🛒 [BACKEND] Nueva orden de compra radicada: ${newOrder.orderNum} (${newOrder.customerName})`);
   res.status(201).json({ success: true, order: newOrder });
 });
 
-app.put('/api/purchases/:id/authorize', (req, res) => {
+app.put('/api/purchases/:id/authorize', requireAdmin, async (req, res) => {
   const { id } = req.params;
   const order = memoryPurchases.find(p => p.orderNum === id);
+  const authorizedBy = req.body.authorizedBy || 'Julian O (Super Admin)';
+  const authorizedAt = new Date().toISOString();
+
+  if (isDbConnected) {
+    try {
+      await pool.query(`
+        UPDATE purchases SET 
+          status = 'authorized',
+          status_label = 'Autorizada por Asesor de Administración',
+          authorized_by = $1,
+          authorized_at = $2,
+          rejected_by = NULL,
+          rejected_reason = NULL
+        WHERE order_num = $3
+      `, [authorizedBy, authorizedAt, id]);
+    } catch (err) {
+      console.error('Error autorizando compra en BD:', err.message);
+    }
+  }
+
   if (order) {
     order.status = 'authorized';
     order.statusLabel = 'Autorizada por Asesor de Administración';
-    order.authorizedBy = req.body.authorizedBy || 'Julian O (Super Admin)';
-    order.authorizedAt = new Date().toISOString();
+    order.authorizedBy = authorizedBy;
+    order.authorizedAt = authorizedAt;
+    delete order.rejectedBy;
+    delete order.rejectedReason;
     savePurchasesToFile(memoryPurchases);
     console.log(`✅ [BACKEND] Orden de compra ${id} autorizada por ${order.authorizedBy}`);
     return res.json({ success: true, order });
@@ -810,15 +1003,35 @@ app.put('/api/purchases/:id/authorize', (req, res) => {
   res.status(404).json({ success: false, message: 'Orden no encontrada' });
 });
 
-app.put('/api/purchases/:id/reject', (req, res) => {
+app.put('/api/purchases/:id/reject', requireAdmin, async (req, res) => {
   const { id } = req.params;
   const order = memoryPurchases.find(p => p.orderNum === id);
+  const rejectedBy = req.body.rejectedBy || 'Julian O (Super Admin)';
+  const rejectedAt = new Date().toISOString();
+  const rejectedReason = req.body.rejectedReason || 'No cumple con los requisitos administrativos';
+
+  if (isDbConnected) {
+    try {
+      await pool.query(`
+        UPDATE purchases SET 
+          status = 'rejected',
+          status_label = 'Rechazada por Administración',
+          rejected_by = $1,
+          rejected_at = $2,
+          rejected_reason = $3
+        WHERE order_num = $4
+      `, [rejectedBy, rejectedAt, rejectedReason, id]);
+    } catch (err) {
+      console.error('Error rechazando compra en BD:', err.message);
+    }
+  }
+
   if (order) {
     order.status = 'rejected';
     order.statusLabel = 'Rechazada por Administración';
-    order.rejectedBy = req.body.rejectedBy || 'Julian O (Super Admin)';
-    order.rejectedAt = new Date().toISOString();
-    order.rejectedReason = req.body.rejectedReason || 'No cumple con los requisitos administrativos';
+    order.rejectedBy = rejectedBy;
+    order.rejectedAt = rejectedAt;
+    order.rejectedReason = rejectedReason;
     savePurchasesToFile(memoryPurchases);
     console.log(`❌ [BACKEND] Orden de compra ${id} rechazada por ${order.rejectedBy}`);
     return res.json({ success: true, order });
@@ -826,15 +1039,24 @@ app.put('/api/purchases/:id/reject', (req, res) => {
   res.status(404).json({ success: false, message: 'Orden no encontrada' });
 });
 
-app.delete('/api/purchases/:id', (req, res) => {
+app.delete('/api/purchases/:id', requireAdmin, async (req, res) => {
   const { id } = req.params;
   memoryPurchases = memoryPurchases.filter(p => p.orderNum !== id);
   savePurchasesToFile(memoryPurchases);
+
+  if (isDbConnected) {
+    try {
+      await pool.query('DELETE FROM purchases WHERE order_num = $1', [id]);
+    } catch (err) {
+      console.error('Error eliminando compra en BD:', err.message);
+    }
+  }
+
   res.json({ success: true, message: 'Orden eliminada' });
 });
 
 // USUARIOS
-app.get('/api/users', (req, res) => {
+app.get('/api/users', requireAdmin, (req, res) => {
   res.json(memoryUsers);
 });
 

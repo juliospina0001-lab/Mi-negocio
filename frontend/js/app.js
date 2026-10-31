@@ -2924,6 +2924,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.logoutBtn) {
       elements.logoutBtn.addEventListener("click", () => {
         closeUserDropdown();
+        if (window.supabaseAuth) window.supabaseAuth.signOut();
         saveAuthUser(null);
         showToast("Has cerrado tu sesión exitosamente.", "info");
       });
@@ -3142,6 +3143,10 @@ document.addEventListener("DOMContentLoaded", () => {
           orders: []
         };
 
+        if (window.supabaseAuth) {
+          window.supabaseAuth.signIn({ email: cleanEmail, password: passInput.value });
+        }
+
         saveAuthUser(authenticatedUser);
         openLoginModal("login", "profile");
         elements.authLoginForm.reset();
@@ -3236,6 +3241,17 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("tesla_admin_accounts", JSON.stringify(adminAccs));
           }
         } catch (e) {}
+
+        if (window.supabaseAuth) {
+          window.supabaseAuth.signUp({
+            email: cleanEmail,
+            password: pwd,
+            name: newUser.name,
+            phone: newUser.phone,
+            city: newUser.city,
+            preferredModel: newUser.preferredModel
+          });
+        }
 
         saveAuthUser(newUser);
         closeLoginModal();
