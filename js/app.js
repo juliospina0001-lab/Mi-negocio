@@ -379,8 +379,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("No se pudo guardar en localStorage:", e);
       }
     }
-    document.querySelectorAll('link[media="print"]').forEach(l => { l.media = "all"; });
-    setTimeout(() => { if (document.body) document.body.classList.add("css-loaded"); }, 350);
     updateFavoritesBadge();
     renderFavoritesDrawer();
     updateFavoriteButtonsUI();
@@ -3753,43 +3751,63 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================================================
 
   function init() {
-    // Fase 1 (Crítica Above-the-Fold < 3ms): Header, Navegación y Cuenta
+    // Asegurar activación de hoja de estilos completa
+    document.querySelectorAll('link[media="print"]').forEach(l => { l.media = "all"; });
+
+    // Fase 1 (Crítica Above-the-Fold): Header, Navegación, Favoritos y Cuenta
     updateFavoritesBadge();
     initNavigation();
     initAuth();
+    initPurchaseModal();
+    renderFeaturedVehicles();
+    initCatalogEvents();
+    renderCatalog();
+    initSimulator();
+    initContactForm();
 
-    // Fase 2 (Catálogo tras primer pintado del Hero LCP):
-    const runCatalogTasks = () => {
-      renderFeaturedVehicles();
-      initCatalogEvents();
-      renderCatalog();
-    };
-
-    // Fase 3 (Secciones inferiores Below-the-Fold):
-    const runBelowFoldTasks = () => {
-      initPurchaseModal();
-      initSimulator();
-      initContactForm();
+    // Fase 2 (Diferida tras pintado inicial para mantener TBT bajo y LCP rápido)
+    const runDeferredTasks = () => {
       renderVehicleComparator();
       initFAQs();
       syncVehiclesFromBackend();
     };
 
-    if (typeof window !== "undefined" && typeof window.requestAnimationFrame === "function") {
-      window.requestAnimationFrame(() => {
-        setTimeout(() => {
-          runCatalogTasks();
-          if (typeof window.requestIdleCallback === "function") {
-            window.requestIdleCallback(runBelowFoldTasks, { timeout: 600 });
-          } else {
-            setTimeout(runBelowFoldTasks, 24);
-          }
-        }, 0);
-      });
+    if (typeof window !== "undefined" && typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(runDeferredTasks, { timeout: 600 });
     } else {
-      runCatalogTasks();
-      runBelowFoldTasks();
-    });
+      setTimeout(runDeferredTasks, 30);
+    }
+
+    // Sintonizar canal de difusión en tiempo real desde la consola admin (instantáneo)
+    try {
+      if (typeof BroadcastChannel !== "undefined") {
+        const syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
+        syncChannel.onmessage = (event) => {
+          if (event.data && event.data.type === "CATALOG_UPDATED" && Array.isArray(event.data.vehicles)) {
+            applyCatalogData(event.data.vehicles, true);
+          }
+          if (event.data && event.data.type === "PURCHASE_AUTHORIZED") {
+            const { orderId, authorizedBy, order } = event.data;
+            if (state.currentUser && Array.isArray(state.currentUser.orders)) {
+              const myOrder = state.currentUser.orders.find(o => o.orderNum === orderId);
+              if (myOrder) {
+                myOrder.status = "authorized";
+                myOrder.statusLabel = "Autorizada por Asesor de Administración";
+                myOrder.authorizedBy = authorizedBy || (order && order.authorizedBy) || "Administración";
+                myOrder.authorizedAt = new Date().toISOString();
+                delete myOrder.rejectedBy;
+                delete myOrder.rejectedReason;
+                delete myOrder.rejectedAt;
+
+                addUserNotification({
+                  type: "purchase_authorized",
+                  title: "🎉 ¡Tu compra ha sido APROBADA!",
+                  message: `Tu orden de compra [${orderId}] para el Tesla ${myOrder.vehicleName} ha sido formalmente AUTORIZADA. El vehículo ya está en preparación para entrega.`,
+                  orderNum: orderId,
+                  vehicleName: myOrder.vehicleName,
+                  amount: myOrder.totalAmount,
+                  extra: {}
+                });
 
                 saveAuthUser(state.currentUser);
                 renderAccountDashboard();

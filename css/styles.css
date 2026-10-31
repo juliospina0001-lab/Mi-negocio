@@ -550,7 +550,7 @@ h4 {
     #ffffff 270deg,
     #e82127 360deg
   );
-  animation: rotateNavBorder 2.4s linear infinite;
+  animation: rotateNavBorder 2.4s linear infinite !important;
   z-index: -2;
 }
 
@@ -6413,13 +6413,7 @@ body.light-theme .g-metric-val {
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  html {
     scroll-behavior: auto !important;
   }
 }
@@ -6845,12 +6839,7 @@ textarea {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  html {
     scroll-behavior: auto !important;
   }
 }
