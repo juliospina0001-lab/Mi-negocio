@@ -6851,3 +6851,103 @@ textarea {
 .compare-table-wrap {
   -webkit-overflow-scrolling: touch;
 }
+
+
+/* ==========================================================================
+   CONSENTIMIENTO LEGAL: TÉRMINOS, CONDICIONES Y COOKIES (FOOTER)
+   ========================================================================== */
+.footer-legal-consent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  flex: 1 1 540px;
+}
+
+.legal-consent-label {
+  font-size: 0.8125rem;
+  color: var(--color-silver);
+  line-height: 1.5;
+}
+
+.legal-inline-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 2px;
+  color: var(--color-white);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  transition: color var(--transition-fast);
+}
+
+.legal-inline-link:hover {
+  color: var(--color-accent-red);
+}
+
+.legal-consent-btns {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.consent-btn {
+  padding: 6px 16px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.consent-btn.consent-accept {
+  background-color: var(--color-accent-red);
+  color: var(--color-white);
+  border: 1px solid var(--color-accent-red);
+}
+
+.consent-btn.consent-accept:hover {
+  background-color: var(--color-accent-red-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(232, 33, 39, 0.35);
+}
+
+.consent-btn.consent-reject {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-silver-light);
+  border: 1px solid var(--color-border);
+}
+
+.consent-btn.consent-reject:hover {
+  color: var(--color-white);
+  border-color: var(--color-border-hover);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.consent-saved-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
+  color: var(--color-silver-light);
+}
+
+.consent-saved-badge.accepted {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+}
+
+.consent-saved-badge.rejected {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+}

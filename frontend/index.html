@@ -1200,13 +1200,27 @@
       </div>
 
       <div class="footer-bottom">
-        <p class="legal-notice">
-          <strong>Aviso Legal y Descargo de Responsabilidad:</strong> Este proyecto frontend es una plataforma técnica
-          demostrativa desarrollada con HTML5, CSS3 y JavaScript nativo. Las marcas, logotipos y nombres comerciales de
-          Tesla pertenecen a sus respectivos titulares. No existe vinculación comercial, afiliación oficial ni
-          representación directa con Tesla, Inc. Los precios expresados en pesos colombianos (COP), especificaciones y
-          disponibilidad tienen carácter ilustrativo.
-        </p>
+        <div class="footer-legal-consent" id="footerLegalConsent">
+          <div class="legal-consent-label">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px; display: inline-block;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            Al utilizar este sitio aceptas nuestros
+            <button type="button" class="legal-inline-link" id="openTermsLink">Términos y Condiciones</button>
+            y el uso de
+            <button type="button" class="legal-inline-link" id="openCookiesLink">Cookies</button>.
+          </div>
+          <div class="legal-consent-btns" id="consentButtonsWrap">
+            <button type="button" class="consent-btn consent-accept" id="consentAcceptBtn">
+              Aceptar
+            </button>
+            <button type="button" class="consent-btn consent-reject" id="consentRejectBtn">
+              Rechazar
+            </button>
+            <span class="consent-saved-badge" id="consentSavedBadge" style="display: none;"></span>
+          </div>
+        </div>
+
         <button type="button" class="back-to-top-btn" id="backToTopBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="18 15 12 9 6 15"></polyline>
@@ -1216,6 +1230,79 @@
       </div>
     </div>
   </footer>
+
+  <!-- =========================================================================
+       MODAL DE TÉRMINOS Y CONDICIONES Y POLÍTICA DE COOKIES
+       ========================================================================= -->
+  <div class="modal-backdrop" id="termsCookiesModal" role="dialog" aria-modal="true" aria-labelledby="modalLegalTitle">
+    <div class="modal-dialog" style="max-width: 680px; max-height: 85vh; display: flex; flex-direction: column;">
+      <button type="button" class="modal-close-btn" id="closeTermsCookiesModalBtn" aria-label="Cerrar ventana legal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="modal-header" style="padding: 24px 28px 16px; border-bottom: 1px solid var(--color-border);">
+        <h3 class="modal-title" id="modalLegalTitle" style="font-size: 1.25rem; font-weight: 700; color: var(--color-white); margin-bottom: 12px;">
+          Términos, Condiciones y Política de Cookies
+        </h3>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="pill-btn active" id="tabLegalTermsBtn" style="font-size: 0.8125rem; padding: 6px 16px;">
+            Términos y Condiciones
+          </button>
+          <button type="button" class="pill-btn" id="tabLegalCookiesBtn" style="font-size: 0.8125rem; padding: 6px 16px;">
+            Política de Cookies
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body" style="padding: 20px 28px; overflow-y: auto; color: var(--color-silver-light); font-size: 0.875rem; line-height: 1.65; flex: 1;">
+        <!-- Panel Términos -->
+        <div id="panelLegalTerms">
+          <h4 style="color: var(--color-white); font-size: 0.9375rem; margin-bottom: 8px;">1. Objeto y Alcance de la Plataforma</h4>
+          <p style="margin-bottom: 14px;">
+            Tesla Premium Showroom Colombia es una plataforma tecnológica interactiva diseñada para la exhibición, cotización personalizada y reserva demostrativa de vehículos eléctricos de alta gama en territorio colombiano.
+          </p>
+          <h4 style="color: var(--color-white); font-size: 0.9375rem; margin-bottom: 8px;">2. Cotizaciones y Simulador Financiero en COP</h4>
+          <p style="margin-bottom: 14px;">
+            Todos los valores, tasas efectivas anuales (E.A.) y cuotas mensuales simuladas son proyecciones informativas basadas en condiciones financieras del mercado colombiano. La liquidación final queda sujeta a la aprobación formal de la entidad bancaria aliada.
+          </p>
+          <h4 style="color: var(--color-white); font-size: 0.9375rem; margin-bottom: 8px;">3. Protección de Datos Personales</h4>
+          <p style="margin-bottom: 14px;">
+            En cumplimiento de la Ley 1581 de 2012 de Colombia, sus datos de contacto y solicitudes de prueba de manejo se tratan bajo estricta confidencialidad y únicamente para la gestión de su experiencia comercial.
+          </p>
+          <h4 style="color: var(--color-white); font-size: 0.9375rem; margin-bottom: 8px;">4. Propiedad Intelectual</h4>
+          <p>
+            Las marcas, logotipos y diseños industriales de Tesla pertenecen a sus respectivos titulares conforme a los convenios de propiedad industrial.
+          </p>
+        </div>
+
+        <!-- Panel Cookies -->
+        <div id="panelLegalCookies" style="display: none;">
+          <h4 style="color: var(--color-white); font-size: 0.9375rem; margin-bottom: 8px;">1. ¿Qué son las Cookies?</h4>
+          <p style="margin-bottom: 14px;">
+            Las cookies son pequeños ficheros de datos que se almacenan en su navegador para permitir el funcionamiento técnico seguro de la tienda y recordar sus preferencias.
+          </p>
+          <h4 style="color: var(--color-white); font-size: 0.9375rem; margin-bottom: 8px;">2. Tipos de Cookies que Utilizamos</h4>
+          <ul style="margin-left: 20px; margin-bottom: 14px; list-style-type: disc;">
+            <li style="margin-bottom: 6px;"><strong>Esenciales / Técnicas:</strong> Indispensables para la navegación, autenticación segura y persistencia de su lista de favoritos.</li>
+            <li style="margin-bottom: 6px;"><strong>Preferencias:</strong> Recuerdan la configuración de visualización, tema (oscuro/claro) y filtros elegidos.</li>
+            <li><strong>Analíticas / Rendimiento:</strong> Permiten optimizar los tiempos de carga y medir la estabilidad de las cotizaciones.</li>
+          </ul>
+          <h4 style="color: var(--color-white); font-size: 0.9375rem; margin-bottom: 8px;">3. Gestión y Consentimiento</h4>
+          <p>
+            Usted puede en cualquier momento Aceptar o Rechazar el uso de cookies no esenciales utilizando los botones provistos al pie de la plataforma.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 16px 28px 24px; border-top: 1px solid var(--color-border); display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn btn-secondary btn-sm" id="modalConsentRejectBtn">Rechazar Opcionales</button>
+        <button type="button" class="btn btn-primary btn-sm" id="modalConsentAcceptBtn">Aceptar Todo</button>
+      </div>
+    </div>
+  </div>
 
   <!-- =========================================================================
        MODAL DE DETALLE Y CONFIGURADOR DE VEHÍCULO (F-05, F-09)

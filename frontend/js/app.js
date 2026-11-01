@@ -2229,6 +2229,7 @@ document.addEventListener("DOMContentLoaded", () => {
         closeFavoritesDrawer();
         closeLoginModal();
         closePurchaseModal();
+        closeLegalModal();
       }
     });
 
@@ -2238,6 +2239,140 @@ document.addEventListener("DOMContentLoaded", () => {
       backToTopBtn.addEventListener("click", () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
+    }
+
+    // =========================================================================
+    // CONSENTIMIENTO LEGAL: TÉRMINOS, CONDICIONES Y COOKIES (FOOTER)
+    // =========================================================================
+    const openTermsLink = document.getElementById("openTermsLink");
+    const openCookiesLink = document.getElementById("openCookiesLink");
+    const consentAcceptBtn = document.getElementById("consentAcceptBtn");
+    const consentRejectBtn = document.getElementById("consentRejectBtn");
+    const consentSavedBadge = document.getElementById("consentSavedBadge");
+    const termsCookiesModal = document.getElementById("termsCookiesModal");
+    const closeTermsCookiesModalBtn = document.getElementById("closeTermsCookiesModalBtn");
+    const tabLegalTermsBtn = document.getElementById("tabLegalTermsBtn");
+    const tabLegalCookiesBtn = document.getElementById("tabLegalCookiesBtn");
+    const panelLegalTerms = document.getElementById("panelLegalTerms");
+    const panelLegalCookies = document.getElementById("panelLegalCookies");
+    const modalConsentAcceptBtn = document.getElementById("modalConsentAcceptBtn");
+    const modalConsentRejectBtn = document.getElementById("modalConsentRejectBtn");
+
+    function openLegalModal(tab) {
+      if (!termsCookiesModal) return;
+      if (tab === "cookies") {
+        if (tabLegalCookiesBtn) tabLegalCookiesBtn.classList.add("active");
+        if (tabLegalTermsBtn) tabLegalTermsBtn.classList.remove("active");
+        if (panelLegalCookies) panelLegalCookies.style.display = "block";
+        if (panelLegalTerms) panelLegalTerms.style.display = "none";
+      } else {
+        if (tabLegalTermsBtn) tabLegalTermsBtn.classList.add("active");
+        if (tabLegalCookiesBtn) tabLegalCookiesBtn.classList.remove("active");
+        if (panelLegalTerms) panelLegalTerms.style.display = "block";
+        if (panelLegalCookies) panelLegalCookies.style.display = "none";
+      }
+      termsCookiesModal.classList.add("is-visible");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLegalModal() {
+      if (!termsCookiesModal) return;
+      termsCookiesModal.classList.remove("is-visible");
+      document.body.style.overflow = "";
+    }
+
+    function saveConsentPreference(choice) {
+      try {
+        localStorage.setItem("tesla_cookies_consent", choice);
+      } catch (e) {}
+
+      if (choice === "accepted") {
+        if (consentSavedBadge) {
+          consentSavedBadge.textContent = "✓ Aceptado";
+          consentSavedBadge.className = "consent-saved-badge accepted";
+          consentSavedBadge.style.display = "inline-flex";
+        }
+        if (consentAcceptBtn) consentAcceptBtn.style.display = "none";
+        if (consentRejectBtn) {
+          consentRejectBtn.textContent = "Rechazar";
+          consentRejectBtn.style.display = "inline-flex";
+        }
+        showToast("Has aceptado los Términos y la Política de Cookies.", "success");
+      } else {
+        if (consentSavedBadge) {
+          consentSavedBadge.textContent = "✗ Rechazado";
+          consentSavedBadge.className = "consent-saved-badge rejected";
+          consentSavedBadge.style.display = "inline-flex";
+        }
+        if (consentRejectBtn) consentRejectBtn.style.display = "none";
+        if (consentAcceptBtn) {
+          consentAcceptBtn.textContent = "Aceptar";
+          consentAcceptBtn.style.display = "inline-flex";
+        }
+        showToast("Has rechazado las cookies no esenciales.", "info");
+      }
+      closeLegalModal();
+    }
+
+    // Inicializar estado guardado de cookies y términos
+    try {
+      const savedChoice = localStorage.getItem("tesla_cookies_consent");
+      if (savedChoice === "accepted") {
+        if (consentSavedBadge) {
+          consentSavedBadge.textContent = "✓ Aceptado";
+          consentSavedBadge.className = "consent-saved-badge accepted";
+          consentSavedBadge.style.display = "inline-flex";
+        }
+        if (consentAcceptBtn) consentAcceptBtn.style.display = "none";
+        if (consentRejectBtn) {
+          consentRejectBtn.textContent = "Rechazar";
+          consentRejectBtn.style.display = "inline-flex";
+        }
+      } else if (savedChoice === "rejected") {
+        if (consentSavedBadge) {
+          consentSavedBadge.textContent = "✗ Rechazado";
+          consentSavedBadge.className = "consent-saved-badge rejected";
+          consentSavedBadge.style.display = "inline-flex";
+        }
+        if (consentRejectBtn) consentRejectBtn.style.display = "none";
+        if (consentAcceptBtn) {
+          consentAcceptBtn.textContent = "Aceptar";
+          consentAcceptBtn.style.display = "inline-flex";
+        }
+      }
+    } catch (e) {}
+
+    if (openTermsLink) {
+      openTermsLink.addEventListener("click", () => openLegalModal("terms"));
+    }
+    if (openCookiesLink) {
+      openCookiesLink.addEventListener("click", () => openLegalModal("cookies"));
+    }
+    if (consentAcceptBtn) {
+      consentAcceptBtn.addEventListener("click", () => saveConsentPreference("accepted"));
+    }
+    if (consentRejectBtn) {
+      consentRejectBtn.addEventListener("click", () => saveConsentPreference("rejected"));
+    }
+    if (modalConsentAcceptBtn) {
+      modalConsentAcceptBtn.addEventListener("click", () => saveConsentPreference("accepted"));
+    }
+    if (modalConsentRejectBtn) {
+      modalConsentRejectBtn.addEventListener("click", () => saveConsentPreference("rejected"));
+    }
+    if (closeTermsCookiesModalBtn) {
+      closeTermsCookiesModalBtn.addEventListener("click", closeLegalModal);
+    }
+    if (termsCookiesModal) {
+      termsCookiesModal.addEventListener("click", (e) => {
+        if (e.target === termsCookiesModal) closeLegalModal();
+      });
+    }
+    if (tabLegalTermsBtn) {
+      tabLegalTermsBtn.addEventListener("click", () => openLegalModal("terms"));
+    }
+    if (tabLegalCookiesBtn) {
+      tabLegalCookiesBtn.addEventListener("click", () => openLegalModal("cookies"));
     }
   }
 
