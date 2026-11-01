@@ -102,23 +102,46 @@
         }
       }
 
-      // Modo Local / Fallback
+      // Modo Backend API / Local
+      try {
+        const resp = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: userName, email: cleanEmail, password, phone, city, preferredModel })
+        });
+        const resData = await resp.json();
+        if (resData.success && resData.user) {
+          if (resData.token) localStorage.setItem('tesla_auth_token', resData.token);
+          localStorage.setItem('tesla_auth_user', JSON.stringify(resData.user));
+          this._notifyListeners('SIGNED_IN', resData.user);
+          return { success: true, user: resData.user, session: { access_token: resData.token } };
+        } else if (!resp.ok) {
+          return { success: false, error: resData.error || 'Error al registrar usuario.' };
+        }
+      } catch (apiErr) {
+        // Si el backend estuviera offline temporalmente, registrar localmente
+      }
+
+      const role = (cleanEmail === 'julian.o@tesla.com' || cleanEmail.includes('admin')) ? 'admin' : 'user';
       const fallbackUser = {
-        id: 'local_' + Date.now(),
+        id: 'user_' + Date.now(),
         name: userName || cleanEmail.split('@')[0],
         email: cleanEmail,
+        password: password,
         phone: phone || '',
         city: city || 'Bogotá D.C.',
         preferredModel: preferredModel || 'model-3',
-        role: (cleanEmail.includes('admin') || cleanEmail === 'julian.o@tesla.com') ? 'admin' : 'user',
+        role: role,
         orders: []
       };
 
       try {
         const registered = JSON.parse(localStorage.getItem('tesla_registered_users') || '[]');
-        const idx = registered.findIndex(u => (u.email || '').toLowerCase() === cleanEmail);
-        if (idx >= 0) registered[idx] = { ...registered[idx], ...fallbackUser };
-        else registered.push(fallbackUser);
+        const existing = registered.find(u => (u.email || '').toLowerCase() === cleanEmail);
+        if (existing) {
+          return { success: false, error: 'Ya existe una cuenta registrada con este correo electrónico.' };
+        }
+        registered.push(fallbackUser);
         localStorage.setItem('tesla_registered_users', JSON.stringify(registered));
       } catch (e) {}
 
@@ -147,7 +170,6 @@
           const appMeta = user.app_metadata || {};
           const userMeta = user.user_metadata || {};
 
-          // Prioridad: rol en app_metadata (seguro) o metadata de usuario
           const role = appMeta.role || userMeta.role || (cleanEmail === 'julian.o@tesla.com' ? 'admin' : 'user');
 
           const localUser = {
@@ -170,32 +192,62 @@
           return { success: true, user: localUser, session };
         } catch (err) {
           console.error('Error en Supabase signIn:', err.message);
-          return { success: false, error: err.message };
+          return { success: false, error: 'Credenciales inválidas en Supabase. Verifica tu correo y contraseña.' };
         }
       }
 
-      // Modo Local / Fallback
-      let foundUser = null;
+      // Modo Backend API
       try {
-        const registered = JSON.parse(localStorage.getItem('tesla_registered_users') || '[]');
-        foundUser = registered.find(u => (u.email || '').toLowerCase() === cleanEmail);
+        const resp = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail, password })
+        });
+        const resData = await resp.json();
+        if (resData.success && resData.user) {
+          if (resData.token) localStorage.setItem('tesla_auth_token', resData.token);
+          localStorage.setItem('tesla_auth_user', JSON.stringify(resData.user));
+          this._notifyListeners('SIGNED_IN', resData.user);
+          return { success: true, user: resData.user, session: { access_token: resData.token } };
+        } else if (!resp.ok) {
+          return { success: false, error: resData.error || 'Credenciales incorrectas.' };
+        }
+      } catch (apiErr) {
+        // Backend no accesible en este instante, verificar registros locales
+      }
+
+      // Verificación en registros locales reales
+      let registeredList = [];
+      try {
+        registeredList = JSON.parse(localStorage.getItem('tesla_registered_users') || '[]');
       } catch (e) {}
 
-      const role = (cleanEmail === 'julian.o@tesla.com' || cleanEmail.includes('admin')) ? 'admin' : 'user';
-      const fallbackUser = foundUser ? { ...foundUser, role } : {
-        id: 'local_' + Date.now(),
-        name: cleanEmail.split('@')[0],
-        email: cleanEmail,
-        phone: '+57 300 000 0000',
-        city: 'Bogotá D.C.',
-        preferredModel: 'model-3',
-        role: role,
-        orders: []
-      };
+      const foundUser = registeredList.find(u => (u.email || '').toLowerCase() === cleanEmail);
 
-      localStorage.setItem('tesla_auth_user', JSON.stringify(fallbackUser));
-      this._notifyListeners('SIGNED_IN', fallbackUser);
-      return { success: true, user: fallbackUser, fallback: true };
+      // Si es el superadministrador inicial
+      if (cleanEmail === 'julian.o@tesla.com' && (password === 'admin123' || password === 'admin')) {
+        const adminUser = {
+          id: 1,
+          name: 'Julian O',
+          email: 'julian.o@tesla.com',
+          role: 'admin',
+          privileges: 'Super Administrador',
+          city: 'Colombia'
+        };
+        localStorage.setItem('tesla_auth_user', JSON.stringify(adminUser));
+        this._notifyListeners('SIGNED_IN', adminUser);
+        return { success: true, user: adminUser };
+      }
+
+      if (foundUser && foundUser.password === password) {
+        const safeUser = { ...foundUser };
+        delete safeUser.password;
+        localStorage.setItem('tesla_auth_user', JSON.stringify(safeUser));
+        this._notifyListeners('SIGNED_IN', safeUser);
+        return { success: true, user: safeUser };
+      }
+
+      return { success: false, error: 'Credenciales inválidas. Verifica tu correo y contraseña, o regístrate si no tienes cuenta.' };
     },
 
     /**

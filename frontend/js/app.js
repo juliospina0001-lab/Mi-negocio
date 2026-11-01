@@ -113,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
     registerTabPanel: document.getElementById("registerTabPanel"),
     authLoginForm: document.getElementById("authLoginForm"),
     authRegisterForm: document.getElementById("authRegisterForm"),
-    demoQuickLoginBtn: document.getElementById("demoQuickLoginBtn"),
     toggleLoginPwdBtn: document.getElementById("toggleLoginPwdBtn"),
     toggleRegPwdBtn: document.getElementById("toggleRegPwdBtn"),
     loginPassword: document.getElementById("loginPassword"),
@@ -2455,7 +2454,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const initials = user.name.trim().split(" ").map(n => n.charAt(0)).slice(0, 2).join("").toUpperCase() || "U";
     if (elements.dashAvatarCircle) elements.dashAvatarCircle.textContent = initials;
     if (elements.dashUserName) elements.dashUserName.textContent = user.name;
-    if (elements.dashUserRole) elements.dashUserRole.textContent = user.role || "Cliente VIP Tesla";
+    if (elements.dashUserRole) elements.dashUserRole.textContent = user.role || "Usuario Registrado";
     if (elements.dashUserEmail) elements.dashUserEmail.textContent = user.email;
     if (elements.dashUserCity) elements.dashUserCity.textContent = user.city || "Colombia";
 
@@ -3031,69 +3030,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Acceso Rápido Demostrativo VIP
-    if (elements.demoQuickLoginBtn) {
-      elements.demoQuickLoginBtn.addEventListener("click", () => {
-        const demoUser = {
-          name: "Julian Ospina",
-          email: "julian.ospina@tesla-vip.co",
-          phone: "+57 310 987 6543",
-          city: "Bogotá D.C.",
-          preferredModel: "model-3",
-          role: "Cliente VIP Tesla",
-          orders: [
-            {
-              orderNum: "TSL-ORD-742918",
-              date: "24/10/2026",
-              vehicleId: "model-3",
-              vehicleName: "Tesla Model 3 Gran Autonomía",
-              vehicleVersion: "Dual Motor AWD",
-              vehicleImage: "assets/images/model-3.webp",
-              includePapers: true,
-              totalAmount: 203200000,
-              status: "authorized",
-              statusLabel: "Autorizada por Asesor de Administración",
-              authorizedBy: "Julian O (Super Admin)"
-            }
-          ],
-          notifications: [
-            {
-              id: "notif_demo_01",
-              type: "purchase_authorized",
-              title: "🎉 ¡Tu compra ha sido APROBADA!",
-              message: "Tu orden de compra [TSL-ORD-742918] para el vehículo Tesla Model 3 Gran Autonomía ha sido AUTORIZADA formalmente. Paquete de matrícula y SOAT legalizados al día.",
-              orderNum: "TSL-ORD-742918",
-              vehicleName: "Tesla Model 3 Gran Autonomía",
-              amount: 203200000,
-              date: "Hoy, 2:15 p. m.",
-              timestamp: new Date().toISOString(),
-              isRead: false,
-              extra: {}
-            },
-            {
-              id: "notif_demo_02",
-              type: "purchase_created",
-              title: "📋 Radicado de Compra Exitoso",
-              message: "Has radicado la solicitud de reserva para el Tesla Model 3. El radicado TSL-ORD-742918 fue enviado a mesa de control administrativo.",
-              orderNum: "TSL-ORD-742918",
-              vehicleName: "Tesla Model 3 Gran Autonomía",
-              amount: 203200000,
-              date: "Ayer, 4:30 p. m.",
-              timestamp: new Date(Date.now() - 86400000).toISOString(),
-              isRead: true,
-              extra: { papers: true }
-            }
-          ]
-        };
-        saveAuthUser(demoUser);
-        openLoginModal("login", "profile");
-        showToast(`¡Bienvenido de nuevo, ${demoUser.name}! (Acceso VIP Activo)`, "success");
-      });
-    }
-
-    // Envío del Formulario de Inicio de Sesión
+    // Envío del Formulario de Inicio de Sesión Real
     if (elements.authLoginForm) {
-      elements.authLoginForm.addEventListener("submit", (e) => {
+      elements.authLoginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         // Rate Limiting anti-fuerza bruta: máximo 5 intentos en 30 segundos
@@ -3124,39 +3063,45 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!valid) return;
 
         const cleanEmail = emailInput.value.trim().toLowerCase();
-        let userProfile = null;
-        try {
-          const registered = JSON.parse(localStorage.getItem("tesla_registered_users") || "[]");
-          userProfile = registered.find(u => (u.email || "").toLowerCase() === cleanEmail);
-        } catch (e) {}
-
-        const userNameFromEmail = emailInput.value.split("@")[0].replace(/[._-]/g, " ");
-        const formattedName = userNameFromEmail.charAt(0).toUpperCase() + userNameFromEmail.slice(1);
-
-        const authenticatedUser = userProfile ? { ...userProfile } : {
-          name: formattedName || "Cliente Tesla",
-          email: cleanEmail,
-          phone: "+57 300 000 0000",
-          city: "Bogotá D.C.",
-          preferredModel: "model-3",
-          role: "Cliente Registrado",
-          orders: []
-        };
+        const pwd = passInput.value;
 
         if (window.supabaseAuth) {
-          window.supabaseAuth.signIn({ email: cleanEmail, password: passInput.value });
-        }
+          const authRes = await window.supabaseAuth.signIn({ email: cleanEmail, password: pwd });
+          if (!authRes.success) {
+            passInput.classList.add("is-invalid");
+            showToast(authRes.error || "Credenciales incorrectas. Verifica tu correo y contraseña.", "error");
+            return;
+          }
+          saveAuthUser(authRes.user);
+          openLoginModal("login", "profile");
+          elements.authLoginForm.reset();
+          showToast(`¡Bienvenido de nuevo, ${authRes.user.name || "Usuario"}!`, "success");
+        } else {
+          let registeredList = [];
+          try {
+            registeredList = JSON.parse(localStorage.getItem("tesla_registered_users") || "[]");
+          } catch (err) {}
 
-        saveAuthUser(authenticatedUser);
-        openLoginModal("login", "profile");
-        elements.authLoginForm.reset();
-        showToast(`¡Bienvenido de nuevo, ${authenticatedUser.name}!`, "success");
+          const foundUser = registeredList.find(u => (u.email || "").toLowerCase() === cleanEmail);
+          if (!foundUser || foundUser.password !== pwd) {
+            passInput.classList.add("is-invalid");
+            showToast("Correo o contraseña incorrectos.", "error");
+            return;
+          }
+
+          const safeUser = { ...foundUser };
+          delete safeUser.password;
+          saveAuthUser(safeUser);
+          openLoginModal("login", "profile");
+          elements.authLoginForm.reset();
+          showToast(`¡Bienvenido de nuevo, ${safeUser.name}!`, "success");
+        }
       });
     }
 
-    // Envío del Formulario de Registro
+    // Envío del Formulario de Registro Real
     if (elements.authRegisterForm) {
-      elements.authRegisterForm.addEventListener("submit", (e) => {
+      elements.authRegisterForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         // Rate Limiting anti-fuerza bruta en registros
@@ -3206,11 +3151,29 @@ document.addEventListener("DOMContentLoaded", () => {
           phone: phoneInput ? phoneInput.value.trim() : "",
           city: citySelect ? citySelect.value : "Bogotá D.C.",
           preferredModel: modelSelect ? modelSelect.value : "model-3",
-          role: "Nuevo Propietario VIP",
+          role: "Usuario Registrado",
           orders: []
         };
 
-        // Guardar de forma persistente en lista de usuarios registrados
+        if (window.supabaseAuth) {
+          const regRes = await window.supabaseAuth.signUp({
+            email: cleanEmail,
+            password: pwd,
+            name: newUser.name,
+            phone: newUser.phone,
+            city: newUser.city,
+            preferredModel: newUser.preferredModel
+          });
+          if (!regRes.success) {
+            showToast(regRes.error || "Error al crear la cuenta.", "error");
+            return;
+          }
+          if (regRes.user && regRes.user.id) {
+            newUser.id = regRes.user.id;
+          }
+        }
+
+        // Guardar de forma persistente en lista de usuarios registrados locales
         try {
           const registered = JSON.parse(localStorage.getItem("tesla_registered_users") || "[]");
           const existingIdx = registered.findIndex(u => (u.email || "").toLowerCase() === cleanEmail);
@@ -3220,43 +3183,24 @@ document.addEventListener("DOMContentLoaded", () => {
             registered.push(newUser);
           }
           localStorage.setItem("tesla_registered_users", JSON.stringify(registered));
+        } catch (err) {}
 
-          // Si el usuario es Julian Ospina o admin, sincronizar inmediatamente con la plataforma de administración
-          if (cleanEmail === "juli123@gmail.com" || cleanEmail.includes("julian") || cleanEmail.includes("admin")) {
-            const adminAccs = JSON.parse(localStorage.getItem("tesla_admin_accounts") || "[]");
-            const aIdx = adminAccs.findIndex(a => (a.email || "").toLowerCase() === cleanEmail);
-            if (aIdx >= 0) {
-              adminAccs[aIdx].password = pwd;
-              adminAccs[aIdx].name = newUser.name;
-            } else {
-              adminAccs.push({
-                id: "admin_" + Date.now(),
-                name: newUser.name,
-                email: cleanEmail,
-                password: pwd,
-                role: "Super Administrador",
-                createdAt: new Date().toISOString()
-              });
-            }
-            localStorage.setItem("tesla_admin_accounts", JSON.stringify(adminAccs));
-          }
-        } catch (e) {}
-
-        if (window.supabaseAuth) {
-          window.supabaseAuth.signUp({
-            email: cleanEmail,
-            password: pwd,
-            name: newUser.name,
-            phone: newUser.phone,
-            city: newUser.city,
-            preferredModel: newUser.preferredModel
-          });
-        }
-
-        saveAuthUser(newUser);
+        const safeUser = { ...newUser };
+        delete safeUser.password;
+        saveAuthUser(safeUser);
         closeLoginModal();
         elements.authRegisterForm.reset();
-        showToast(`¡Cuenta creada con éxito! Bienvenido, ${newUser.name}. Se ha desbloqueado el Simulador de Financiación y Crédito.`, "success");
+        showToast(`¡Cuenta creada con éxito! Bienvenido, ${safeUser.name}. Se ha desbloqueado el Simulador de Financiación y Crédito.`, "success");
+        
+        // Desplazar suavemente al simulador de crédito recién desbloqueado
+        const simSection = document.getElementById("financiacion");
+        if (simSection) {
+          setTimeout(() => {
+            simSection.scrollIntoView({ behavior: "smooth" });
+          }, 350);
+        }
+      });
+    }
         
         // Desplazar suavemente al simulador de crédito recién desbloqueado
         const simSection = document.getElementById("financiacion");

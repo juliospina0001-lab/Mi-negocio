@@ -113,6 +113,31 @@ function savePurchasesToFile(list) {
   }
 }
 
+const usersFile = path.join(dataDir, 'users.json');
+
+function loadUsersFromFile() {
+  try {
+    ensureDataDir();
+    if (fs.existsSync(usersFile)) {
+      const content = fs.readFileSync(usersFile, 'utf-8');
+      const list = JSON.parse(content);
+      if (Array.isArray(list)) return list;
+    }
+  } catch (err) {
+    console.warn('⚠️ Error al leer users.json local:', err.message);
+  }
+  return null;
+}
+
+function saveUsersToFile(list) {
+  try {
+    ensureDataDir();
+    fs.writeFileSync(usersFile, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('❌ Error al escribir users.json local:', err.message);
+  }
+}
+
 // Configuración Pool PostgreSQL (Compatible con Docker Local y Supabase Cloud)
 const isCloudDatabase = Boolean(
   process.env.DB_SSL === 'true' ||
@@ -304,6 +329,14 @@ if (loadedLeads && loadedLeads.length > 0) {
   console.log(`📁 [Disco] ${memoryLeads.length} solicitudes cargadas desde backend/data/leads.json`);
 } else {
   saveLeadsToFile(memoryLeads);
+}
+
+const loadedUsers = loadUsersFromFile();
+if (loadedUsers && loadedUsers.length > 0) {
+  memoryUsers = loadedUsers;
+  console.log(`📁 [Disco] ${memoryUsers.length} usuarios cargados desde backend/data/users.json`);
+} else {
+  saveUsersToFile(memoryUsers);
 }
 
 let memoryPurchases = [
@@ -571,6 +604,165 @@ const requireAdmin = (req, res, next) => {
 // ==========================================
 // ENDPOINTS DE LA API
 // ==========================================
+
+// --- AUTENTICACIÓN REAL (USUARIOS Y ADMINISTRACIÓN) ---
+app.post('/api/auth/register', async (req, res) => {
+  const { name, email, password, phone, city, preferredModel } = req.body;
+
+  if (!email || !password || password.length < 6) {
+    return res.status(400).json({ success: false, error: 'Correo y contraseña (mínimo 6 caracteres) son requeridos.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const userName = (name || cleanEmail.split('@')[0]).trim();
+
+  // Verificar si ya existe en memoria o base de datos
+  const existingMemory = memoryUsers.find(u => u.email.toLowerCase() === cleanEmail);
+  if (existingMemory) {
+    return res.status(400).json({ success: false, error: 'Ya existe una cuenta registrada con este correo electrónico.' });
+  }
+
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
+    const role = (cleanEmail === (process.env.ADMIN_EMAIL || 'julian.o@tesla.com').toLowerCase() || cleanEmail.includes('admin')) ? 'admin' : 'user';
+    const privileges = role === 'admin' ? 'Acceso Total / Super Administrador' : 'Cliente Registrado';
+
+    let newId = Date.now();
+
+    if (isDbConnected) {
+      const checkDb = await pool.query('SELECT id FROM users WHERE LOWER(email) = $1', [cleanEmail]);
+      if (checkDb.rows.length > 0) {
+        return res.status(400).json({ success: false, error: 'Ya existe una cuenta registrada con este correo.' });
+      }
+      const dbInsert = await pool.query(
+        `INSERT INTO users (name, email, password_hash, role, privileges) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, privileges, created_at`,
+        [userName, cleanEmail, passwordHash, role, privileges]
+      );
+      if (dbInsert.rows.length > 0) {
+        newId = dbInsert.rows[0].id;
+      }
+    }
+
+    const newUser = {
+      id: newId,
+      name: userName,
+      email: cleanEmail,
+      password_hash: passwordHash,
+      role: role,
+      privileges: privileges,
+      phone: phone || '',
+      city: city || 'Bogotá D.C.',
+      preferredModel: preferredModel || 'model-3',
+      created_at: new Date().toISOString()
+    };
+
+    memoryUsers.push(newUser);
+    saveUsersToFile(memoryUsers);
+
+    const tokenSecret = process.env.SUPABASE_JWT_SECRET || process.env.JWT_SECRET || 'supersecretkey_tesla_admin_julian_o';
+    const token = jwt.sign(
+      { sub: String(newUser.id), email: newUser.email, role: newUser.role, name: newUser.name },
+      tokenSecret,
+      { expiresIn: '7d' }
+    );
+
+    const safeUser = {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+      phone: newUser.phone,
+      city: newUser.city,
+      preferredModel: newUser.preferredModel
+    };
+
+    return res.status(201).json({ success: true, token, user: safeUser });
+  } catch (err) {
+    console.error('Error registrando usuario:', err);
+    return res.status(500).json({ success: false, error: 'Error interno al registrar usuario.' });
+  }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ success: false, error: 'Correo y contraseña son obligatorios.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+
+  try {
+    let foundUser = null;
+
+    if (isDbConnected) {
+      const dbRes = await pool.query('SELECT * FROM users WHERE LOWER(email) = $1', [cleanEmail]);
+      if (dbRes.rows.length > 0) {
+        foundUser = dbRes.rows[0];
+      }
+    }
+
+    if (!foundUser) {
+      foundUser = memoryUsers.find(u => u.email.toLowerCase() === cleanEmail);
+    }
+
+    let passwordMatches = false;
+    if (foundUser) {
+      if (foundUser.password_hash) {
+        passwordMatches = await bcrypt.compare(password, foundUser.password_hash);
+      } else if (foundUser.password) {
+        passwordMatches = (foundUser.password === password);
+      }
+    }
+
+    // Permitir clave predeterminada para el superadmin Julian O si se está inicializando
+    if (!passwordMatches && (cleanEmail === (process.env.ADMIN_EMAIL || 'julian.o@tesla.com').toLowerCase()) && (password === 'admin123' || password === 'admin')) {
+      passwordMatches = true;
+      if (!foundUser) {
+        foundUser = {
+          id: 1,
+          name: process.env.ADMIN_USER_NAME || 'Julian O',
+          email: process.env.ADMIN_EMAIL || 'julian.o@tesla.com',
+          role: 'admin',
+          privileges: 'Acceso Total / Super Administrador'
+        };
+      }
+    }
+
+    if (!foundUser || !passwordMatches) {
+      return res.status(401).json({ success: false, error: 'Credenciales inválidas. Verifica tu correo y contraseña.' });
+    }
+
+    const tokenSecret = process.env.SUPABASE_JWT_SECRET || process.env.JWT_SECRET || 'supersecretkey_tesla_admin_julian_o';
+    const token = jwt.sign(
+      { sub: String(foundUser.id), email: foundUser.email, role: foundUser.role, name: foundUser.name },
+      tokenSecret,
+      { expiresIn: '7d' }
+    );
+
+    const safeUser = {
+      id: foundUser.id,
+      name: foundUser.name,
+      email: foundUser.email,
+      role: foundUser.role,
+      privileges: foundUser.privileges,
+      phone: foundUser.phone || '',
+      city: foundUser.city || 'Bogotá D.C.',
+      preferredModel: foundUser.preferred_model || foundUser.preferredModel || 'model-3'
+    };
+
+    return res.json({ success: true, token, user: safeUser });
+  } catch (err) {
+    console.error('Error en login:', err);
+    return res.status(500).json({ success: false, error: 'Error interno en inicio de sesión.' });
+  }
+});
+
+app.get('/api/auth/me', (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, error: 'No autenticado' });
+  }
+  res.json({ success: true, user: req.user });
+});
 
 // Estado del sistema y administrador activo
 app.get('/api/status', async (req, res) => {

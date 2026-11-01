@@ -1330,14 +1330,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cuentas maestras predeterminadas para garantizar acceso ininterrumpido al propietario
   const DEFAULT_ADMIN_ACCOUNTS = [
     {
-      id: "admin_master_julian",
-      name: "Julian Ospina",
-      email: "juli123@gmail.com",
-      password: "admin",
-      role: "Super Administrador",
-      createdAt: "2026-01-01T00:00:00.000Z"
-    },
-    {
       id: "admin_master_tesla",
       name: "Julian Ospina",
       email: "julian.o@tesla.com",
@@ -1358,7 +1350,7 @@ document.addEventListener("DOMContentLoaded", () => {
           accounts = parsed.map(acc => ({
             ...acc,
             name: (acc.name || "Julian Ospina").trim(),
-            email: (acc.email || "juli123@gmail.com").trim().toLowerCase(),
+            email: (acc.email || "julian.o@tesla.com").trim().toLowerCase(),
             password: (acc.password || "admin").trim(),
             role: acc.role || "Super Administrador"
           }));
@@ -1368,70 +1360,19 @@ document.addEventListener("DOMContentLoaded", () => {
       console.warn("Error leyendo cuentas de admin:", e);
     }
 
-    // Si aún no está la cuenta principal de Julian Ospina (juli123@gmail.com), incorporarla
-    const hasJulian = accounts.some(a => a.email.toLowerCase() === "juli123@gmail.com");
+    // Si aún no está la cuenta principal de Julian Ospina (julian.o@tesla.com), incorporarla
+    const hasJulian = accounts.some(a => a.email.toLowerCase() === "julian.o@tesla.com");
     if (!hasJulian) {
       accounts.push({
-        id: "admin_master_julian",
+        id: "admin_master_tesla",
         name: "Julian Ospina",
-        email: "juli123@gmail.com",
+        email: "julian.o@tesla.com",
         password: "admin",
         role: "Super Administrador",
         createdAt: new Date().toISOString()
       });
       saveAdminAccounts(accounts);
     }
-
-    // Revisar si existe cuenta sincronizada desde el showroom (index.html)
-    try {
-      const showroomUser = localStorage.getItem("tesla_auth_user");
-      if (showroomUser) {
-        const parsedUser = JSON.parse(showroomUser);
-        if (parsedUser && parsedUser.email) {
-          const sEmail = parsedUser.email.trim().toLowerCase();
-          const existing = accounts.find(a => a.email.toLowerCase() === sEmail);
-          if (!existing) {
-            accounts.push({
-              id: "admin_" + Date.now(),
-              name: parsedUser.name || "Julian Ospina",
-              email: sEmail,
-              password: parsedUser.password ? parsedUser.password.trim() : "admin",
-              role: "Super Administrador",
-              createdAt: new Date().toISOString()
-            });
-            saveAdminAccounts(accounts);
-          }
-        }
-      }
-    } catch (e) {}
-
-    // Revisar usuarios registrados en el Showroom
-    try {
-      const regRaw = localStorage.getItem("tesla_registered_users");
-      if (regRaw) {
-        const regList = JSON.parse(regRaw);
-        if (Array.isArray(regList)) {
-          regList.forEach(u => {
-            if (u && u.email) {
-              const uEmail = u.email.trim().toLowerCase();
-              const existing = accounts.find(a => a.email.toLowerCase() === uEmail);
-              if (!existing) {
-                accounts.push({
-                  id: "admin_reg_" + (u.id || Date.now()),
-                  name: u.name || "Julian Ospina",
-                  email: uEmail,
-                  password: u.password ? u.password.trim() : "admin",
-                  role: "Super Administrador",
-                  createdAt: u.createdAt || new Date().toISOString()
-                });
-              } else if (u.password && (!existing.password || existing.password === "admin")) {
-                existing.password = u.password.trim();
-              }
-            }
-          });
-        }
-      }
-    } catch (e) {}
 
     return accounts;
   }
@@ -1440,7 +1381,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function saveAdminAccounts(accounts) {
     try {
       localStorage.setItem(STORAGE_KEY_ADMIN_ACCOUNTS, JSON.stringify(accounts));
-      // Copia de seguridad en clave alternativa para máxima persistencia
       localStorage.setItem("tesla_admin_backup_accounts", JSON.stringify(accounts));
     } catch (e) {
       console.warn("Error guardando cuentas de admin:", e);
@@ -1454,12 +1394,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (stored) return JSON.parse(stored);
     } catch (e) {}
     const accounts = getAdminAccounts();
-    const julianAcc = accounts.find(a => a.email.toLowerCase() === "juli123@gmail.com");
+    const julianAcc = accounts.find(a => a.email.toLowerCase() === "julian.o@tesla.com");
     if (julianAcc) return julianAcc;
     if (accounts.length > 0) return accounts[0];
     return {
       name: "Julian Ospina",
-      email: "juli123@gmail.com",
+      email: "julian.o@tesla.com",
       role: "Super Administrador"
     };
   }
@@ -1638,7 +1578,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // PROCESAR INICIO DE SESIÓN ADMINISTRATIVO
   if (adminLoginForm) {
-    adminLoginForm.addEventListener("submit", (e) => {
+    adminLoginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const rawUser = adminGateEmail ? adminGateEmail.value.trim() : "";
       const inputUser = rawUser.toLowerCase();
@@ -1653,89 +1593,45 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 1. Buscar coincidencia exacta por correo, nombre o usuario (prefijo de email)
-      let matched = accounts.find(a => {
-        const aEmail = (a.email || "").trim().toLowerCase();
-        const aName = (a.name || "").trim().toLowerCase();
-        const aUser = aEmail.split("@")[0];
-        const aPwd = (a.password || "").trim();
+      let matched = null;
 
-        const isUserMatch = aEmail === inputUser || aName === inputUser || aUser === inputUser;
-        const isPwdMatch = aPwd === inputPwd || aPwd.toLowerCase() === inputPwd.toLowerCase();
-        return isUserMatch && isPwdMatch;
-      });
+      // 1. Intentar autenticación segura mediante Supabase Auth o Backend API
+      if (window.supabaseAuth) {
+        const authEmail = inputUser.includes("@") ? inputUser : `${inputUser}@tesla.com`;
+        const authRes = await window.supabaseAuth.signIn({
+          email: authEmail,
+          password: inputPwd
+        });
 
-      // 2. Comprobar si el usuario es el propietario o administrador titular (Julian)
-      const isOwnerUser = inputUser === "juli123@gmail.com" ||
-                          inputUser === "juli123" ||
-                          inputUser === "julian.o@tesla.com" ||
-                          inputUser === "julian@tesla.com" ||
-                          inputUser === "julian" ||
-                          inputUser === "admin" ||
-                          inputUser.includes("julian") ||
-                          inputUser.includes("juli") ||
-                          inputUser.includes("ospina");
-
-      // Si es el propietario con cualquier clave de 3+ caracteres, permitir acceso y actualizar contraseña
-      if (!matched && isOwnerUser && inputPwd.length >= 3) {
-        const existingAcc = accounts.find(a => 
-          a.email.toLowerCase() === "juli123@gmail.com" || 
-          a.email.toLowerCase() === inputUser ||
-          a.name.toLowerCase() === "julian ospina"
-        );
-
-        if (existingAcc) {
-          matched = existingAcc;
-          matched.password = inputPwd;
-        } else {
-          matched = {
-            id: "admin_master_julian",
-            name: "Julian Ospina",
-            email: inputUser.includes("@") ? inputUser : "juli123@gmail.com",
-            password: inputPwd,
-            role: "Super Administrador",
-            createdAt: new Date().toISOString()
-          };
-          accounts.push(matched);
-        }
-        saveAdminAccounts(accounts);
-      }
-
-      // 3. Si el correo coincide con una cuenta registrada y la contraseña tiene al menos 4 caracteres
-      if (!matched && inputPwd.length >= 4) {
-        const byEmail = accounts.find(a => 
-          a.email.toLowerCase() === inputUser || 
-          a.email.split("@")[0] === inputUser ||
-          a.name.toLowerCase() === inputUser
-        );
-        if (byEmail) {
-          matched = byEmail;
-          matched.password = inputPwd; // Actualizar contraseña para que nunca quede bloqueado
-          saveAdminAccounts(accounts);
+        if (authRes.success && authRes.user) {
+          const userRole = (authRes.user.role || "").toLowerCase();
+          const isAdminRole = userRole.includes("admin") || authEmail === "julian.o@tesla.com";
+          if (isAdminRole) {
+            matched = {
+              id: authRes.user.id || "admin_master_tesla",
+              name: authRes.user.name || "Julian Ospina",
+              email: authRes.user.email || authEmail,
+              role: "Super Administrador"
+            };
+          }
         }
       }
 
-      // 4. Si es una cuenta nueva introducida directamente en el login con credenciales válidas
-      if (!matched && inputUser.includes("@") && inputPwd.length >= 4) {
-        matched = {
-          id: "admin_" + Date.now(),
-          name: inputUser.split("@")[0],
-          email: inputUser,
-          password: inputPwd,
-          role: "Super Administrador",
-          createdAt: new Date().toISOString()
-        };
-        accounts.push(matched);
-        saveAdminAccounts(accounts);
+      // 2. Validación de cuentas de administrador autorizadas locales
+      if (!matched) {
+        matched = accounts.find(a => {
+          const aEmail = (a.email || "").trim().toLowerCase();
+          const aName = (a.name || "").trim().toLowerCase();
+          const aUser = aEmail.split("@")[0];
+          const aPwd = (a.password || "").trim();
+
+          const isUserMatch = aEmail === inputUser || aName === inputUser || aUser === inputUser;
+          const isPwdMatch = aPwd === inputPwd;
+          return isUserMatch && isPwdMatch;
+        });
       }
 
       if (matched) {
-        if (window.supabaseAuth) {
-          window.supabaseAuth.signIn({
-            email: (matched.email && matched.email.includes('@')) ? matched.email : `${inputUser}@tesla.com`,
-            password: inputPwd
-          });
-        }
         sessionStorage.setItem("tesla_admin_auth", "true");
         setCurrentAdmin(matched);
         if (adminGateErrorMsg) adminGateErrorMsg.style.display = "none";
@@ -1746,16 +1642,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (adminGateErrorMsg) {
           adminGateErrorMsg.style.display = "block";
           adminGateErrorMsg.innerHTML = `
-            <div style="font-weight: 600; margin-bottom: 6px;">Credenciales no reconocidas en esta sesión.</div>
+            <div style="font-weight: 600; margin-bottom: 6px;">Credenciales administrativas no autorizadas.</div>
             <div style="font-size: 0.77rem; line-height: 1.4; color: #fecaca;">
-              • Puedes <span id="clickErrToReg" style="color: #ffffff; font-weight: 700; text-decoration: underline; cursor: pointer;">Crear o Actualizar tu Cuenta de Administrador aquí</span>.<br>
-              • O ingresar directamente con tu cuenta predeterminada: <strong>juli123@gmail.com</strong> (clave: <strong>admin</strong>).
+              Verifica que el correo y la contraseña pertenezcan a una cuenta de administrador registrada.
             </div>
           `;
-          const clickErrToReg = document.getElementById("clickErrToReg");
-          if (clickErrToReg) {
-            clickErrToReg.addEventListener("click", () => showRegisterView(false));
-          }
         }
       }
     });
