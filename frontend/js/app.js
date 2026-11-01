@@ -2242,13 +2242,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // CONSENTIMIENTO LEGAL: TÉRMINOS, CONDICIONES Y COOKIES (FOOTER)
+    // CONSENTIMIENTO LEGAL: TÉRMINOS, CONDICIONES Y COOKIES (BANNER Y MODAL)
     // =========================================================================
+    const floatingConsentBanner = document.getElementById("floatingConsentBanner");
+    const bannerConsentAcceptBtn = document.getElementById("bannerConsentAcceptBtn");
+    const bannerConsentRejectBtn = document.getElementById("bannerConsentRejectBtn");
+    const bannerOpenTerms = document.getElementById("bannerOpenTerms");
+    const bannerOpenCookies = document.getElementById("bannerOpenCookies");
+
     const openTermsLink = document.getElementById("openTermsLink");
     const openCookiesLink = document.getElementById("openCookiesLink");
     const consentAcceptBtn = document.getElementById("consentAcceptBtn");
     const consentRejectBtn = document.getElementById("consentRejectBtn");
     const consentSavedBadge = document.getElementById("consentSavedBadge");
+
     const termsCookiesModal = document.getElementById("termsCookiesModal");
     const closeTermsCookiesModalBtn = document.getElementById("closeTermsCookiesModalBtn");
     const tabLegalTermsBtn = document.getElementById("tabLegalTermsBtn");
@@ -2257,6 +2264,80 @@ document.addEventListener("DOMContentLoaded", () => {
     const panelLegalCookies = document.getElementById("panelLegalCookies");
     const modalConsentAcceptBtn = document.getElementById("modalConsentAcceptBtn");
     const modalConsentRejectBtn = document.getElementById("modalConsentRejectBtn");
+
+    function isConsentAccepted() {
+      try {
+        return localStorage.getItem("tesla_cookies_consent") === "accepted";
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function showFloatingBanner() {
+      if (!floatingConsentBanner) return;
+      if (isConsentAccepted()) return;
+      // Aparece automáticamente apenas el usuario entra a la página
+      setTimeout(() => {
+        if (!isConsentAccepted()) {
+          floatingConsentBanner.classList.add("is-active");
+        }
+      }, 500);
+    }
+
+    function hideFloatingBanner() {
+      if (floatingConsentBanner) {
+        floatingConsentBanner.classList.remove("is-active");
+      }
+    }
+
+    function updateConsentUI() {
+      const accepted = isConsentAccepted();
+      if (accepted) {
+        // Una vez aceptado: ya no se puede rechazar
+        hideFloatingBanner();
+        if (consentSavedBadge) {
+          consentSavedBadge.textContent = "✓ Términos y Cookies Aceptados";
+          consentSavedBadge.className = "consent-saved-badge accepted";
+          consentSavedBadge.style.display = "inline-flex";
+        }
+        if (consentAcceptBtn) consentAcceptBtn.style.display = "none";
+        if (consentRejectBtn) consentRejectBtn.style.display = "none";
+        if (modalConsentRejectBtn) modalConsentRejectBtn.style.display = "none";
+        if (modalConsentAcceptBtn) {
+          modalConsentAcceptBtn.textContent = "Aceptado ✓";
+          modalConsentAcceptBtn.disabled = true;
+          modalConsentAcceptBtn.style.opacity = "0.7";
+        }
+      } else {
+        // Si no está aceptado, los botones están disponibles
+        if (consentSavedBadge) consentSavedBadge.style.display = "none";
+        if (consentAcceptBtn) consentAcceptBtn.style.display = "inline-flex";
+        if (consentRejectBtn) consentRejectBtn.style.display = "inline-flex";
+        if (modalConsentRejectBtn) modalConsentRejectBtn.style.display = "inline-flex";
+        if (modalConsentAcceptBtn) {
+          modalConsentAcceptBtn.textContent = "Aceptar Todo";
+          modalConsentAcceptBtn.disabled = false;
+          modalConsentAcceptBtn.style.opacity = "1";
+        }
+      }
+    }
+
+    function acceptConsent() {
+      try {
+        localStorage.setItem("tesla_cookies_consent", "accepted");
+      } catch (e) {}
+      updateConsentUI();
+      closeLegalModal();
+      showToast("Has aceptado los Términos y Condiciones y la Política de Cookies.", "success");
+    }
+
+    function rejectConsent() {
+      // Si los rechaza, desaparece en esta visita
+      hideFloatingBanner();
+      closeLegalModal();
+      // NO se guarda en localStorage como permanente, para que al volver a entrar le vuelva a aparecer
+      showToast("Has rechazado las cookies no esenciales.", "info");
+    }
 
     function openLegalModal(tab) {
       if (!termsCookiesModal) return;
@@ -2281,99 +2362,33 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.style.overflow = "";
     }
 
-    function saveConsentPreference(choice) {
-      try {
-        localStorage.setItem("tesla_cookies_consent", choice);
-      } catch (e) {}
+    // Inicializar estado y mostrar automáticamente si no está aceptado
+    updateConsentUI();
+    showFloatingBanner();
 
-      if (choice === "accepted") {
-        if (consentSavedBadge) {
-          consentSavedBadge.textContent = "✓ Aceptado";
-          consentSavedBadge.className = "consent-saved-badge accepted";
-          consentSavedBadge.style.display = "inline-flex";
-        }
-        if (consentAcceptBtn) consentAcceptBtn.style.display = "none";
-        if (consentRejectBtn) {
-          consentRejectBtn.textContent = "Rechazar";
-          consentRejectBtn.style.display = "inline-flex";
-        }
-        showToast("Has aceptado los Términos y la Política de Cookies.", "success");
-      } else {
-        if (consentSavedBadge) {
-          consentSavedBadge.textContent = "✗ Rechazado";
-          consentSavedBadge.className = "consent-saved-badge rejected";
-          consentSavedBadge.style.display = "inline-flex";
-        }
-        if (consentRejectBtn) consentRejectBtn.style.display = "none";
-        if (consentAcceptBtn) {
-          consentAcceptBtn.textContent = "Aceptar";
-          consentAcceptBtn.style.display = "inline-flex";
-        }
-        showToast("Has rechazado las cookies no esenciales.", "info");
-      }
-      closeLegalModal();
-    }
+    // Eventos del banner flotante automático
+    if (bannerConsentAcceptBtn) bannerConsentAcceptBtn.addEventListener("click", acceptConsent);
+    if (bannerConsentRejectBtn) bannerConsentRejectBtn.addEventListener("click", rejectConsent);
+    if (bannerOpenTerms) bannerOpenTerms.addEventListener("click", () => openLegalModal("terms"));
+    if (bannerOpenCookies) bannerOpenCookies.addEventListener("click", () => openLegalModal("cookies"));
 
-    // Inicializar estado guardado de cookies y términos
-    try {
-      const savedChoice = localStorage.getItem("tesla_cookies_consent");
-      if (savedChoice === "accepted") {
-        if (consentSavedBadge) {
-          consentSavedBadge.textContent = "✓ Aceptado";
-          consentSavedBadge.className = "consent-saved-badge accepted";
-          consentSavedBadge.style.display = "inline-flex";
-        }
-        if (consentAcceptBtn) consentAcceptBtn.style.display = "none";
-        if (consentRejectBtn) {
-          consentRejectBtn.textContent = "Rechazar";
-          consentRejectBtn.style.display = "inline-flex";
-        }
-      } else if (savedChoice === "rejected") {
-        if (consentSavedBadge) {
-          consentSavedBadge.textContent = "✗ Rechazado";
-          consentSavedBadge.className = "consent-saved-badge rejected";
-          consentSavedBadge.style.display = "inline-flex";
-        }
-        if (consentRejectBtn) consentRejectBtn.style.display = "none";
-        if (consentAcceptBtn) {
-          consentAcceptBtn.textContent = "Aceptar";
-          consentAcceptBtn.style.display = "inline-flex";
-        }
-      }
-    } catch (e) {}
+    // Eventos de la barra del footer
+    if (consentAcceptBtn) consentAcceptBtn.addEventListener("click", acceptConsent);
+    if (consentRejectBtn) consentRejectBtn.addEventListener("click", rejectConsent);
+    if (openTermsLink) openTermsLink.addEventListener("click", () => openLegalModal("terms"));
+    if (openCookiesLink) openCookiesLink.addEventListener("click", () => openLegalModal("cookies"));
 
-    if (openTermsLink) {
-      openTermsLink.addEventListener("click", () => openLegalModal("terms"));
-    }
-    if (openCookiesLink) {
-      openCookiesLink.addEventListener("click", () => openLegalModal("cookies"));
-    }
-    if (consentAcceptBtn) {
-      consentAcceptBtn.addEventListener("click", () => saveConsentPreference("accepted"));
-    }
-    if (consentRejectBtn) {
-      consentRejectBtn.addEventListener("click", () => saveConsentPreference("rejected"));
-    }
-    if (modalConsentAcceptBtn) {
-      modalConsentAcceptBtn.addEventListener("click", () => saveConsentPreference("accepted"));
-    }
-    if (modalConsentRejectBtn) {
-      modalConsentRejectBtn.addEventListener("click", () => saveConsentPreference("rejected"));
-    }
-    if (closeTermsCookiesModalBtn) {
-      closeTermsCookiesModalBtn.addEventListener("click", closeLegalModal);
-    }
+    // Eventos del modal
+    if (modalConsentAcceptBtn) modalConsentAcceptBtn.addEventListener("click", acceptConsent);
+    if (modalConsentRejectBtn) modalConsentRejectBtn.addEventListener("click", rejectConsent);
+    if (closeTermsCookiesModalBtn) closeTermsCookiesModalBtn.addEventListener("click", closeLegalModal);
     if (termsCookiesModal) {
       termsCookiesModal.addEventListener("click", (e) => {
         if (e.target === termsCookiesModal) closeLegalModal();
       });
     }
-    if (tabLegalTermsBtn) {
-      tabLegalTermsBtn.addEventListener("click", () => openLegalModal("terms"));
-    }
-    if (tabLegalCookiesBtn) {
-      tabLegalCookiesBtn.addEventListener("click", () => openLegalModal("cookies"));
-    }
+    if (tabLegalTermsBtn) tabLegalTermsBtn.addEventListener("click", () => openLegalModal("terms"));
+    if (tabLegalCookiesBtn) tabLegalCookiesBtn.addEventListener("click", () => openLegalModal("cookies"));
   }
 
   // =========================================================================

@@ -6951,3 +6951,105 @@ textarea {
   background: rgba(239, 68, 68, 0.1);
   color: #f87171;
 }
+
+
+/* ==========================================================================
+   BANNER FLOTANTE AUTOMÁTICO DE CONSENTIMIENTO (TÉRMINOS Y COOKIES)
+   ========================================================================== */
+.floating-consent-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(160%);
+  width: min(94vw, 920px);
+  background: rgba(18, 18, 20, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 24px rgba(232, 33, 39, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 16px 24px;
+  z-index: 2500;
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.floating-consent-banner.is-active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.floating-consent-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.floating-consent-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1 1 480px;
+}
+
+.floating-consent-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(232, 33, 39, 0.1);
+  border: 1px solid rgba(232, 33, 39, 0.25);
+  flex-shrink: 0;
+}
+
+.floating-consent-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: 2px;
+}
+
+.floating-consent-desc {
+  font-size: 0.8125rem;
+  color: var(--color-silver-light);
+  line-height: 1.45;
+}
+
+.floating-consent-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .floating-consent-banner {
+    bottom: 12px;
+    width: 95vw;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+  }
+  .floating-consent-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .floating-consent-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .floating-consent-actions .consent-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 10px;
+  }
+}

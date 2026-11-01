@@ -1232,6 +1232,39 @@
   </footer>
 
   <!-- =========================================================================
+       BANNER FLOTANTE AUTOMÁTICO DE CONSENTIMIENTO (TÉRMINOS Y COOKIES)
+       ========================================================================= -->
+  <aside class="floating-consent-banner" id="floatingConsentBanner" aria-label="Consentimiento de cookies y términos" role="region">
+    <div class="floating-consent-container">
+      <div class="floating-consent-content">
+        <div class="floating-consent-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-red)" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="floating-consent-text">
+          <p class="floating-consent-title">Términos, Condiciones y Cookies</p>
+          <p class="floating-consent-desc">
+            Al utilizar nuestra plataforma aceptas nuestros
+            <button type="button" class="legal-inline-link" id="bannerOpenTerms">Términos y Condiciones</button>
+            y el uso de
+            <button type="button" class="legal-inline-link" id="bannerOpenCookies">Cookies</button>
+            para la simulación de cotizaciones en COP y una navegación segura.
+          </p>
+        </div>
+      </div>
+      <div class="floating-consent-actions">
+        <button type="button" class="consent-btn consent-accept" id="bannerConsentAcceptBtn">
+          Aceptar
+        </button>
+        <button type="button" class="consent-btn consent-reject" id="bannerConsentRejectBtn">
+          Rechazar
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
        MODAL DE TÉRMINOS Y CONDICIONES Y POLÍTICA DE COOKIES
        ========================================================================= -->
   <div class="modal-backdrop" id="termsCookiesModal" role="dialog" aria-modal="true" aria-labelledby="modalLegalTitle">
