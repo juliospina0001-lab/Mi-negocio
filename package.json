@@ -1,0 +1,21 @@
+{
+  "name": "tesla-premium-showroom",
+  "version": "1.0.0",
+  "description": "Tesla Premium Showroom Colombia - Plataforma Web y Consola Administrativa",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "node tests/cli-runner.js"
+  },
+  "keywords": [],
+  "author": "Julian Ospina",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.12.0"
+  }
+}
