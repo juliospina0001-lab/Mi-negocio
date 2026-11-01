@@ -3201,16 +3201,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-        
-        // Desplazar suavemente al simulador de crédito recién desbloqueado
-        const simSection = document.getElementById("financiacion");
-        if (simSection) {
-          setTimeout(() => {
-            simSection.scrollIntoView({ behavior: "smooth" });
-          }, 350);
-        }
-      });
-    }
 
     // Guardar cambios en el formulario de edición de perfil
     if (elements.dashEditProfileForm) {
@@ -3690,11 +3680,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function syncVehiclesFromBackend() {
-    const isLocalBackend =
-      typeof window !== "undefined" &&
-      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") &&
-      window.location.port !== "";
-    if (!isLocalBackend) return;
     try {
       const response = await fetch("/api/vehicles").catch(() => null);
       if (response && response.ok) {
@@ -3808,13 +3793,29 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) {}
 
     // Sincronizar estado de compras y generar notificaciones si cambiaron en background
-    function syncUserPurchasesFromGlobal() {
+    async function syncUserPurchasesFromGlobal() {
       if (!state.currentUser || !Array.isArray(state.currentUser.orders)) return;
       try {
+        let globalPurchases = [];
         const rawPurchases = localStorage.getItem(STORAGE_KEY_PURCHASES);
-        if (!rawPurchases) return;
-        const globalPurchases = JSON.parse(rawPurchases);
-        if (!Array.isArray(globalPurchases)) return;
+        if (rawPurchases) {
+          try {
+            const parsed = JSON.parse(rawPurchases);
+            if (Array.isArray(parsed)) globalPurchases = parsed;
+          } catch (e) {}
+        }
+
+        try {
+          const resp = await fetch("/api/purchases").catch(() => null);
+          if (resp && resp.ok) {
+            const apiPurchases = await resp.json();
+            if (Array.isArray(apiPurchases) && apiPurchases.length > 0) {
+              globalPurchases = apiPurchases;
+            }
+          }
+        } catch (e) {}
+
+        if (globalPurchases.length === 0) return;
 
         let changed = false;
         state.currentUser.orders.forEach(userOrder => {
@@ -3878,6 +3879,12 @@ document.addEventListener("DOMContentLoaded", () => {
         applyCatalogData(e.detail, true);
       }
     });
+
+    // Sincronización reactiva continua con la consola administrativa cada 10 segundos
+    setInterval(() => {
+      syncVehiclesFromBackend();
+      syncUserPurchasesFromGlobal();
+    }, 10000);
 
     // Cada vez que el usuario regrese a la pestaña del showroom, verificar actualización
     window.addEventListener("focus", () => {
