@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, '..', 'frontend')));
 app.use('/tests', express.static(path.join(__dirname, '..', 'tests')));
 
 // Ruta oficial solicitada para la consola administrativa
-app.get('/admin', (req, res) => {
+app.get(['/admin', '/admin/', '/admin.html'], (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'admin.html'));
 });
 
