@@ -1,5 +1,7 @@
 # Dependencias
 node_modules/
+backend/node_modules/
+**/node_modules/
 .pnpm-store/
 
 # Logs y depuración
@@ -14,3 +16,4 @@ yarn-error.log*
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
